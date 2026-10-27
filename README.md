@@ -57,21 +57,22 @@ finished and wrote results.
 
 ### Choosing an engine version
 
-The 7.0.1 engines read 6.6 projects unchanged and give the same results on
-every example. Plans they write can't be opened by HEC-RAS 6.6, so the default
-stays 6.6. Use 7.0.1 when the results will be opened in HEC-RAS 7.
+The 7.0.1 and 7.0.2 engines read 6.6 projects unchanged and give the same
+results on every example (7.0.1 and 7.0.2 are identical to each other). Plans
+they write can't be opened by HEC-RAS 6.6, so the default stays 6.6. Use 7.0.2
+when the results will be opened in HEC-RAS 7.
 
 ## Validated results (Workflow A)
 
 Linux results against the Windows GUI's own results for the same plan:
 
-| Example | Cells | Volume error | Max WSE diff, 6.6 | Max WSE diff, 7.0.1 |
-|---|---|---|---|---|
-| AFTER_RUN | 375 | 0.099 % | 0.0000 ft | 0.0000 ft |
-| BEC | 2,315 | 0.002 % | 0.0001 ft | 0.0001 ft |
-| BEC_WO_Infiltration | 2,622 | 0.001 % | 0.0000 ft | 0.0000 ft |
-| VA | 1,221 | 0.00001 % | 0.0000 ft | 0.0000 ft |
-| Muncie | 3,146 | 0.049 % | 0.0001 ft | 0.0002 ft |
+| Example | Cells | Volume error | Max WSE diff, 6.6 | 7.0.1 | 7.0.2 |
+|---|---|---|---|---|---|
+| AFTER_RUN | 375 | 0.099 % | 0.0000 ft | 0.0000 ft | 0.0000 ft |
+| BEC | 2,315 | 0.002 % | 0.0001 ft | 0.0001 ft | 0.0001 ft |
+| BEC_WO_Infiltration | 2,622 | 0.001 % | 0.0000 ft | 0.0000 ft | 0.0000 ft |
+| VA | 1,221 | 0.00001 % | 0.0000 ft | 0.0000 ft | 0.0000 ft |
+| Muncie | 3,146 | 0.049 % | 0.0001 ft | 0.0002 ft | 0.0002 ft |
 
 These show that the Linux engines reproduce Windows HEC-RAS on geometry that
 RASMapper computed. They do not test the Python code in Workflows B and C.
@@ -83,7 +84,7 @@ Workflow B is tested by stripping the GUI's tables from each example
 deleting the `g01.hdf` altogether. Both runs use the GUI's boundary data, so
 any difference comes from the geometry.
 
-Measured with the 6.6 engine (7.0.1 agrees to within 0.03 ft); WSE
+Measured with the 6.6 engine (7.0.1 and 7.0.2 agree to within 0.003 ft on the mean); WSE
 differences are over all interior cells, GUI results as reference:
 
 | Example | Workflow B: volume error | B: mean / worst WSE diff | Workflow C: volume error | C: mean / worst WSE diff |
