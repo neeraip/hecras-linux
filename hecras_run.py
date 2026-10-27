@@ -77,11 +77,17 @@ def default_runner() -> str:
 
 
 def _engine_error(text: str) -> str | None:
-    """First error block the engine printed, if any."""
+    """First error block the engine printed, if any.
+
+    HEC-RAS also prints warnings in red (e.g. a large volume accounting
+    error after a completed run), so red text alone is not an error; it
+    counts only when the run did not finish.
+    """
     lines = [l.strip() for l in text.splitlines()]
     for i, line in enumerate(lines):
         if line.startswith("FONT= RED") or "HDF_ERROR" in line:
-            block = [l for l in lines[i:i + 12] if l and not l.startswith("FONT=")]
+            block = [l for l in lines[i:i + 12]
+                     if l and not l.startswith(("FONT=", "PROGRESS=", "SIMTIME=", "ITER2D="))]
             return " | ".join(block)
     return None
 
@@ -136,8 +142,8 @@ def run_engine(work_dir: Path, project: str, plan: str = "01",
     else:
         raise ValueError(f"unknown runner {runner!r}")
 
-    err = _engine_error(log)
-    if err or _FINISHED not in log:
+    if _FINISHED not in log or "HDF_ERROR" in log:
+        err = _engine_error(log)
         raise EngineError(f"HEC-RAS {version} did not finish: {err or 'no completion message'}\n"
                           f"{log[-3000:]}")
     os.replace(work_dir / tmp_hdf, out_hdf)

@@ -146,10 +146,6 @@ def parse_g01(filepath: Path) -> G01Data:
 
         i += 1
 
-    # If no BC lines found from "BC Line" format, try the other format
-    if not data.bc_lines:
-        data.bc_lines = _parse_bc_lines_alt(lines)
-
     logger.info("  Parsed: perimeter=%d pts, cells=%d pts, BC lines=%d, dx=%.0f dy=%.0f",
                 len(data.perimeter), len(data.cell_points), len(data.bc_lines),
                 data.dx, data.dy)
@@ -218,13 +214,9 @@ def _parse_bc_line(lines, start_idx):
     return {"name": name, "area": area, "points": points}
 
 
-def _parse_bc_lines_alt(lines):
-    """Kept for compatibility; BC lines are read by _parse_bc_line."""
-    return []
-
 
 # ============================================================================
-# STEP 2: VORONOI MESH
+# STEP 2: VORONOI MESH (Workflow C)
 # ============================================================================
 
 # HEC-RAS 2D flow areas allow at most this many faces per cell.
@@ -308,7 +300,6 @@ def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
     # --- 2. Snap vertices that several cells computed independently ---
     tol = max(1e-6 * span, 1e-3)
     all_xy = np.vstack(rings)
-    owner = np.repeat(np.arange(n_int), [len(r) for r in rings])
     from scipy.spatial import cKDTree
     tree = cKDTree(all_xy)
     vid = np.full(len(all_xy), -1, dtype=np.int64)
@@ -342,18 +333,25 @@ def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
     # A perimeter corner that a straight face would cut badly becomes a face
     # point of its own (RASMapper does the same), so a perimeter face never
     # strays far from the perimeter and its normal still points outward.
+    # A cell needs at least three face points; a cell that touches only two
+    # (e.g. one filling a narrow tip of the area) gets its sharpest perimeter
+    # corner promoted whatever its deviation.
+    # Chains are kept in a list: two chains can share endpoints (a cell with
+    # two face points has two chains between the same pair).
     while True:
-        chains = {}   # (fp_a, fp_b), CCW for its cell -> (cell, intermediates)
+        chains = []   # (fp_a, fp_b, cell, intermediates), a->b CCW for the cell
+        n_fp_cell = []
         for ci, ids in enumerate(cell_vids):
             fps_at = [j for j, v in enumerate(ids) if is_fp[v]]
             if len(fps_at) < 2:
                 raise ValueError(f"Cell {ci} touches fewer than two neighbours; "
                                  "the perimeter is too small for the cell spacing")
+            n_fp_cell.append(len(fps_at))
             for a, b in zip(fps_at, fps_at[1:] + [fps_at[0] + len(ids)]):
                 run = [ids[j % len(ids)] for j in range(a, b + 1)]
-                chains[(run[0], run[-1])] = (ci, run[1:-1])
+                chains.append((run[0], run[-1], ci, run[1:-1]))
         promoted = False
-        for (a, b), (ci, mids) in chains.items():
+        for a, b, ci, mids in chains:
             if not mids:
                 continue
             seed = seeds[ci]
@@ -369,13 +367,16 @@ def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
             dev = np.abs(chord[0] * (verts[mids, 1] - verts[a, 1]) -
                          chord[1] * (verts[mids, 0] - verts[a, 0])) / max(L, 1e-12)
             chord_ok = faces_outward(a, b)
+            too_few = n_fp_cell[ci] < 3
             for k in np.argsort(-dev):
                 v = mids[k]
                 split_ok = faces_outward(a, v) and faces_outward(v, b)
-                if split_ok and (not chord_ok or dev[k] > PERIMETER_CORNER_RATIO * L):
+                if too_few or (split_ok and (not chord_ok or dev[k] > PERIMETER_CORNER_RATIO * L)):
                     is_fp[v] = True
                     promoted = True
                     break
+            if promoted and too_few:
+                break        # recount this cell's face points before promoting more
         if not promoted:
             break
 
@@ -386,27 +387,33 @@ def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
     face_points = verts[fp_ids]
     fp_is_perim = np.zeros(len(fp_ids), dtype=np.int32)
 
+    # Straight chains (no perimeter vertices) by endpoints, for pairing
+    straight = {}
+    for k, (a, b, ci, mids) in enumerate(chains):
+        if not mids:
+            straight.setdefault((a, b), []).append(k)
+
     faces_cell, faces_fp, faces_pp = [], [], []
     ghost_centers = []
     done = set()
-    for key, (ci, mids) in chains.items():
-        if key in done:
+    for k, (a, b, ci, mids) in enumerate(chains):
+        if k in done:
             continue
-        a, b = key
-        twin = chains.get((b, a))
-        if twin is not None and not mids and not twin[1]:
-            cj = twin[0]
-            done.update({key, (b, a)})
+        done.add(k)
+        twin = None
+        if not mids:
+            twin = next((j for j in straight.get((b, a), [])
+                         if j not in done and chains[j][2] != ci), None)
+        if twin is not None:
+            done.add(twin)
             # Cell ci walks a->b counter-clockwise, so ci lies left of a->b and
-            # (dy, -dx) points right, into cj: ci is the first cell.
-            faces_cell.append([ci, cj])
+            # (dy, -dx) points right, into the twin's cell: ci is the first cell.
+            faces_cell.append([ci, chains[twin][2]])
             faces_fp.append([fp_index[a], fp_index[b]])
             faces_pp.append(np.empty((0, 2)))
         else:
-            done.add(key)
             ghost = n_int + len(ghost_centers)
-            pa, pb = verts[a], verts[b]
-            ghost_centers.append((pa + pb) / 2)
+            ghost_centers.append((verts[a] + verts[b]) / 2)
             faces_cell.append([ci, ghost])
             faces_fp.append([fp_index[a], fp_index[b]])
             faces_pp.append(verts[mids] if mids else np.empty((0, 2)))
@@ -470,23 +477,6 @@ def _signed_area(ring: np.ndarray) -> float:
     return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
 
 
-
-def _sort_face_points_ccw(fp_indices, face_points_list, center):
-    """Sort face point indices counter-clockwise around cell center."""
-    if len(fp_indices) <= 2:
-        return fp_indices
-    angles = []
-    for fpi in fp_indices:
-        fp = face_points_list[fpi] if isinstance(face_points_list, list) else face_points_list[fpi]
-        angle = np.arctan2(fp[1] - center[1], fp[0] - center[0])
-        angles.append(angle)
-    sorted_idx = np.argsort(angles)
-    return [fp_indices[i] for i in sorted_idx]
-
-
-# ============================================================================
-# STEP 3: TERRAIN SAMPLING -> CELL VOLUME-ELEVATION
-# ============================================================================
 
 def compute_cell_properties(mesh: MeshData, terrain_path: str,
                             vol_tol: float = 0.01) -> dict:
@@ -1268,33 +1258,10 @@ def compute_bc_external_faces(g01_hdf_path: Path, mesh: MeshData,
             logger.warning("  BC line %d: could not find start/end faces", bc_id)
             continue
 
-        if start_fi == end_fi:
-            chain = [start_fi]
-        else:
-            from collections import deque
-            visited = {start_fi: None}
-            queue = deque([start_fi])
-            found = False
-            while queue:
-                cur = queue.popleft()
-                if cur == end_fi:
-                    found = True
-                    break
-                for nb in sorted(perim_face_adj[cur]):
-                    if nb not in visited:
-                        visited[nb] = cur
-                        queue.append(nb)
-
-            if not found:
-                logger.warning("  BC line %d: no path between start/end faces", bc_id)
-                continue
-
-            chain = []
-            cur = end_fi
-            while cur is not None:
-                chain.append(cur)
-                cur = visited[cur]
-            chain.reverse()
+        chain = _bc_arc(start_fi, end_fi, perim_face_adj, bc_pts, fp_coords, faces_fp)
+        if chain is None:
+            logger.warning("  BC line %d: no path between start/end faces", bc_id)
+            continue
 
         bc_name = bc_attrs['Name'][bc_id].decode('utf-8', errors='replace').strip('\x00')
         logger.info("  BC line %d (%s): %d faces in chain", bc_id, bc_name, len(chain))
@@ -1526,6 +1493,70 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
 
     logger.info("  Geometry HDF updated with hydraulic tables")
 
+
+
+def _bc_arc(start_fi, end_fi, adj, bc_pts, fp_coords, faces_fp):
+    """Perimeter faces from start_fi to end_fi that follow the BC polyline.
+
+    The perimeter is a ring, so two arcs join the start and end faces. Take
+    the one that lies along the polyline (smallest mean distance from points
+    sampled on the polyline to the arc's face midpoints). Taking the shorter
+    arc instead fails for a BC line that runs most of the way round the area,
+    whose ends are close together.
+    """
+    def walk(first_step):
+        path, prev, cur = [start_fi], start_fi, first_step
+        while True:
+            if cur == end_fi and not (cur == start_fi and len(path) == 1):
+                return path + ([cur] if cur != start_fi else [])
+            if cur == start_fi:
+                return path          # went all the way round (start == end)
+            path.append(cur)
+            nxt = [n for n in adj[cur] if n != prev]
+            if len(nxt) != 1:
+                return None          # not a simple ring here
+            prev, cur = cur, nxt[0]
+
+    nbs = sorted(adj[start_fi])
+    arcs = [[start_fi]] if start_fi == end_fi else []
+    if len(nbs) == 2:
+        for nb in nbs:
+            a = walk(nb)
+            if a:
+                arcs.append(a)
+    if not arcs:
+        return _bfs_path(start_fi, end_fi, adj)
+
+    seg = np.asarray(bc_pts, dtype=np.float64)
+    lens = np.hypot(*np.diff(seg, axis=0).T)
+    t = np.linspace(0, lens.sum(), 64)
+    cum = np.r_[0, np.cumsum(lens)]
+    samples = np.c_[np.interp(t, cum, seg[:, 0]), np.interp(t, cum, seg[:, 1])]
+
+    def cost(arc):
+        mids = (fp_coords[faces_fp[arc, 0]] + fp_coords[faces_fp[arc, 1]]) / 2
+        return np.sqrt(((samples[:, None, :] - mids[None]) ** 2).sum(-1)).min(1).mean()
+
+    return min(arcs, key=cost)
+
+
+def _bfs_path(start_fi, end_fi, adj):
+    from collections import deque
+    visited = {start_fi: None}
+    queue = deque([start_fi])
+    while queue:
+        cur = queue.popleft()
+        if cur == end_fi:
+            path = []
+            while cur is not None:
+                path.append(cur)
+                cur = visited[cur]
+            return path[::-1]
+        for nb in sorted(adj[cur]):
+            if nb not in visited:
+                visited[nb] = cur
+                queue.append(nb)
+    return None
 
 def _write_bc_external_faces(g01_hdf: Path, mesh: MeshData, cell_dx: float):
     """Fill Boundary Condition Lines/External Faces (and each line's Length)."""
