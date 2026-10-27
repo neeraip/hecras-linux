@@ -65,6 +65,9 @@ class MeshData:
     # Derived
     faces_normal_length: np.ndarray = None  # (n_faces, 3) [nx, ny, length]
     cell_is_boundary: np.ndarray = None     # (n_cells,) bool
+    # Perimeter vertices lying between a perimeter face's two face points
+    # (HEC-RAS "Faces Perimeter Info/Values"); one (k, 2) array per face.
+    faces_perimeter_pts: list = None
 
     @property
     def n_cells(self): return len(self.cell_centers)
@@ -135,7 +138,7 @@ def parse_g01(filepath: Path) -> G01Data:
         elif line.startswith("Storage Area Mannings="):
             data.default_mannings = float(line.split("=")[1].strip())
 
-        elif "BC Line Name=" in line or (line.startswith("BC Line=") and "Name=" in line):
+        elif line.startswith("BC Line Name="):
             # Parse boundary condition line definitions
             bc = _parse_bc_line(lines, i)
             if bc:
@@ -181,165 +184,275 @@ def _parse_16char_coords_multi(raw: str) -> list:
 
 
 def _parse_bc_line(lines, start_idx):
-    """Try to parse a BC line definition."""
-    # This handles the format seen in .g01 files
-    return None  # Will be handled by alt parser
+    """Parse one boundary condition line block from a .g01 file::
+
+        BC Line Name=DS
+        BC Line Storage Area=Perimeter 1
+        BC Line Start Position= x , y
+        ...
+        BC Line Arc= N
+        <N points packed as 16-character numbers, two points per line>
+
+    Returns {"name", "area", "points"} or None if the block is incomplete.
+    """
+    name = lines[start_idx].split("=", 1)[1].strip()
+    area, points = "", None
+    for j in range(start_idx + 1, min(start_idx + 12, len(lines))):
+        line = lines[j]
+        if line.startswith("BC Line Name="):
+            break
+        if line.startswith("BC Line Storage Area="):
+            area = line.split("=", 1)[1].strip()
+        elif line.startswith("BC Line Arc="):
+            n_pts = int(line.split("=", 1)[1].strip())
+            nums, k = [], j + 1
+            while len(nums) < 2 * n_pts and k < len(lines):
+                nums.extend(_parse_16char_coords_multi(lines[k]))
+                k += 1
+            if len(nums) >= 2 * n_pts:
+                points = [[nums[2 * t], nums[2 * t + 1]] for t in range(n_pts)]
+            break
+    if not points or len(points) < 2:
+        logger.warning("  Could not read the points of BC line %r", name)
+        return None
+    return {"name": name, "area": area, "points": points}
 
 
 def _parse_bc_lines_alt(lines):
-    """Parse BC lines from the alternative format in .g01 files."""
-    bc_lines = []
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        # Look for BC Line definitions with coordinates
-        # Format varies but typically:
-        # "BC Line Name=DS" followed by coordinates
-        if "BC Line" in line and "=" in line:
-            # Try to extract name and points
-            pass
-        i += 1
-
-    # If we still haven't found them, parse from the raw coordinate sections
-    # The Muncie .g01 has BC lines defined after the 2D cell properties
-    # Look for pattern: Name (32 chars) + area_name (16 chars) + coordinates
-    for i, line in enumerate(lines):
-        if line.strip().startswith("BC Line=") or "BCLine" in line:
-            pass
-
-    return bc_lines
+    """Kept for compatibility; BC lines are read by _parse_bc_line."""
+    return []
 
 
 # ============================================================================
 # STEP 2: VORONOI MESH
 # ============================================================================
 
+# HEC-RAS 2D flow areas allow at most this many faces per cell.
+MAX_FACES_PER_CELL = 8
+# A perimeter vertex further than this fraction of the face length from the
+# straight face between its neighbouring face points becomes a face point.
+PERIMETER_CORNER_RATIO = 0.2
+
+
 def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
                        dx: float = 100.0, dy: float = 100.0) -> MeshData:
-    """Build Voronoi mesh from cell centers, clipped to perimeter."""
+    """Build a HEC-RAS style 2D mesh from seed points clipped to a perimeter.
+
+    Each seed's Voronoi cell is clipped to the perimeter polygon, then the
+    clipped polygons are stitched into one conforming topology that follows
+    the conventions RASMapper writes to g01.hdf:
+
+      * a face point is a vertex shared by two or more cells; perimeter
+        polygon vertices that fall between two face points are not face
+        points but are stored per face ("Faces Perimeter Values");
+      * each run of perimeter between two face points is one perimeter face,
+        and every perimeter face gets its own ghost cell, centred on the face
+        midpoint and stored as the face's second cell;
+      * a face normal is (dy, -dx) of its face points and points from its
+        first cell to its second;
+      * cell face points are listed counter-clockwise.
+
+    Seeds outside the perimeter are dropped. ``dx``/``dy`` are accepted for
+    compatibility and only used to size the snapping tolerance.
+
+    Limitations: no breaklines or refinement regions, and a cell is not
+    split if clipping leaves it in several pieces (the largest is kept).
+    """
+    from shapely.geometry import Polygon
+    from shapely.validation import make_valid
+
     logger.info("Building Voronoi mesh from %d cell points...", len(cell_points))
+    perim = np.asarray(perimeter, dtype=np.float64)
+    if len(perim) > 1 and np.allclose(perim[0], perim[-1]):
+        perim = perim[:-1]
+    domain = make_valid(Polygon(perim))
+    if domain.geom_type != "Polygon":
+        domain = max(domain.geoms, key=lambda g: g.area)
+
+    seeds = np.asarray(cell_points, dtype=np.float64)
+    inside = np.array([domain.covers(_shp_point(p)) for p in seeds])
+    if not inside.all():
+        logger.warning("  Dropping %d seed points outside the perimeter", (~inside).sum())
+    seeds = seeds[inside]
+    n_int = len(seeds)
+    if n_int < 3:
+        raise ValueError("Need at least 3 seed points inside the perimeter")
+
+    # Far-away corner points make every seed's Voronoi region finite.
+    xmin, ymin, xmax, ymax = domain.bounds
+    span = max(xmax - xmin, ymax - ymin)
+    cx, cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+    far = np.array([[cx - 10 * span, cy - 10 * span], [cx + 10 * span, cy - 10 * span],
+                    [cx + 10 * span, cy + 10 * span], [cx - 10 * span, cy + 10 * span]])
+    vor = Voronoi(np.vstack([seeds, far]))
+
+    # --- 1. Clip each cell; keep its ring as a CCW list of coordinates ---
+    rings = []
+    for i in range(n_int):
+        region = vor.regions[vor.point_region[i]]
+        if not region or -1 in region:
+            raise ValueError(f"Voronoi region for seed {i} is unbounded")
+        clipped = Polygon(vor.vertices[region]).intersection(domain)
+        if clipped.geom_type != "Polygon":
+            parts = [g for g in getattr(clipped, "geoms", []) if g.geom_type == "Polygon"]
+            if not parts:
+                raise ValueError(f"Cell {i} vanished when clipped to the perimeter")
+            logger.warning("  Cell %d split into %d pieces by the perimeter; keeping the largest",
+                           i, len(parts))
+            clipped = max(parts, key=lambda g: g.area)
+        ring = np.asarray(clipped.exterior.coords)[:-1]
+        if _signed_area(ring) < 0:
+            ring = ring[::-1]
+        rings.append(ring)
+
+    # --- 2. Snap vertices that several cells computed independently ---
+    tol = max(1e-6 * span, 1e-3)
+    all_xy = np.vstack(rings)
+    owner = np.repeat(np.arange(n_int), [len(r) for r in rings])
+    from scipy.spatial import cKDTree
+    tree = cKDTree(all_xy)
+    vid = np.full(len(all_xy), -1, dtype=np.int64)
+    verts = []
+    for k in range(len(all_xy)):
+        if vid[k] >= 0:
+            continue
+        group = tree.query_ball_point(all_xy[k], tol)
+        new_id = len(verts)
+        verts.append(all_xy[group].mean(axis=0))
+        for g in group:
+            if vid[g] < 0:
+                vid[g] = new_id
+    verts = np.array(verts)
+    cell_vids = []
+    pos = 0
+    for r in rings:
+        ids = list(vid[pos:pos + len(r)])
+        pos += len(r)
+        dedup = [v for j, v in enumerate(ids) if v != ids[j - 1]]   # drop collapsed edges
+        cell_vids.append(dedup)
+
+    # A vertex used by two or more cells is a face point.
+    n_users = np.zeros(len(verts), dtype=np.int64)
+    for ids in cell_vids:
+        for v in set(ids):
+            n_users[v] += 1
+    is_fp = n_users >= 2
+
+    # --- 3. Split each ring at its face points into chains (= faces) ---
+    # A perimeter corner that a straight face would cut badly becomes a face
+    # point of its own (RASMapper does the same), so a perimeter face never
+    # strays far from the perimeter and its normal still points outward.
+    while True:
+        chains = {}   # (fp_a, fp_b), CCW for its cell -> (cell, intermediates)
+        for ci, ids in enumerate(cell_vids):
+            fps_at = [j for j, v in enumerate(ids) if is_fp[v]]
+            if len(fps_at) < 2:
+                raise ValueError(f"Cell {ci} touches fewer than two neighbours; "
+                                 "the perimeter is too small for the cell spacing")
+            for a, b in zip(fps_at, fps_at[1:] + [fps_at[0] + len(ids)]):
+                run = [ids[j % len(ids)] for j in range(a, b + 1)]
+                chains[(run[0], run[-1])] = (ci, run[1:-1])
+        promoted = False
+        for (a, b), (ci, mids) in chains.items():
+            if not mids:
+                continue
+            seed = seeds[ci]
+
+            def faces_outward(p, q):
+                # the cell lies left of p->q, so (dy, -dx) should point away from its seed
+                d = verts[q] - verts[p]
+                return (d[1] * ((verts[p, 0] + verts[q, 0]) / 2 - seed[0]) -
+                        d[0] * ((verts[p, 1] + verts[q, 1]) / 2 - seed[1])) > 0
+
+            chord = verts[b] - verts[a]
+            L = np.hypot(*chord)
+            dev = np.abs(chord[0] * (verts[mids, 1] - verts[a, 1]) -
+                         chord[1] * (verts[mids, 0] - verts[a, 0])) / max(L, 1e-12)
+            chord_ok = faces_outward(a, b)
+            for k in np.argsort(-dev):
+                v = mids[k]
+                split_ok = faces_outward(a, v) and faces_outward(v, b)
+                if split_ok and (not chord_ok or dev[k] > PERIMETER_CORNER_RATIO * L):
+                    is_fp[v] = True
+                    promoted = True
+                    break
+        if not promoted:
+            break
+
+    # --- 4. Pair chains into interior faces; leftovers are perimeter faces ---
+    fp_ids = np.where(is_fp)[0]
+    fp_index = -np.ones(len(verts), dtype=np.int64)
+    fp_index[fp_ids] = np.arange(len(fp_ids))
+    face_points = verts[fp_ids]
+    fp_is_perim = np.zeros(len(fp_ids), dtype=np.int32)
+
+    faces_cell, faces_fp, faces_pp = [], [], []
+    ghost_centers = []
+    done = set()
+    for key, (ci, mids) in chains.items():
+        if key in done:
+            continue
+        a, b = key
+        twin = chains.get((b, a))
+        if twin is not None and not mids and not twin[1]:
+            cj = twin[0]
+            done.update({key, (b, a)})
+            # Cell ci walks a->b counter-clockwise, so ci lies left of a->b and
+            # (dy, -dx) points right, into cj: ci is the first cell.
+            faces_cell.append([ci, cj])
+            faces_fp.append([fp_index[a], fp_index[b]])
+            faces_pp.append(np.empty((0, 2)))
+        else:
+            done.add(key)
+            ghost = n_int + len(ghost_centers)
+            pa, pb = verts[a], verts[b]
+            ghost_centers.append((pa + pb) / 2)
+            faces_cell.append([ci, ghost])
+            faces_fp.append([fp_index[a], fp_index[b]])
+            faces_pp.append(verts[mids] if mids else np.empty((0, 2)))
+            fp_is_perim[fp_index[a]] = 1
+            fp_is_perim[fp_index[b]] = 1
+
+    faces_cell = np.array(faces_cell, dtype=np.int32)
+    faces_fp = np.array(faces_fp, dtype=np.int32)
+    n_cells = n_int + len(ghost_centers)
+
+    # --- 5. Cell face-point lists (CCW), ghost cells get their face's two points ---
+    per_cell = [[fp_index[v] for v in ids if is_fp[v]] for ids in cell_vids]
+    width = max(5, max(len(p) for p in per_cell))
+    too_many = sum(len(p) > MAX_FACES_PER_CELL for p in per_cell)
+    if too_many:
+        logger.warning("  %d cells have more than %d faces, which HEC-RAS rejects; "
+                       "use a coarser spacing near the perimeter", too_many, MAX_FACES_PER_CELL)
+    cells_fp = np.full((n_cells, width), -1, dtype=np.int32)
+    for ci, p in enumerate(per_cell):
+        cells_fp[ci, :len(p)] = p
+    for fi in range(len(faces_cell)):
+        g = faces_cell[fi, 1]
+        if g >= n_int:
+            cells_fp[g, :2] = faces_fp[fi]
+
+    seg = face_points[faces_fp[:, 1]] - face_points[faces_fp[:, 0]]
+    length = np.hypot(seg[:, 0], seg[:, 1])
+    normals = np.zeros((len(faces_fp), 3), dtype=np.float32)
+    ok = length > 0
+    normals[ok, 0] = seg[ok, 1] / length[ok]
+    normals[ok, 1] = -seg[ok, 0] / length[ok]
+    normals[:, 2] = length
 
     mesh = MeshData()
-    mesh.cell_points_input = cell_points.copy()
-    mesh.perimeter = perimeter.copy()
-
-    # Add mirror points outside perimeter for bounded Voronoi
-    mirror_pts = _create_mirror_points(cell_points, perimeter, dx, dy)
-    all_points = np.vstack([cell_points, mirror_pts])
-
-    vor = Voronoi(all_points)
-    n_interior = len(cell_points)
-
-    # Clip Voronoi regions to perimeter and build mesh
-    perim_path = MplPath(perimeter)
-
-    # Collect face points (Voronoi vertices + perimeter intersections)
-    face_points_list = list(vor.vertices.copy())
-    fp_is_perim = [0] * len(vor.vertices)
-
-    # Track which face points are on the perimeter
-    for vi, v in enumerate(vor.vertices):
-        if not perim_path.contains_point(v):
-            # Project onto perimeter
-            proj = _project_onto_perimeter(v, perimeter)
-            face_points_list[vi] = proj
-            fp_is_perim[vi] = -1
-
-    # Build faces from Voronoi ridge data
-    faces_cell = []   # (cell1, cell2) for each face
-    faces_fp = []     # (fp1, fp2) for each face
-    cells_fp_dict = {}  # cell_id -> list of face point indices
-
-    for ridge_idx, (p1, p2) in enumerate(vor.ridge_points):
-        v1, v2 = vor.ridge_vertices[ridge_idx]
-        if v1 < 0 or v2 < 0:
-            continue  # Skip infinite ridges
-
-        # Only keep faces where at least one cell is interior
-        if p1 >= n_interior and p2 >= n_interior:
-            continue  # Both are mirror points
-
-        # Map mirror points to boundary cell indices
-        c1 = p1 if p1 < n_interior else -1
-        c2 = p2 if p2 < n_interior else -1
-
-        if c1 >= 0 or c2 >= 0:
-            faces_cell.append([c1, c2])
-            faces_fp.append([v1, v2])
-
-            for c in [c1, c2]:
-                if c >= 0:
-                    if c not in cells_fp_dict:
-                        cells_fp_dict[c] = set()
-                    cells_fp_dict[c].add(v1)
-                    cells_fp_dict[c].add(v2)
-
-    # Now create boundary/ghost cells for faces with c1=-1 or c2=-1
-    ghost_cell_centers = []
-    next_cell_id = n_interior
-    for fi in range(len(faces_cell)):
-        c1, c2 = faces_cell[fi]
-        if c1 == -1:
-            # Create ghost cell
-            ghost_center = _reflect_point(cell_points[c2],
-                                          face_points_list[faces_fp[fi][0]],
-                                          face_points_list[faces_fp[fi][1]])
-            ghost_cell_centers.append(ghost_center)
-            faces_cell[fi][0] = next_cell_id
-            cells_fp_dict[next_cell_id] = {faces_fp[fi][0], faces_fp[fi][1]}
-            next_cell_id += 1
-        elif c2 == -1:
-            ghost_center = _reflect_point(cell_points[c1],
-                                          face_points_list[faces_fp[fi][0]],
-                                          face_points_list[faces_fp[fi][1]])
-            ghost_cell_centers.append(ghost_center)
-            faces_cell[fi][1] = next_cell_id
-            cells_fp_dict[next_cell_id] = {faces_fp[fi][0], faces_fp[fi][1]}
-            next_cell_id += 1
-
-    # Assemble mesh arrays
-    n_total_cells = next_cell_id
-    all_centers = np.zeros((n_total_cells, 2), dtype=np.float64)
-    all_centers[:n_interior] = cell_points
-    if ghost_cell_centers:
-        all_centers[n_interior:] = np.array(ghost_cell_centers)
-
-    mesh.cell_centers = all_centers
-    mesh.face_points = np.array(face_points_list, dtype=np.float64)
-    mesh.fp_is_perimeter = np.array(fp_is_perim + [0] * (len(face_points_list) - len(fp_is_perim)),
-                                     dtype=np.int32)[:len(face_points_list)]
-    mesh.faces_cell_idx = np.array(faces_cell, dtype=np.int32)
-    mesh.faces_fp_idx = np.array(faces_fp, dtype=np.int32)
-
-    # Build cells_fp_idx (padded to max 5)
-    max_fp = 5
-    cells_fp_arr = np.full((n_total_cells, max_fp), -1, dtype=np.int32)
-    for ci, fps in cells_fp_dict.items():
-        sorted_fps = _sort_face_points_ccw(list(fps), face_points_list, all_centers[ci])
-        for j, fp in enumerate(sorted_fps[:max_fp]):
-            cells_fp_arr[ci, j] = fp
-
-    mesh.cells_fp_idx = cells_fp_arr
-
-    # Compute face normals and lengths
-    normals = np.zeros((len(faces_fp), 3), dtype=np.float32)
-    for fi in range(len(faces_fp)):
-        fp1 = mesh.face_points[faces_fp[fi][0]]
-        fp2 = mesh.face_points[faces_fp[fi][1]]
-        ddx = fp2[0] - fp1[0]
-        ddy = fp2[1] - fp1[1]
-        length = np.sqrt(ddx**2 + ddy**2)
-        if length > 0:
-            normals[fi] = [ddy / length, -ddx / length, length]
+    mesh.cell_points_input = seeds
+    mesh.perimeter = perim
+    mesh.cell_centers = np.vstack([seeds, np.array(ghost_centers).reshape(-1, 2)])
+    mesh.face_points = face_points
+    mesh.fp_is_perimeter = fp_is_perim
+    mesh.faces_cell_idx = faces_cell
+    mesh.faces_fp_idx = faces_fp
+    mesh.cells_fp_idx = cells_fp
     mesh.faces_normal_length = normals
-
-    # Mark boundary cells
-    mesh.cell_is_boundary = np.zeros(n_total_cells, dtype=bool)
-    mesh.cell_is_boundary[n_interior:] = True
-
-    # Post-process: remove faces from cells with too many connections (max 8)
-    MAX_FACES_PER_CELL = 7  # Keep under 8 to be safe
-    mesh = _limit_faces_per_cell(mesh, MAX_FACES_PER_CELL)
+    mesh.faces_perimeter_pts = faces_pp
+    mesh.cell_is_boundary = np.zeros(n_cells, dtype=bool)
+    mesh.cell_is_boundary[n_int:] = True
 
     logger.info("  Mesh: %d cells (%d interior, %d ghost), %d faces, %d face points",
                 mesh.n_cells, mesh.n_interior, mesh.n_cells - mesh.n_interior,
@@ -347,142 +460,15 @@ def build_voronoi_mesh(cell_points: np.ndarray, perimeter: np.ndarray,
     return mesh
 
 
-def _limit_faces_per_cell(mesh, max_faces):
-    """Remove shortest faces from cells that exceed max_faces connections."""
-    # Count faces per cell
-    cell_face_count = np.zeros(mesh.n_cells, dtype=np.int32)
-    cell_face_list = [[] for _ in range(mesh.n_cells)]
-    for fi in range(mesh.n_faces):
-        c1, c2 = mesh.faces_cell_idx[fi]
-        cell_face_count[c1] += 1
-        cell_face_count[c2] += 1
-        cell_face_list[c1].append(fi)
-        cell_face_list[c2].append(fi)
-
-    bad_cells = np.where(cell_face_count > max_faces)[0]
-    if len(bad_cells) == 0:
-        return mesh
-
-    logger.info("  Fixing %d cells with >%d faces...", len(bad_cells), max_faces)
-
-    faces_to_remove = set()
-    for ci in bad_cells:
-        faces = cell_face_list[ci]
-        # Sort by face length (shortest first)
-        lengths = []
-        for fi in faces:
-            lengths.append(mesh.faces_normal_length[fi, 2])
-        sorted_faces = [f for _, f in sorted(zip(lengths, faces))]
-        # Remove shortest faces until count <= max_faces
-        n_remove = len(faces) - max_faces
-        for fi in sorted_faces[:n_remove]:
-            faces_to_remove.add(fi)
-
-    # Rebuild mesh without removed faces
-    keep_mask = np.ones(mesh.n_faces, dtype=bool)
-    for fi in faces_to_remove:
-        keep_mask[fi] = False
-
-    mesh.faces_cell_idx = mesh.faces_cell_idx[keep_mask]
-    mesh.faces_fp_idx = mesh.faces_fp_idx[keep_mask]
-    mesh.faces_normal_length = mesh.faces_normal_length[keep_mask]
-
-    # Rebuild cells_fp_idx from remaining faces
-    n_cells = mesh.n_cells
-    max_fp = 5
-    new_cells_fp = np.full((n_cells, max_fp), -1, dtype=np.int32)
-    for fi in range(mesh.n_faces):
-        c1, c2 = mesh.faces_cell_idx[fi]
-        v1, v2 = mesh.faces_fp_idx[fi]
-        for ci in [c1, c2]:
-            for vi in [v1, v2]:
-                # Add if not already present and there's room
-                existing = new_cells_fp[ci]
-                if vi not in existing and -1 in existing:
-                    idx = np.where(existing == -1)[0][0]
-                    new_cells_fp[ci, idx] = vi
-
-    # Sort CCW
-    for ci in range(n_cells):
-        fps = [fp for fp in new_cells_fp[ci] if fp >= 0]
-        if len(fps) >= 3:
-            sorted_fps = _sort_face_points_ccw(fps, mesh.face_points, mesh.cell_centers[ci])
-            new_cells_fp[ci] = -1
-            for j, fp in enumerate(sorted_fps[:max_fp]):
-                new_cells_fp[ci, j] = fp
-
-    mesh.cells_fp_idx = new_cells_fp
-    return mesh
+def _shp_point(p):
+    from shapely.geometry import Point
+    return Point(float(p[0]), float(p[1]))
 
 
-def _create_mirror_points(cell_points, perimeter, dx, dy):
-    """Create mirror points outside perimeter for bounded Voronoi."""
-    # Reflect points near the perimeter across the boundary
-    perim_path = MplPath(perimeter)
-    mirror = []
+def _signed_area(ring: np.ndarray) -> float:
+    x, y = ring[:, 0], ring[:, 1]
+    return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
 
-    # For each perimeter edge, create mirror points
-    for i in range(len(perimeter)):
-        p1 = perimeter[i]
-        p2 = perimeter[(i + 1) % len(perimeter)]
-        edge_vec = p2 - p1
-        edge_len = np.linalg.norm(edge_vec)
-        if edge_len == 0:
-            continue
-        normal = np.array([-edge_vec[1], edge_vec[0]]) / edge_len
-
-        # Find cells near this edge
-        edge_mid = (p1 + p2) / 2
-        dist_threshold = max(dx, dy) * 3
-        for pt in cell_points:
-            if np.linalg.norm(pt - edge_mid) < dist_threshold:
-                # Reflect across the edge
-                d = np.dot(pt - p1, normal)
-                reflected = pt - 2 * d * normal
-                if not perim_path.contains_point(reflected):
-                    mirror.append(reflected)
-
-    if not mirror:
-        # Fallback: add points well outside the perimeter
-        cx, cy = perimeter.mean(axis=0)
-        for pt in perimeter:
-            mirror.append(pt + (pt - np.array([cx, cy])) * 2)
-
-    return np.array(mirror, dtype=np.float64)
-
-
-def _project_onto_perimeter(point, perimeter):
-    """Project a point onto the nearest perimeter edge."""
-    min_dist = float('inf')
-    best_proj = point.copy()
-    for i in range(len(perimeter)):
-        p1 = perimeter[i]
-        p2 = perimeter[(i + 1) % len(perimeter)]
-        proj, dist = _point_to_segment(point, p1, p2)
-        if dist < min_dist:
-            min_dist = dist
-            best_proj = proj
-    return best_proj
-
-
-def _point_to_segment(point, seg_start, seg_end):
-    """Project point onto line segment, return (projection, distance)."""
-    v = seg_end - seg_start
-    u = point - seg_start
-    t = np.dot(u, v) / (np.dot(v, v) + 1e-30)
-    t = np.clip(t, 0, 1)
-    proj = seg_start + t * v
-    return proj, np.linalg.norm(point - proj)
-
-
-def _reflect_point(point, fp1, fp2):
-    """Reflect a point across the line defined by fp1-fp2."""
-    fp1, fp2 = np.array(fp1), np.array(fp2)
-    v = fp2 - fp1
-    v_norm = v / (np.linalg.norm(v) + 1e-30)
-    u = np.array(point) - fp1
-    proj = fp1 + np.dot(u, v_norm) * v_norm
-    return 2 * proj - point
 
 
 def _sort_face_points_ccw(fp_indices, face_points_list, center):
@@ -1315,9 +1301,19 @@ def compute_bc_external_faces(g01_hdf_path: Path, mesh: MeshData,
 
         # --- Build External Faces with cumulative station (sum of face lengths) ---
         cum_station = 0.0
+        # Orient each face so the chain is linked (end point of one face is
+        # the start point of the next), as RASMapper writes it.
+        first = [int(v) for v in faces_fp[chain[0]]]
+        start_pt = first[0]
+        if len(chain) > 1:
+            not_shared = set(first) - set(int(v) for v in faces_fp[chain[1]])
+            if len(not_shared) == 1:
+                start_pt = not_shared.pop()
         for fi in chain:
             face_len = float(faces_nl[fi, 2])
-            fp1, fp2 = int(faces_fp[fi, 0]), int(faces_fp[fi, 1])
+            fa, fb = int(faces_fp[fi, 0]), int(faces_fp[fi, 1])
+            fp1, fp2 = (fa, fb) if fa == start_pt else (fb, fa)
+            start_pt = fp2
             all_rows.append((bc_id, fi, fp1, fp2,
                              np.float32(cum_station),
                              np.float32(cum_station + face_len)))
@@ -1493,15 +1489,8 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
             r'.\Land Classification\LandCover.hdf')
         pi_grp.attrs['Percent Impervious Layername'] = np.bytes_('LandCover')
         # Percent Impervious per cell (interior only)
-        id_to_name = lc_data.get('id_to_name', {})
-        name_to_imperv = lc_data.get('name_to_imperv', {})
-        imperv_vals = np.full(n_interior, 0.0, dtype=np.float32)
-        lc_class = lc_data.get('classifications', np.zeros(n_cells, dtype=np.int32))
-        for ci in range(n_interior):
-            cls_id = int(lc_class[ci])
-            nm = id_to_name.get(cls_id, '')
-            imperv_vals[ci] = name_to_imperv.get(nm, 0.0)
-        _add_ds(pi_grp, 'Percent Impervious', imperv_vals, gz)
+        _add_ds(pi_grp, 'Percent Impervious',
+                _percent_impervious(lc_data, n_cells, n_interior), gz)
         _add_ds(pi_grp, 'Cell Center Classifications',
                 lc_data['classifications'][:n_interior].astype(np.int32), gz)
         _add_ds(pi_grp, 'Face Center Classifications',
@@ -1536,6 +1525,24 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
             bc_grp.create_dataset('External Faces', data=bc_ext_faces, **gz)
 
     logger.info("  Geometry HDF updated with hydraulic tables")
+
+
+def _write_bc_external_faces(g01_hdf: Path, mesh: MeshData, cell_dx: float):
+    """Fill Boundary Condition Lines/External Faces (and each line's Length)."""
+    ext = compute_bc_external_faces(g01_hdf, mesh, cell_dx)
+    gz = {"compression": "gzip", "compression_opts": 1}
+    with h5py.File(str(g01_hdf), 'a') as hf:
+        bc_grp = hf['Geometry/Boundary Condition Lines']
+        if 'External Faces' in bc_grp:
+            del bc_grp['External Faces']
+        bc_grp.create_dataset('External Faces', data=ext, **gz)
+        attrs = bc_grp['Attributes'][()]
+        for bc_id in range(len(attrs)):
+            rows = ext[ext['BC Line ID'] == bc_id]
+            if len(rows):
+                attrs['Length'][bc_id] = float(rows['Station End'].max())
+        del bc_grp['Attributes']
+        bc_grp.create_dataset('Attributes', data=attrs, **gz)
 
 
 def _add_ds(grp, name: str, data, gz: dict):
@@ -1671,7 +1678,14 @@ def _write_2d_flow_areas(areas_grp, mesh, cell_props, face_props, lc_data, inf_d
     areas_grp.create_dataset("Cell Info", data=np.array([[0, n_interior]], dtype=np.int32), **gz)
     areas_grp.create_dataset("Cell Points", data=mesh.cell_points_input.astype(np.float64), **gz)
 
+    # RASMapper stores the 2D area polygon clockwise ("Polygon Points") and the
+    # same ring counter-clockwise from the same first point ("<area>/Perimeter").
+    # The solver uses the latter to place BC lines; a clockwise copy there
+    # makes it report "overlapping boundaries".
     perim = mesh.perimeter
+    if _signed_area(perim) > 0:
+        perim = np.vstack([perim[:1], perim[:0:-1]])
+    perim_ccw = np.vstack([perim[:1], perim[:0:-1]])
     areas_grp.create_dataset("Polygon Info", data=np.array([[0, len(perim), 0, 1]], dtype=np.int32), **gz)
     areas_grp.create_dataset("Polygon Parts", data=np.array([[0, len(perim)]], dtype=np.int32), **gz)
     areas_grp.create_dataset("Polygon Points", data=perim.astype(np.float64), **gz)
@@ -1720,22 +1734,20 @@ def _write_2d_flow_areas(areas_grp, mesh, cell_props, face_props, lc_data, inf_d
     ag.create_dataset("Faces Area Elevation Info", data=face_props["face_ae_info"], **gz)
     ag.create_dataset("Faces Area Elevation Values", data=face_props["face_ae_values"], **gz)
 
-    # Faces perimeter info
+    # Faces perimeter info: perimeter vertices between a face's two face points
     perim_info = np.zeros((n_faces, 2), dtype=np.int32)
     perim_values = []
-    for fi in range(n_faces):
-        v1 = mesh.faces_fp_idx[fi, 0]
-        v2 = mesh.faces_fp_idx[fi, 1]
-        if mesh.fp_is_perimeter[v1] != 0 or mesh.fp_is_perimeter[v2] != 0:
-            perim_info[fi] = [len(perim_values), 0]
-    if not perim_values:
-        perim_values = [[0.0, 0.0]]  # Placeholder
+    for fi, pts in enumerate(mesh.faces_perimeter_pts or []):
+        perim_info[fi] = [len(perim_values), len(pts)]
+        perim_values.extend(np.asarray(pts, dtype=np.float64).reshape(-1, 2).tolist())
     ag.create_dataset("Faces Perimeter Info", data=perim_info, **gz)
-    ag.create_dataset("Faces Perimeter Values", data=np.array(perim_values, dtype=np.float64), **gz)
+    ag.create_dataset("Faces Perimeter Values",
+                      data=np.array(perim_values, dtype=np.float64).reshape(-1, 2), **gz)
 
-    # FacePoints
+    # FacePoints (HDF convention: -1 = perimeter, 0 = interior)
     ag.create_dataset("FacePoints Coordinate", data=mesh.face_points.astype(np.float64), **gz)
-    ag.create_dataset("FacePoints Is Perimeter", data=mesh.fp_is_perimeter.astype(np.int32), **gz)
+    ag.create_dataset("FacePoints Is Perimeter",
+                      data=np.where(mesh.fp_is_perimeter != 0, -1, 0).astype(np.int32), **gz)
 
     # FacePoints Cell connectivity
     fp_cells = [[] for _ in range(n_fp)]
@@ -1776,9 +1788,28 @@ def _write_2d_flow_areas(areas_grp, mesh, cell_props, face_props, lc_data, inf_d
                           data=np.array(fpf_values, dtype=np.int32), **gz)
 
     # Perimeter
-    ag.create_dataset("Perimeter", data=perim.astype(np.float64), **gz)
+    ag.create_dataset("Perimeter", data=perim_ccw.astype(np.float64), **gz)
 
-    # Infiltration
+    # Infiltration: only when the project has an infiltration layer. Writing
+    # an empty group switches infiltration on and changes the results.
+    if inf_data.get("available", False):
+        _write_infiltration_group(ag, inf_data, n_interior, n_faces, now_date, gz)
+
+    # Percent Impervious from the land cover table (0 % where unclassified)
+    pi_grp = ag.create_group("Percent Impervious")
+    pi_grp.attrs["Percent Impervious Date Last Modified"] = np.bytes_(now_date)
+    pi_grp.attrs["Percent Impervious File Date"] = np.bytes_(now_date)
+    pi_grp.attrs["Percent Impervious Filename"] = np.bytes_(r".\Land Classification\LandCover.hdf")
+    pi_grp.attrs["Percent Impervious Layername"] = np.bytes_("LandCover")
+    pi_grp.create_dataset("Percent Impervious",
+                          data=_percent_impervious(lc_data, n_cells, n_interior), **gz)
+    pi_grp.create_dataset("Cell Center Classifications",
+                          data=lc_data["classifications"][:n_interior].astype(np.int32), **gz)
+    pi_grp.create_dataset("Face Center Classifications",
+                          data=np.zeros(n_faces, dtype=np.int32), **gz)
+
+
+def _write_infiltration_group(ag, inf_data, n_interior, n_faces, now_date, gz):
     inf_grp = ag.create_group("Infiltration")
     inf_grp.attrs["Infiltration Date Last Modified"] = np.bytes_(now_date)
     inf_grp.attrs["Infiltration File Date"] = np.bytes_(now_date)
@@ -1786,18 +1817,14 @@ def _write_2d_flow_areas(areas_grp, mesh, cell_props, face_props, lc_data, inf_d
     inf_grp.attrs["Infiltration Layername"] = np.bytes_("Infiltration")
     _write_infiltration_datasets(inf_grp, inf_data, n_interior, n_faces, gz)
 
-    # Percent Impervious
-    pi_grp = ag.create_group("Percent Impervious")
-    pi_grp.attrs["Percent Impervious Date Last Modified"] = np.bytes_(now_date)
-    pi_grp.attrs["Percent Impervious File Date"] = np.bytes_(now_date)
-    pi_grp.attrs["Percent Impervious Filename"] = np.bytes_(r".\Land Classification\LandCover.hdf")
-    pi_grp.attrs["Percent Impervious Layername"] = np.bytes_("LandCover")
-    pi_grp.create_dataset("Percent Impervious",
-                           data=np.full(n_interior, 100.0, dtype=np.float32), **gz)
-    pi_grp.create_dataset("Cell Center Classifications",
-                           data=lc_data["classifications"][:n_interior].astype(np.int32), **gz)
-    pi_grp.create_dataset("Face Center Classifications",
-                           data=np.zeros(n_faces, dtype=np.int32), **gz)
+
+def _percent_impervious(lc_data, n_cells, n_interior):
+    """Percent impervious per interior cell from its land-cover class."""
+    id_to_name = lc_data.get('id_to_name', {})
+    name_to_imperv = lc_data.get('name_to_imperv', {})
+    lc_class = lc_data.get('classifications', np.zeros(n_cells, dtype=np.int32))
+    return np.array([name_to_imperv.get(id_to_name.get(int(lc_class[ci]), ''), 0.0)
+                     for ci in range(n_interior)], dtype=np.float32)
 
 
 def _write_bc_lines_from_g01(bc_grp, g01, mesh, area_name):
@@ -1824,8 +1851,8 @@ def _write_bc_lines_from_g01(bc_grp, g01, mesh, area_name):
             length = sum(np.sqrt((pts[j+1][0]-pts[j][0])**2 + (pts[j+1][1]-pts[j][1])**2)
                         for j in range(len(pts)-1))
             attrs_list.append((bc["name"].encode()[:32], area_name.encode()[:16], b"External", length))
-            info_list.append([offset, len(pts), 0, 1])
-            parts_list.append([offset, len(pts)])
+            info_list.append([offset, len(pts), i, 1])
+            parts_list.append([0, len(pts)])
             all_pts.extend(pts.tolist())
             offset += len(pts)
         bc_grp.create_dataset("Attributes", data=np.array(attrs_list, dtype=bc_attrs_dt), **gz)
@@ -1864,8 +1891,15 @@ def _write_bc_lines_from_g01(bc_grp, g01, mesh, area_name):
 
 def assemble_p01_tmp_hdf(g01_hdf_path: Path, p01_text_path: Path,
                           output_path: Path, projection_wkt: str = "",
-                          project_name: str = ""):
-    """Assemble p01.tmp.hdf from generated g01.hdf + parsed .p01 text."""
+                          project_name: str = "",
+                          event_conditions_from: Path = None):
+    """Assemble p01.tmp.hdf from generated g01.hdf + parsed .p01 text.
+
+    Event Conditions are empty unless ``event_conditions_from`` names an HDF
+    (a plan HDF such as a GUI-run p01.hdf, or a u01.hdf) whose
+    "Event Conditions" group is copied in. Boundary conditions in it are then
+    re-pointed at this geometry's faces (see remap_bc_faces).
+    """
     logger.info("Assembling p01.tmp.hdf...")
 
     with h5py.File(str(g01_hdf_path), 'r') as fg:
@@ -1877,16 +1911,73 @@ def assemble_p01_tmp_hdf(g01_hdf_path: Path, p01_text_path: Path,
             # Copy Geometry
             fg.copy('Geometry', fd)
 
-            # Empty Event Conditions
-            ec = fd.create_group('Event Conditions')
-            ec_u = ec.create_group('Unsteady')
-            ec_u.create_group('Boundary Conditions')
-            ec_u.create_group('Initial Conditions')
+            copied = False
+            if event_conditions_from:
+                with h5py.File(str(event_conditions_from), 'r') as fe:
+                    if 'Event Conditions' in fe:
+                        fe.copy('Event Conditions', fd)
+                        copied = True
+                        logger.info("  Event Conditions copied from %s", event_conditions_from)
+                    else:
+                        logger.warning("  %s has no Event Conditions group", event_conditions_from)
+            if not copied:
+                ec = fd.create_group('Event Conditions')
+                ec_u = ec.create_group('Unsteady')
+                ec_u.create_group('Boundary Conditions')
+                ec_u.create_group('Initial Conditions')
 
             # Plan Data from .p01 text
             _write_plan_data(fd, p01_text_path, project_name=project_name)
 
+    if copied:
+        remap_bc_faces(output_path)
     logger.info("  p01.tmp.hdf assembled: %s", output_path)
+
+
+def remap_bc_faces(plan_hdf: Path) -> int:
+    """Point each 2D boundary condition in Event Conditions at this geometry.
+
+    The solver applies a 2D BC to the faces listed in the BC dataset's
+    "Face Indexes" / "Face Point Indexes" / "Face Fraction" attributes, not to
+    Geometry/Boundary Condition Lines/External Faces. Those lists belong to
+    the mesh they were computed on, so BC data copied from another run must be
+    re-pointed or the solver reports "overlapping boundaries" or applies flow
+    to the wrong faces. Faces are taken whole (fraction 1); RASMapper may use
+    a partial fraction for the last face of a line.
+    Returns the number of BC datasets updated.
+    """
+    n = 0
+    with h5py.File(str(plan_hdf), 'a') as hf:
+        bcl = hf.get('Geometry/Boundary Condition Lines')
+        bcs = hf.get('Event Conditions/Unsteady/Boundary Conditions')
+        if bcl is None or bcs is None or 'External Faces' not in bcl:
+            return 0
+        names = [x.decode('utf-8', 'replace').strip('\x00').strip()
+                 for x in bcl['Attributes'][()]['Name']]
+        ext = bcl['External Faces'][()]
+
+        def visit(name, obj):
+            nonlocal n
+            if not isinstance(obj, h5py.Dataset) or 'BC Line' not in obj.attrs:
+                return
+            line = obj.attrs['BC Line']
+            line = line.decode('utf-8', 'replace') if isinstance(line, bytes) else str(line)
+            line = line.strip('\x00').strip()
+            if line not in names:
+                logger.warning("  BC %r: no BC line of that name in the geometry", line)
+                return
+            rows = ext[ext['BC Line ID'] == names.index(line)]
+            if len(rows) == 0:
+                logger.warning("  BC %r: no perimeter faces assigned", line)
+                return
+            obj.attrs['Face Indexes'] = rows['Face Index'].astype(np.int32)
+            obj.attrs['Face Point Indexes'] = np.r_[rows['FP Start Index'][:1],
+                                                    rows['FP End Index']].astype(np.int32)
+            obj.attrs['Face Fraction'] = np.ones(len(rows), dtype=np.float32)
+            n += 1
+        bcs.visititems(visit)
+    logger.info("  Re-pointed %d boundary condition(s) at this geometry's faces", n)
+    return n
 
 
 def _write_plan_data(hf, p01_path, project_name: str = ""):
@@ -2020,6 +2111,9 @@ def main():
     parser.add_argument("--project-name", default=None, help="Project name (auto-detected from .prj)")
     parser.add_argument("--plan", default="01", help="Plan number (default: 01)")
     parser.add_argument("--output-dir", type=Path, default=None, help="Output directory (default: project_dir)")
+    parser.add_argument("--event-conditions", type=Path, default=None, metavar="HDF",
+                        help="Workflows B/C: copy boundary/initial conditions from this HDF "
+                             "(e.g. a GUI-run .p01.hdf) instead of leaving them to the DSS file")
     args = parser.parse_args()
 
     project_dir = args.project_dir
@@ -2186,9 +2280,12 @@ def main():
         write_geometry_hdf(out_g01_hdf, mesh, cell_props, face_props,
                            lc_data, inf_data, g01, projection_wkt)
 
+        # Step B7: Assign perimeter faces to the BC lines (same routine as B)
+        _write_bc_external_faces(out_g01_hdf, mesh, g01.dx)
+
     # Step 7: Assemble p01.tmp.hdf (same for Workflows B and C)
     assemble_p01_tmp_hdf(out_g01_hdf, p01_path, p01_tmp_path, projection_wkt,
-                         project_name=name)
+                         project_name=name, event_conditions_from=args.event_conditions)
 
     # Step 8: Generate .b01 runtime boundary conditions file
     u01_path = project_dir / f"{name}.u{plan}"
@@ -2387,12 +2484,9 @@ def _generate_x01(x01_path: Path, g01_hdf_path: Path):
     with h5py.File(str(g01_hdf_path), 'r') as f:
         attrs = f['Geometry/2D Flow Areas/Attributes'][()]
         area_name = attrs['Name'][0].decode().strip('\x00').strip()
-        n_cells = int(attrs['Cell Count'][0]) if 'Cell Count' in attrs.dtype.names else 0
-        if n_cells == 0:
-            # Fall back to total cells from Cells Center Coordinate
-            area_path = f'Geometry/2D Flow Areas/{area_name}'
-            if area_path + '/Cells Center Coordinate' in f:
-                n_cells = f[area_path + '/Cells Center Coordinate'].shape[0]
+        # The storage-area record holds the number of perimeter points
+        # (GUI-written .x01 files match "Polygon Points" in every example).
+        n_perim = len(f['Geometry/2D Flow Areas/Polygon Points'])
 
     # Pad area name to 16 chars (HEC-RAS field width)
     area_padded = area_name.ljust(16)[:16]
@@ -2427,7 +2521,7 @@ def _generate_x01(x01_path: Path, g01_hdf_path: Path):
         'Section - Breach Data',
         'Section - Storage Area Data',
         'SA     8                                                        %s' % area_padded,
-        '       0       0       0    %4d       T' % n_cells,
+        '       0       0       0    %4d       T' % n_perim,
         'Section - Storage Area Connection Data',
         'Section - Pump Station Data',
         'Section - River Reach Data',
@@ -2460,8 +2554,8 @@ def _generate_x01(x01_path: Path, g01_hdf_path: Path):
     ]
     with open(x01_path, 'w') as f:
         f.write('\n'.join(lines) + '\n')
-    logger.info("  Generated .x01: %s (area=%s, cells=%d)",
-                x01_path.name, area_name, n_cells)
+    logger.info("  Generated .x01: %s (area=%s, perimeter points=%d)",
+                x01_path.name, area_name, n_perim)
 
 
 def _strip_results(src_hdf: Path, dst_hdf: Path) -> None:
