@@ -1,7 +1,7 @@
 """pytest options and engine discovery for the pipeline tests.
 
     pytest                               # every installed engine version
-    pytest --hecras-version 7.0.1        # one version
+    pytest --hecras-version 7.0.2        # one version
     pytest --runner docker               # use the hecras-linux:<version> images
     pytest -m "not engine"               # preprocessing only, no HEC-RAS needed
 """

@@ -6,7 +6,7 @@
 #   ./run_simulation.sh <input.zip> [output.zip]
 #
 # Environment:
-#   HECRAS_VERSION   engine version under bin/ (default 6.6; also 7.0.1)
+#   HECRAS_VERSION   engine version under bin/ (default 6.6; also 7.0.1, 7.0.2)
 #   HECRAS_RUNNER    native | docker (default: native on Linux x86_64)
 #   EVENT_CONDITIONS path to an HDF whose boundary conditions Workflows B/C
 #                    should use (see ras_preprocess.py --event-conditions)

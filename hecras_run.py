@@ -2,7 +2,7 @@
 """Run the HEC-RAS Linux engines on a preprocessed plan.
 
     python3 hecras_run.py <work_dir> <project_name> [--plan 01]
-                          [--version 6.6|7.0.1] [--runner native|docker]
+                          [--version 6.6|7.0.1|7.0.2] [--runner native|docker]
 
 <work_dir> must hold <project>.p01.tmp.hdf, <project>.g01.hdf and the .b01 /
 .x01 files that ras_preprocess.py writes. RasGeomPreprocess and RasUnsteady

@@ -1,7 +1,7 @@
 # HEC-RAS 2D on Linux: the HEC-RAS Linux engines plus this repo's Python tools.
 #
 #   docker build --platform linux/amd64 -t hecras-linux:6.6 .
-#   docker build --platform linux/amd64 --build-arg HECRAS_VERSION=7.0.1 -t hecras-linux:7.0.1 .
+#   docker build --platform linux/amd64 --build-arg HECRAS_VERSION=7.0.2 -t hecras-linux:7.0.2 .
 #
 # The engines are x86_64 builds, so build and run for linux/amd64 (Docker
 # Desktop emulates it on Apple silicon, slowly). bin/ and libs/ come from

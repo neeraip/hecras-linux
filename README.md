@@ -2,7 +2,7 @@
 
 Run HEC-RAS 2D unsteady simulations on Linux or in Docker, without Windows or
 the HEC-RAS GUI, using HEC's official Linux engines (`RasGeomPreprocess`,
-`RasUnsteady`). Engines for **HEC-RAS 6.6** and **HEC-RAS 7.0.1** are included.
+`RasUnsteady`). Engines for **HEC-RAS 6.6**, **7.0.1** and **7.0.2** are included.
 
 `ras_preprocess.py` prepares a project for the engines. What it has to do
 depends on what the project already contains, which gives three workflows:
@@ -28,7 +28,7 @@ Run one project from a zip:
 
 ```bash
 ./run_simulation.sh MyProject.zip                       # → MyProject_results.zip
-HECRAS_VERSION=7.0.1 ./run_simulation.sh MyProject.zip  # use the 7.0.1 engines
+HECRAS_VERSION=7.0.2 ./run_simulation.sh MyProject.zip  # use the 7.0.2 engines
 ```
 
 Or step by step:
@@ -46,7 +46,7 @@ python3 tools/compare_results.py /tmp/bec/BEC.p01.hdf Examples/BEC/BEC.p01.hdf
 Ubuntu 24.04; glibc 2.28 or newer). On macOS, Windows or ARM use **Docker**:
 
 ```bash
-make docker                                   # builds hecras-linux:6.6 and hecras-linux:7.0.1
+make docker                                   # builds hecras-linux:6.6, :7.0.1 and :7.0.2
 HECRAS_RUNNER=docker ./run_simulation.sh MyProject.zip
 python3 hecras_run.py /tmp/bec BEC --runner docker
 ```
@@ -163,8 +163,8 @@ tools/
   compare_results.py       compare max WSE between two plan HDFs
 tests/test_pipeline.py     pytest: all workflows, all examples, all engines
 Examples/                  six HEC-RAS 6.6 projects (see Examples/README.md)
-bin/6.6/  bin/7.0.1/       HEC-RAS Linux engines (git LFS)
-libs/                      shared libraries, identical for both versions (git LFS)
+bin/6.6/ 7.0.1/ 7.0.2/     HEC-RAS Linux engines (git LFS)
+libs/                      shared libraries for all engine versions (git LFS)
 Dockerfile                 hecras-linux:<version> image
 RAS_v.6.6_Linux.pdf        HEC's documentation for the Linux engines
 remove_HDF5_Results_Sed.py strip results from a plan HDF (as Workflow A does)
@@ -175,7 +175,7 @@ remove_HDF5_Results_Sed.py strip results from a plan HDF (as Workflow A does)
 ```bash
 make test-fast                         # preprocessing only, ~1 min
 make test                              # all workflows, every engine under bin/
-pytest --hecras-version 7.0.1          # one engine
+pytest --hecras-version 7.0.2          # one engine
 pytest --runner docker                 # through the Docker images
 ```
 
@@ -185,7 +185,10 @@ table of volume error and WSE difference for every run.
 
 ## Adding another engine version
 
-Put the three executables in `bin/<version>/`. If its `libs/` differ from the
-shared ones, add them too and point `hecras_run.py` at them. Then
+Put the three executables in `bin/<version>/` and compare its libraries with
+`libs/`. So far every release has kept the existing libraries unchanged and at
+most added new ones (7.0.2 added four MKL VML libraries), which can simply be
+copied into `libs/`. If a release ever changes an existing library, give it
+its own `libs/` and point `hecras_run.py` at it. Then
 `pytest --hecras-version <version>` and
 `docker build --build-arg HECRAS_VERSION=<version> -t hecras-linux:<version> .`.
