@@ -52,3 +52,27 @@ def _engine_params(config):
 def pytest_generate_tests(metafunc):
     if "engine" in metafunc.fixturenames:
         metafunc.parametrize("engine", _engine_params(metafunc.config))
+
+
+def pytest_terminal_summary(terminalreporter):
+    """Table of every engine run: volume error and max-WSE difference vs the GUI."""
+    mod = sys.modules.get("tests.test_pipeline") or sys.modules.get("test_pipeline")
+    runs = getattr(mod, "_RUNS", {}) if mod else {}
+    if not runs:
+        return
+    from tools.compare_results import compare_max_wse
+    tr = terminalreporter
+    tr.section("HEC-RAS runs vs Windows GUI results")
+    tr.write_line(f"{'example':22s} {'wf':2s} {'engine':7s} {'vol err %':>10s} "
+                  f"{'max dWSE':>9s} {'p99':>8s} {'mean':>8s}")
+    for (example, wf, (version, _)), res in sorted(
+            runs.items(), key=lambda kv: (kv[0][1], kv[0][0], kv[0][2][0])):
+        if isinstance(res, Exception):
+            msg = " ".join(str(res).split())[:70]
+            tr.write_line(f"{example:22s} {wf:2s} {version:7s} FAILED: {msg}")
+            continue
+        result, reference = res
+        c = compare_max_wse(result.plan_hdf, reference)
+        ve = "n/a" if result.volume_error_pct is None else f"{result.volume_error_pct:.4f}"
+        tr.write_line(f"{example:22s} {wf:2s} {version:7s} {ve:>10s} "
+                      f"{c.max_abs:9.4f} {c.p99_abs:8.4f} {c.mean_abs:8.4f}")
