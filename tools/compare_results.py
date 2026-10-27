@@ -42,11 +42,18 @@ def _centres(f: h5py.File, area: str) -> np.ndarray:
     return f[f"Geometry/2D Flow Areas/{area}/Cells Center Coordinate"][()]
 
 
+def _n_interior(f: h5py.File) -> int:
+    return int(f["Geometry/2D Flow Areas/Attributes"][()]["Cell Count"][0])
+
+
 def compare_max_wse(result_hdf: Path, reference_hdf: Path) -> WseComparison:
     with h5py.File(result_hdf, "r") as rf, h5py.File(reference_hdf, "r") as ff:
         ra, fa = _area(rf), _area(ff)
-        r, ref = _max_wse(rf, ra), _max_wse(ff, fa)
-        rc, fc = _centres(rf, ra)[: len(r)], _centres(ff, fa)[: len(ref)]
+        # Interior cells only: ghost cells (one per perimeter face) carry no
+        # meaningful water surface and don't correspond between meshes.
+        nr, nf = _n_interior(rf), _n_interior(ff)
+        r, ref = _max_wse(rf, ra)[:nr], _max_wse(ff, fa)[:nf]
+        rc, fc = _centres(rf, ra)[:nr], _centres(ff, fa)[:nf]
     same = rc.shape == fc.shape and np.allclose(rc, fc)
     if not same:
         from scipy.spatial import cKDTree

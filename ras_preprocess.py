@@ -1961,8 +1961,30 @@ def assemble_p01_tmp_hdf(g01_hdf_path: Path, p01_text_path: Path,
             _write_plan_data(fd, p01_text_path, project_name=project_name)
 
     if copied:
-        remap_bc_faces(output_path)
+        if _same_mesh(event_conditions_from, output_path):
+            logger.info("  Event Conditions come from this mesh; BC face lists kept as they are")
+        else:
+            remap_bc_faces(output_path)
     logger.info("  p01.tmp.hdf assembled: %s", output_path)
+
+
+def _same_mesh(hdf_a: Path, hdf_b: Path) -> bool:
+    """True if both files hold the same 2D mesh (faces and face points)."""
+    keys = ("Faces FacePoint Indexes", "FacePoints Coordinate")
+    try:
+        with h5py.File(str(hdf_a), 'r') as fa, h5py.File(str(hdf_b), 'r') as fb:
+            ga, gb = fa['Geometry/2D Flow Areas'], fb['Geometry/2D Flow Areas']
+            areas = [k for k in gb if isinstance(gb[k], h5py.Group)]
+            for area in areas:
+                if area not in ga:
+                    return False
+                for k in keys:
+                    a, b = ga[area][k][()], gb[area][k][()]
+                    if a.shape != b.shape or not np.allclose(a, b):
+                        return False
+            return bool(areas)
+    except (KeyError, OSError):
+        return False
 
 
 def remap_bc_faces(plan_hdf: Path) -> int:
