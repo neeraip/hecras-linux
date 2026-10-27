@@ -83,7 +83,24 @@ Workflow B is tested by stripping the GUI's tables from each example
 deleting the `g01.hdf` altogether. Both runs use the GUI's boundary data, so
 any difference comes from the geometry.
 
-RESULTS_TABLE_PLACEHOLDER
+Measured with the 6.6 engine (7.0.1 agrees to within 0.03 ft); WSE
+differences are over all interior cells, GUI results as reference:
+
+| Example | Workflow B: volume error | B: mean / worst WSE diff | Workflow C: volume error | C: mean / worst WSE diff |
+|---|---|---|---|---|
+| AFTER_RUN | 0.06 % | 0.12 / 3.3 ft | 0.06 % | 0.12 / 3.3 ft |
+| BEC | 0.30 % | 0.91 / 17.8 ft | 0.30 % | 0.91 / 17.8 ft |
+| BEC_WO_Infiltration | 0.34 % | 1.33 / 23.9 ft | 0.36 % | 1.32 / 23.5 ft |
+| VA | 0.13 % | 2.41 / 31.2 ft | **29.7 %** | 2.57 / 31.2 ft |
+| Muncie | **197.6 %** | 0.13 / 7.4 ft | **197.4 %** | 0.13 / 7.4 ft |
+
+For comparison, Workflow A on the same examples: under 0.1 % volume error and
+at most 0.0002 ft. B and C agree closely with each other, so the error comes
+from the shared property-table code rather than from the C mesh. Two cases
+stand out. Muncie's volume accounting breaks down in both; it is the only
+example with both infiltration and precipitation, which is where to look
+first. VA under C loses the partial face fractions RASMapper uses for its
+boundary line, which wraps round the whole area (B keeps the GUI's).
 
 Why B differs: the Python property tables (cell volume–elevation curves, face
 area–elevation profiles, cell minimum elevations) are built by sampling terrain
