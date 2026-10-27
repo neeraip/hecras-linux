@@ -9,7 +9,7 @@ depends on what the project already contains, which gives three workflows:
 
 | | Input | What the preprocessor does | Status |
 |---|---|---|---|
-| **A** | GUI-computed project (`g01.hdf` with hydraulic tables, and `p01.hdf`) | Copies the geometry and strips the old results | **Validated.** Matches the Windows GUI to within 0.0002 ft on every example, with both engines |
+| **A** | GUI-computed project (`g01.hdf` with hydraulic tables, and `p01.hdf`) | Copies the geometry and strips the old results | **Validated.** Matches the Windows GUI to within 0.0002 ft on every example, with all three engines |
 | **B** | RASMapper mesh in `g01.hdf`, geometry not yet computed | Computes the hydraulic property tables in Python | **Experimental.** Runs, but results differ from the GUI (see [accuracy](#workflow-b-and-c-accuracy)) |
 | **C** | Only the `.g01` text file (seed points, perimeter, BC lines) | Builds the mesh, then does B | **Experimental.** Mesh matches RASMapper's; tables have B's limitations |
 
