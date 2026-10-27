@@ -112,18 +112,24 @@ def run_engine(work_dir: Path, project: str, plan: str = "01",
         env["LD_LIBRARY_PATH"] = os.pathsep.join(
             [str(LIBS), str(LIBS / "rhel_8"), str(LIBS / "mkl"), env.get("LD_LIBRARY_PATH", "")])
         for exe, *args in steps:
-            p = subprocess.run([str(bin_dir / exe), *args], cwd=work_dir, env=env,
-                               capture_output=True, text=True, timeout=timeout)
+            try:
+                p = subprocess.run([str(bin_dir / exe), *args], cwd=work_dir, env=env,
+                                   capture_output=True, text=True, timeout=timeout)
+            except subprocess.TimeoutExpired:
+                raise EngineError(f"{exe} did not finish within {timeout} s") from None
             log += p.stdout + p.stderr
             if p.returncode != 0:
                 raise EngineError(f"{exe} exited with status {p.returncode}\n{log[-3000:]}")
     elif runner == "docker":
         image = DOCKER_IMAGE.format(version=version)
         script = " && ".join(" ".join(s) for s in steps)
-        p = subprocess.run(["docker", "run", "--rm", "--platform", "linux/amd64",
-                            "-v", f"{work_dir}:/work", "-w", "/work", image,
-                            "bash", "-c", script],
-                           capture_output=True, text=True, timeout=timeout)
+        try:
+            p = subprocess.run(["docker", "run", "--rm", "--platform", "linux/amd64",
+                                "-v", f"{work_dir}:/work", "-w", "/work", image,
+                                "bash", "-c", script],
+                               capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            raise EngineError(f"docker run {image} did not finish within {timeout} s") from None
         log = p.stdout + p.stderr
         if p.returncode != 0:
             raise EngineError(f"docker run {image} exited with status {p.returncode}\n{log[-3000:]}")

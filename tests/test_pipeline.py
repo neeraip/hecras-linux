@@ -51,6 +51,8 @@ GUI_EXAMPLES = {
 WSE_TOL_FT = {"Muncie": 0.01}       # README: Muncie differs by 0.001 ft
 DEFAULT_WSE_TOL_FT = 0.005
 VOLUME_ERR_TOL_PCT = 0.5
+# The examples finish in about a minute; an unstable B/C model can spin for hours.
+ENGINE_TIMEOUT_S = 900
 
 ACCURACY_XFAIL = pytest.mark.xfail(
     reason="Python hydraulic property tables do not yet match RASMapper's; see README "
@@ -138,7 +140,8 @@ def _run_case(tmp_path: Path, example: str, workflow: str, engine) -> tuple:
         log = preprocess(inp, out, project, event_conditions=reference)
     assert detected_workflow(log) == workflow
     stage_bc_files(src, out, project)
-    result = hecras_run.run_engine(out, project, version=version, runner=runner)
+    result = hecras_run.run_engine(out, project, version=version, runner=runner,
+                                   timeout=ENGINE_TIMEOUT_S)
     return result, reference
 
 
