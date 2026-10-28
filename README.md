@@ -168,9 +168,9 @@ BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
 comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
 and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2). On a
 production model (Multiple Face Mann n, a calibration region and a terrain
-modification), all 112,246 face profiles and minimum elevations, all 47,103
-cell volume tables and Manning's *n* at all 48,006 cell centres are
-identical, as are 112,239 of the 112,246 face area-elevation tables.
+modification), every table compared is identical: all 112,246 face profiles,
+area-elevation tables, minimum elevations and low-elevation centroids, all
+47,103 cell volume tables and Manning's *n* at all 48,006 cell centres.
 
 [`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
 against RASMapper itself: every method its table computation can reach, read

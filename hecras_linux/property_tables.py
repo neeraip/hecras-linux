@@ -1352,7 +1352,41 @@ def _station_of(p, lengths, cum, x, y) -> float:
     return (cum[seg - 1] if seg > 0 else 0.0) + length * t
 
 
-def _region_pieces(p, lengths, total, ring) -> list:
+class _SegmentIndex:
+    """SpatialIndex<int> of a ring's segments (Polyline.GenerateSegmentSpatialIndex):
+    each segment filed in the grid cells it crosses. A query walks the cells
+    along a segment and returns their segments in that order, first
+    occurrence kept, which decides the order of coincident intersections."""
+
+    def __init__(self, ring):
+        n = len(ring) - 1
+        bins = max(1, min(4096, int(round(n / 32.0)))) * 4
+        lo, hi = ring.min(axis=0), ring.max(axis=0)
+        (self.rows, self.cols, self.min_x, self.max_y, self.max_x, self.min_y,
+         self.cs) = _cell_raster(hi[0], lo[0], hi[1], lo[1], bins)
+        self.bins = {}
+        for k in range(n):
+            for rc in self._cells(*ring[k], *ring[k + 1]):
+                self.bins.setdefault(rc, []).append(k)
+
+    def _cells(self, ax, ay, bx, by):
+        return _walk_cells(ax, ay, bx, by, self.min_x, self.max_x, self.min_y, self.max_y,
+                           self.cs, self.rows, self.cols)
+
+    def query(self, ax, ay, bx, by) -> list:
+        if _clip(ax, ay, bx, by, self.min_x, self.max_x, self.min_y, self.max_y) is None:
+            return []
+        out, seen, filled = [], set(), 0
+        for rc in self._cells(ax, ay, bx, by):
+            if rc in self.bins:
+                filled += 1
+                out.extend(self.bins[rc])
+        if filled <= 1:
+            return out
+        return [k for k in out if not (k in seen or seen.add(k))]
+
+
+def _region_pieces(p, lengths, total, ring, index=None) -> list:
     """Polygon.ClipPolyline: the station ranges of a face inside a region,
     each end projected back onto the face as RASMapper does."""
     starts, cum, acc = [0.0], [], 0.0
@@ -1361,14 +1395,12 @@ def _region_pieces(p, lengths, total, ring) -> list:
         cum.append(acc)
     for length in lengths[:-1]:
         starts.append(starts[-1] + length)
-    nxt = np.roll(ring, -1, axis=0)
-    edges = list(zip(ring, nxt))
-    e_lo, e_hi = np.minimum(ring, nxt), np.maximum(ring, nxt)
+    index = index or _SegmentIndex(ring)
+    edges = list(zip(ring[:-1], ring[1:]))
     hits = []      # (face segment, fraction, station, polygon edge, x, y)
     for b in range(len(p) - 1):
         fa, fb = p[b], p[b + 1]
-        near = np.nonzero(((e_lo <= np.maximum(fa, fb) + 1e-6) & (e_hi >= np.minimum(fa, fb) - 1e-6)).all(axis=1))[0]
-        for a in near:
+        for a in index.query(fa[0], fa[1], fb[0], fb[1]):
             ea, eb = edges[a]
             hit, x, y, _, t2 = tin._seg_intersect(ea, eb, fa, fb)
             if not hit:
@@ -1377,8 +1409,10 @@ def _region_pieces(p, lengths, total, ring) -> list:
                 continue
             hits.append((b, t2, starts[b] + lengths[b] * t2, a, x, y))
     inside = lambda pt: bool(points_in_ring(ring, np.array([pt[0]]), np.array([pt[1]]))[0])
-    if not hits:
-        return [(0.0, total)] if inside(p[0]) else []
+    if not hits:      # the whole face, still projected end to end
+        if not inside(p[0]):
+            return []
+        return [(_station_of(p, lengths, cum, *p[0]), _station_of(p, lengths, cum, *p[-1]))]
     hits.sort(key=lambda h: (h[0], h[1]))
     ea, eb = edges[hits[0][3]]
     if tin._dist_to_segment(ea, eb, p[0]) < 0.0001:
@@ -1401,6 +1435,7 @@ def _n_from_regions(polylines, lengths, totals, regions) -> dict:
     region ranges as (start, end, region, region, NaN), a higher region
     index taking precedence where they overlap."""
     out = {}
+    indexes = [_SegmentIndex(ring) for ring in regions]
     for i, p in enumerate(polylines):
         items = []
         lo, hi = p.min(axis=0), p.max(axis=0)
@@ -1408,7 +1443,7 @@ def _n_from_regions(polylines, lengths, totals, regions) -> dict:
             rlo, rhi = ring.min(axis=0), ring.max(axis=0)
             if (hi < rlo).any() or (lo > rhi).any():
                 continue
-            for a, b in _region_pieces(p, lengths[i], totals[i], ring):
+            for a, b in _region_pieces(p, lengths[i], totals[i], ring, indexes[r]):
                 items.append([min(a, b), max(a, b), r, r, F32(np.nan)])
         if not items:
             continue

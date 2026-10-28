@@ -21,7 +21,7 @@ from collections import defaultdict
 EXAMPLES = "5 examples, Weise_2D, BaldEagle g09"
 CELLS_ALSO = EXAMPLES + ", Chippewa_2D (cells)"
 MULTI_N = "Chippewa_2D (Multiple Face Mann n)"
-PRODUCTION = "production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)"
+PRODUCTION = "production model (calibration region, terrain modification)"
 
 PORTED, PARTIAL, MISSING, SUBST, PRIM, NA = (
     "ported", "partly ported", "not ported", "substituted", "primitive", "not applicable")
@@ -92,7 +92,7 @@ RULES = [
      PORTED, "property_tables.face_n_profiles", MULTI_N),
     (r"RASGeometry$", r"^ExtractLCVariableSubsampleTile$", NA, "", "only with sub-sampling, which no table caller turns on"),
     (r"RASGeometry$", r"^(ExtractLCVariablePolylinesRegionsVectorExtraction|ExtractLCVariablePolylineRegionsCombine)$",
-     PARTIAL, "property_tables._n_from_regions, _combine_n", "7 of the production model's 112,246 faces differ"),
+     PORTED, "property_tables._n_from_regions, _combine_n, _SegmentIndex", PRODUCTION),
     (r"RASGeometry$", r"^ExtractLCVariablePolylines$", MISSING, "", "face variable averages (Composite LC)"),
     (r"RasMapperLib\.FinalNValueLayer$", r".", PORTED, "preprocess.sample_land_cover", EXAMPLES),
     (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r"^MD5", NA, "", "change detection"),
@@ -134,7 +134,7 @@ def classify(cls: str, method: str, il: int):
                     if num and num.group(1) == "665":
                         return MISSING, "", "face variable averages (Composite LC)"
                     if num:
-                        return PARTIAL, "property_tables._n_from_regions, _combine_n", "7 of the production model's 112,246 faces differ"
+                        return PORTED, "property_tables._n_from_regions, _combine_n", PRODUCTION
                     continue
                 if il > 2000:   # ProfileHydraulicPropertiesTable constructors
                     return PORTED, "property_tables.face_table_n_profile", MULTI_N
