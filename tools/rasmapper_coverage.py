@@ -55,8 +55,16 @@ RULES = [
     (r"RasMapperLib\.Tin(/.*)?$", r"^(ComputeProfiles|_Lambda\$__[12]|TriangleShape|TriangleEdgeSegment|TriangleCount|TriangleArea)$", PORTED,
      "property_tables.TerrainLayer.stitch_profile", "BaldEagle g09"),
     (r"RasMapperLib\.Tin(/.*)?$", r".", PORTED, "property_tables.TerrainLayer (bounding-box search)", "BaldEagle g09"),
-    (r"RasMapperLib\.(DelaunayTINFactory|TINFactory|DevelopmentTin|TinHelpers\..*|PlaneM|CircleM)(/.*)?$", r".", SUBST,
-     "property_tables._stitch_triangles (scipy Delaunay)", "stitch TIN for cells; RASMapper's own TIN to be ported"),
+    # The stitch TIN: CreatePropertyTables builds it from stitch segments only, so
+    # perimeter, breakline, mass-point and quad-injection branches never run.
+    (r"RasMapperLib\.DelaunayTINFactory(/.*)?$", r"^(InsertPerimeterPoints|InsertBreaklinePoints|InsertMassPoints|DelaunayInsertPoints|EnforceBreakLineEdges|EnforcePerimeterEdges|EnforceEdgeSegments|EnforceInternalMaxEdgeLengthConstraint|MarkBadTrianglesAsDeleted_MultiPart|CheckIfCurTriangleAndNeighborFormQuad|DeleteTrianglesLeftOfStitchEdge_DeleteAdjacentTriangles|TriangleCenter|TriangleMaxEdgeLength|TriangleArea|TrianglesMaxM|AddSuperTriangle|IsColinear|TrianglePoint(Before|After)Point|WriteInputDataToImmediateWindow|Case123|ResetGlobalVars)$",
+     NA, "", "TIN branches unused for stitches (perimeter, breaklines, mass points)"),
+    (r"RasMapperLib\.TINFactory$", r"^(Validate|FindTriangleContainingPoint2|e012After|Debug.*|Export.*)$", NA, "", "TIN branches unused for stitches"),
+    (r"RasMapperLib\.DevelopmentTin(/.*)?$", r"^(Rasterize|RemoveDeletedTriangles|\.ctor|get_Triangles|TrianglePointMs)$", PORTED, "tin.StitchTin.compute, tin.paint", "BaldEagle g09, VA, Chippewa_2D"),
+    (r"RasMapperLib\.DevelopmentTin(/.*)?$", r".", NA, "", "point bookkeeping after removal (no effect on painted values)"),
+    (r"RasMapperLib\.(DelaunayTINFactory|TINFactory|TinHelpers\..*|PlaneM|CircleM)(/.*)?$", r".", PORTED,
+     "tin.StitchTin", "BaldEagle g09, VA, Chippewa_2D"),
+    (r"RasMapperLib\.RasterizeTriangle$", r"^ComputeCellsZ$", PORTED, "tin.paint", "BaldEagle g09, VA, Chippewa_2D"),
     (r"RasMapperLib\.TriangleShape$", r".", PORTED, "property_tables.TerrainLayer.stitch_profile", "BaldEagle g09"),
     # -- faces and cells ------------------------------------------------------------
     (r"ProfileHydraulicPropertiesTable(/.*)?$", r"^\.ctor$", None, "", ""),  # decided by size below
@@ -112,15 +120,38 @@ def classify(cls: str, method: str, il: int):
     return "unclassified", "", ""
 
 
+PRIM_USED, PRIM_UNUSED = "primitive, used by ported code", "primitive, only for unported features"
+
+
 def main(reach, stopped, md_out, tsv_out):
     rows = list(csv.DictReader(open(reach), delimiter="\t"))
     out = []
+    key_of = {}
     for r in rows:
         cls = r["type"]
         method = re.sub(r"\(.*", "", r["method"])
         il = int(r["il_bytes"])
         status, port, note = classify(cls, method, il)
-        out.append((r["assembly"], cls, method, il, status, port, note))
+        key_of[f'{cls}::{r["method"]}'] = len(out)
+        out.append([r["assembly"], cls, method, il, status, port, note])
+    # A primitive is covered when ported code reaches it, directly or through
+    # other primitives and not-applicable helpers.
+    callees = defaultdict(list)
+    for line in open(reach + ".edges"):
+        a, b = line.rstrip("\n").split("\t")
+        if a in key_of and b in key_of:
+            callees[key_of[a]].append(key_of[b])
+    stack = [i for i, o in enumerate(out) if o[4] in (PORTED, PARTIAL)]
+    reached = set(stack)
+    while stack:
+        for j in callees[stack.pop()]:
+            if j not in reached and out[j][4] in (PRIM, NA):
+                reached.add(j)
+                stack.append(j)
+    for i, o in enumerate(out):
+        if o[4] == PRIM:
+            o[4] = PRIM_USED if i in reached else PRIM_UNUSED
+            o[6] = "" if i in reached else "only reached from unported features"
 
     with open(tsv_out, "w", newline="") as f:
         w = csv.writer(f, delimiter="\t", lineterminator="\n")
@@ -129,7 +160,7 @@ def main(reach, stopped, md_out, tsv_out):
             w.writerow(row)
 
     tot = defaultdict(lambda: [0, 0])
-    for *_, il, status, _, _ in [(a, c, m, i, s, p, n) for a, c, m, i, s, p, n in out]:
+    for _, _, _, il, status, _, _ in out:
         tot[status][0] += 1
         tot[status][1] += il
     compute = [PORTED, PARTIAL, MISSING, SUBST]
@@ -163,11 +194,12 @@ def main(reach, stopped, md_out, tsv_out):
         PARTIAL: "the paths the models use are reproduced; named branches are not",
         MISSING: "not reproduced; the feature it serves is refused or absent",
         SUBST: "reproduced with a different algorithm (results matched so far, not guaranteed)",
-        PRIM: "geometry and math building blocks, carried along with the methods above",
+        PRIM_USED: "geometry and math building blocks the ported code uses; reproduced inline",
+        PRIM_UNUSED: "building blocks reached only from unported features",
         NA: "can't change table values (caches, names, debug text, setup)",
         "unclassified": "no rule yet",
     }
-    for s in [PORTED, PARTIAL, MISSING, SUBST, PRIM, NA, "unclassified"]:
+    for s in [PORTED, PARTIAL, MISSING, SUBST, PRIM_USED, PRIM_UNUSED, NA, "unclassified"]:
         if tot[s][0]:
             L.append(f"| {s} | {tot[s][0]} | {tot[s][1]:,} | {meaning[s]} |")
     L.append("")

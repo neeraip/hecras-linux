@@ -37,6 +37,24 @@ Geospatial.IO	Geospatial.IO.TiffTileProvider`1/<>c__DisplayClass36_0	.ctor	7	not
 Geospatial.IO	Geospatial.IO.TiffTileProvider`1/<>c__DisplayClass36_0	<ReadTile>b__0	34	not applicable		TIFF reading (GDAL instead)
 RasMapperLib	RasMapperLib.DataTableExtensions	GetBoolean	53	not applicable		infrastructure (caches, threading, paths, HDF writing)
 RasMapperLib	RasMapperLib.DataTableExtensions	GetSingle	53	not applicable		infrastructure (caches, threading, paths, HDF writing)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	CheckIfCurTriangleAndNeighborFormQuad	839	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	DelaunayInsertPoints	109	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceBreakLineEdges	86	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceEdgeSegments	58	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceInternalMaxEdgeLengthConstraint	161	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforcePerimeterEdges	33	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertBreaklinePoints	171	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertMassPoints	23	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertPerimeterPoints	127	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted_MultiPart	835	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	ResetGlobalVars	70	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleArea	162	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleCenter	137	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleMaxEdgeLength	34	not applicable		TIN branches unused for stitches (perimeter, breaklines, mass points)
+RasMapperLib	RasMapperLib.DevelopmentTin	GetRemappedPoints	74	not applicable		point bookkeeping after removal (no effect on painted values)
+RasMapperLib	RasMapperLib.DevelopmentTin	GetUsedPointArray	97	not applicable		point bookkeeping after removal (no effect on painted values)
+RasMapperLib	RasMapperLib.DevelopmentTin	SqueezePoints	194	not applicable		point bookkeeping after removal (no effect on painted values)
+RasMapperLib	RasMapperLib.DevelopmentTin/_Closure$__46-0	_Lambda$__0	17	not applicable		point bookkeeping after removal (no effect on painted values)
 RasMapperLib	RasMapperLib.DictionaryExtensionMethods	DisposeAll	71	not applicable		infrastructure (caches, threading, paths, HDF writing)
 RasMapperLib	RasMapperLib.HDFBufferedWriter`1	.cctor	11	not applicable		infrastructure (caches, threading, paths, HDF writing)
 RasMapperLib	RasMapperLib.HDFBufferedWriter`1	.ctor	361	not applicable		infrastructure (caches, threading, paths, HDF writing)
@@ -801,6 +819,37 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Count	12	por
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Item	13	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Parameters	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterizedPolygon	get_ParameterSet	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+RasMapperLib	RasMapperLib.CircleM	Compute	46	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.CircleM	ComputeCenter	163	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.CircleM	ContainsPoint	26	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	.cctor	7	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	.ctor	58	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	AddOctagonPointsAndTriangles	496	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeMaximalExtent	224	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeOffset	49	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeTIN	1740	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	DelaunayInsertPoint	290	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	DeleteTrianglesLeftOfStitchEdge	490	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceEdgeSegment	872	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertStitchSegments	271	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	IsSuperPoint	9	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	IsSuperTriangle	60	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	IsTriangleInsideInsertionHole	575	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	IsXColinear	36	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	IsYColinear	36	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	MakeInsertionHoleFromDeletedTrianglesAndFill	875	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted	48	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted_SinglePart	867	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	RotateAroundPoint_DeleteTriangles	53	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory	RotateAroundPoint_DeleteTriangles	122	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory/_Closure$__50-0	.ctor	34	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DelaunayTINFactory/_Closure$__50-0	_Lambda$__0	112	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin	.ctor	28	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin	Rasterize	150	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin	RemoveDeletedTriangles	369	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin	TrianglePointMs	104	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin	get_Triangles	7	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.DevelopmentTin/_Closure$__46-0	.ctor	34	ported	tin.StitchTin.compute, tin.paint	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.FinalNValueLayer	GetManningsFromTable	124	ported	preprocess.sample_land_cover	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Histogram	.ctor	49	ported	property_tables.cell_table	5 examples, Weise_2D, BaldEagle g09, Chippewa_2D (cells)
 RasMapperLib	RasMapperLib.Histogram	AddArea	26	ported	property_tables.cell_table	5 examples, Weise_2D, BaldEagle g09, Chippewa_2D (cells)
@@ -843,6 +892,10 @@ RasMapperLib	RasMapperLib.MeshFV2D	get_CellCount	26	ported	preprocess._cell_poly
 RasMapperLib	RasMapperLib.MeshFV2D	get_FaceCount	26	ported	preprocess._cell_polygon, _face_polyline, read_mesh_from_g01hdf	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.MeshFV2D	get_FacePointCount	26	ported	preprocess._cell_polygon, _face_polyline, read_mesh_from_g01hdf	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.MeshFV2D	get_NonVirtualCellCount	105	ported	preprocess._cell_polygon, _face_polyline, read_mesh_from_g01hdf	5 examples, Weise_2D, BaldEagle g09
+RasMapperLib	RasMapperLib.PlaneM	SetCoeffientsPtDeltaDelta	287	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.PlaneM	SetCoeffientsPtPtPt	28	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.PlaneM	Z	64	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.PlaneM	dZ_dX	15	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.Point2DCollection	.ctor	7	ported	property_tables._dp_keep, _dotnet_sort	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Point2DCollection	.ctor	44	ported	property_tables._dp_keep, _dotnet_sort	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Point2DCollection	Add	14	ported	property_tables._dp_keep, _dotnet_sort	5 examples, Weise_2D, BaldEagle g09
@@ -960,6 +1013,20 @@ RasMapperLib	RasMapperLib.RasterizeSegment/_Closure$__2-0	.ctor	7	ported	propert
 RasMapperLib	RasMapperLib.RasterizeSegment/_Closure$__2-0	_Lambda$__0	30	ported	property_tables._rasterize, _walk_cells, _paint_triangles	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterizeTriangle	.ctor	14	ported	property_tables._rasterize, _walk_cells, _paint_triangles	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterizeTriangle	ComputeCellsZ	992	ported	property_tables._rasterize, _walk_cells, _paint_triangles	5 examples, Weise_2D, BaldEagle g09
+RasMapperLib	RasMapperLib.TINFactory	.ctor	47	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	AddTriangle	84	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	AdjacentTriangle	79	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	ClosestPoint	91	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	CrossProduct	56	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	Edge	217	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	EdgeFirstPoint	79	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	EdgeLastPoint	79	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	FindTriangleAndNearestPointIndex	60	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	FindTriangleAndPointIndexes	160	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	FindTriangleContainingPoint	640	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	SetEdgeType	331	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	UpdatePointZM	97	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TINFactory	e012Before	31	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.Terrain.PolylineSegmentStartStation	.ctor	29	ported	property_tables.Terrain, _interpolate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Terrain.RasterColumn	.ctor	22	ported	property_tables.Terrain, _interpolate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Terrain.RasterFileInfo	ComputeLevel	78	ported	property_tables.Terrain, _interpolate	5 examples, Weise_2D, BaldEagle g09
@@ -1052,723 +1119,656 @@ RasMapperLib	RasMapperLib.Tin/_Closure$__113-0	_Lambda$__R1	7	ported	property_ta
 RasMapperLib	RasMapperLib.Tin/_Closure$__113-1	.ctor	22	ported	property_tables.TerrainLayer (bounding-box search)	BaldEagle g09
 RasMapperLib	RasMapperLib.Tin/_Closure$__113-1	_Lambda$__2	535	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.Tin/_Closure$__113-2	.ctor	46	ported	property_tables.TerrainLayer (bounding-box search)	BaldEagle g09
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	.ctor	59	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	ChangeAT	79	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	CircumCircleCompute	53	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	GetCCWTriangle	115	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	GetCWTriangle	115	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsDeleted	13	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge0Breakline	12	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge0Perimeter	12	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge1Breakline	12	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge1Perimeter	13	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge2Breakline	12	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge2Perimeter	13	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	MarkDeleted	16	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	SetEdge	108	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.InsertionHoleEdge	.ctor	37	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.TriangleStruct	EdgePoint0	34	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
+RasMapperLib	RasMapperLib.TinHelpers.TriangleStruct	EdgePoint1	34	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.TriangleShape	ComputeM	20	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.TriangleShape	ComputeM	67	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.TriangleShape	ComputeZ	20	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.TriangleShape	ComputeZ	67	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.TriangleShape	Contains	116	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
 RasMapperLib	RasMapperLib.TriangleShape	InterpolationWeights	184	ported	property_tables.TerrainLayer.stitch_profile	BaldEagle g09
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex	FromPolygons	104	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex	ReasonableBinCount	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.cctor	11	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	<FromPolygons>b__7_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.cctor	13	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	20	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	26	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	95	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	AddInBounds	23	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Bin	31	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Geospatial.Rasters.IRasterDefinition.get_RasterDefinition	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Initialize	128	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	get_Raster	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_MaxResizedBinCount	8	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_Raster	8	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	.cctor	139	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	.ctor	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	.ctor	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Clone	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Contains	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Contains	42	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Contains	66	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDXDYRatio	73	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDimensions	172	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinHeight	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinWidth	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Equals	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Extend	38	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Geospatial.Vectors.IExtent.get_Extent	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	GetHashCode	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	IsFinite	79	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	IsNull	53	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	IsValid	39	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Overlaps_EdgePedantic	47	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	ToString	82	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Translate	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Translate	38	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Union	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Union	74	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	Union	171	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Bot	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Bottom	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Center	52	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaX	50	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaY	50	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Height	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Left	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_LeftMidside	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerLeft	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerMidside	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerRight	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Right	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_RightMidside	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Top	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperLeft	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperMidside	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperRight	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent	get_Width	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c	.cctor	11	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c	<Union>b__67_0	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	.cctor	11	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	<Union>b__65_0	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.LineIntersection	.cctor	36	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	21	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	31	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	.cctor	57	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	.ctor	15	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	CloseToXY	45	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	Distance	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	DistanceTo	39	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	Equals	48	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	Equals	31	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	GetHashCode	33	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	To	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	ToString	33	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	Translate	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	32	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	AsPoint2D	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	DebuggerDisplay	44	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	ToString	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point3D	Translate	38	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	.cctor	47	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	39	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	AsPoint2D	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	DebuggerDisplay	113	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	ToString	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Point4D	Translate	44	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	55	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	92	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	10	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_1	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_2	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_3	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point3D>b__48_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point4D>b__52_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	AddInternal	63	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	ComputeExtent	153	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Contains	6	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	GetEnumerator	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Initialize	239	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	PointDataModified	40	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAt	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAtInternal	53	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	System.Collections.IEnumerable.GetEnumerator	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	TrackM	60	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	TrackZ	60	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	64	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Extent	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasM	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasZ	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Item	13	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_M	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_MFillValue	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point3D	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point4D	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_PointCount	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Points	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Z	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_ZFillValue	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasM	8	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasZ	8	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_Item	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.cctor	26	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.ctor	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Compare	66	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Equals	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.PointOnPolyline	ToString	44	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	ComputeArea	116	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	ComputeTin	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Contains	19	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Contains	8	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Contains	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Contains	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Contains	155	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	ContainsAll	36	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	FromExtent	86	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	IsValid	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	IsValidPolygon	23	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	IsVertexVerticallyBetweenNeighbors	173	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	NextPointIndex	11	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	PointDataModified	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	PreviousPointIndex	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	Rasterize	113	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	get_Area	50	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	get_AreaTolerance	27	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon	get_SegmentCount	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__0	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__1	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	34	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	36	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segment4D>b__13_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segments>b__7_0	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	GetAllIntersections	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	GetFirstIntersection	61	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	Intersects	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	PointDataModified	22	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IEnumerable<Geospatial.Vectors.Segment>.GetEnumerator	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IReadOnlyList<Geospatial.Vectors.Segment>.get_Item	13	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	get_Segment4D	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	get_SegmentCount	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline	get_Segments	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	.ctor	25	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	MoveNext	306	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.Generic.IEnumerable<Geospatial.Vectors.LineIntersection>.GetEnumerator	67	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.Generic.IEnumerator<Geospatial.Vectors.LineIntersection>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	.cctor	21	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	.ctor	15	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	301	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Clip_Parametric	82	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Densify	62	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Equals	35	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	GetExtent	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	GetHashCode	45	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	InterpolatedY	117	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Intersects	499	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	MBROverlaps	78	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Midpoint	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	PointAtFraction	46	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	45	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	846	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	ToString	45	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaX	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaY	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_Length	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_MaxX	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_MaxY	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_MinX	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	get_MinY	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment	op_Equality	39	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	.ctor	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	<Rasterize>b__0	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	.ctor	15	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	PointAtFraction	66	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaX	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaY	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaZ	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_Length2D	50	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_MidPoint	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	.ctor	15	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	AsSegment2D	28	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	PointAtFraction	86	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	Translate	30	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaM	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaX	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaY	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaZ	24	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_Length2D	50	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_MidPoint	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	.cctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	.ctor	15	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	CrossProduct	56	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	Equals	18	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	GetHashCode	17	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.Vector	Negate	20	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	.ctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	get_Item	77	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	set_Item	56	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	MoveNext	294	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point3D>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	.ctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	get_Item	236	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	MoveNext	677	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point4D>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	.ctor	49	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	get_Count	34	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	get_Item	105	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	MoveNext	261	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Segment4D>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	.ctor	49	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	get_Count	34	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	get_Item	85	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	MoveNext	251	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Segment>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.IDisposable.Dispose	16	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	.ctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	get_Item	90	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle3D>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	.ctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	get_Item	90	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle4D>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	.ctor	29	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator_Internal	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	get_Count	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	get_Item	90	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle>.get_Current	7	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.DistinctSpatialIndex	.ctor	64	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.DistinctSpatialIndex	_Lambda$__3-0	12	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.cctor	139	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.ctor	48	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.ctor	103	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.ctor	55	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.ctor	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	.ctor	234	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	CenterPointM	246	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	Contains	76	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	Contains	83	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	EnforceMinDXDYRatio	74	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	EnforceMinDimensions	173	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	EnforceMinHeight	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	EnforceMinWidth	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	IsFinite	189	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	IsNullOrInfinite	23	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	ReplaceOrMax	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	ReplaceOrMin	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	RoughlyContains	84	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	ToPolygon	73	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	ToString	29	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	Translate	19	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	Translate	136	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	Union	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	UnionXY	83	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Bottom	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_DeltaX	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_DeltaY	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_HasM	15	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_HasZ	15	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Height	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Left	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_LeftMidside	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_LowerLeft	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_LowerMidside	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_LowerRight	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MaxDeltaXY	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MaxM	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MaxX	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MaxY	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MaxZ	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MinM	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MinX	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MinY	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_MinZ	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Right	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_RightMidside	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Top	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_UpperLeft	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_UpperMidside	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_UpperRight	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Extent	get_Width	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	.ctor	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	GetExtent	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	MBROverlaps	113	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	MBROverlaps	113	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	MBROverlaps	76	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	PointLabel	44	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Feature	set_OverrideSymbology	8	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	.cctor	58	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	.ctor	125	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	ComputeExtent	63	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	CopyPoints	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	CopyTo	13	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	FirstPointM	12	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	GetEnumerator	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	GetExtentXY	30	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYM	60	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZ	42	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZM	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	LastPointM	12	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	PointDataChanged	75	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	PointM	13	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	PointMCount	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	ToString	29	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_Count	12	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_HasM	10	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_HasZ	10	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MaxM	45	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MaxX	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MaxY	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MaxZ	45	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MinM	45	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MinX	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MinY	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_MinZ	45	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint	get_UsingQuadTree	2	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	.ctor	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	Dispose	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	IEnumerator.get_Current	12	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	MoveNext	157	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	get_Current	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	.ctor	22	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	.ctor	10	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	.ctor	97	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	CompareX	40	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	ConvertToCSV	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	DistanceTo	64	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	Equal	26	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	Equal	36	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	IsUndefined	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Point2D	ToString	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	.ctor	51	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	get_ASegmentIndex	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	get_BFraction	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	get_BPointOnPolyline	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	get_BSegmentIndex	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointIntersect	get_Point	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	.cctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	.ctor	52	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	.ctor	19	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	.ctor	37	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	CloseTo	20	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	CloseTo	91	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Delta	58	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	DistanceTo	70	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	DistanceTo	51	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Equal	64	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	EqualXY	36	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	EqualXYZMWithNaN	116	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	HasM	15	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	HasZ	15	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	IsDefined	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	MidPoint	98	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	NegateXY	32	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	NullPoint	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Sort3PointsByY	197	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Swap	27	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	ToCSString	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	ToCSString	16	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	ToSString	112	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	ToString	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Translate	58	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Translate	34	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointM	Undefined	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	.ctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	.ctor	8	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	Add	25	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	AddRange	91	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	AddRangeReverse	73	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	Clone	21	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	ComputeExtent	289	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	ComputeLength	60	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	CopyTo	67	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	Equals	71	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	FilterDouglasPeucker	251	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	FilterXY	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	FilterXY	285	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	MaxMinIndexes	236	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	MaxMinIndexes	236	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	MaxMinValue	103	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	PointM	10	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	PointMCount	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	RemoveRange	16	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	Reverse	74	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	Segment	40	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	SegmentCount	9	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	ToString	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointMs	ToString	81	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointOnPolyline	.ctor	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointOnPolyline	ToString	104	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointOnPolyline	get_Fraction	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointOnPolyline	get_PointM	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.PointOnPolyline	get_SegmentIndex	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	.cctor	16	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	.ctor	9	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	ClipPolyline	526	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Contains	19	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Contains	8	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Contains	30	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Contains	13	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Contains	500	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	ContainsAll	44	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	EnsureFirstPointEqualsLast	67	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	FilterXY	133	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	GetNextPointOnPart	22	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	GetPreviousPointOnPart	30	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Initialize	56	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	IsValid	74	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	IsVertexVerticallyBetweenNeighbors	188	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	MergePointMs	182	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	PartPoints	47	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	PointDataChanged	36	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	Rasterize	60	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	ToString	29	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	get_Area	247	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon	get_UsingQuadTree	2	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	.cctor	11	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	.ctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-0	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-1	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	.ctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	_Lambda$__0	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	.cctor	36	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	.ctor	72	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	.ctor	79	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	.ctor	95	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	Clone	26	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	CopyPointsAsPointOnPolyline	101	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	CumulativeSegmentLengths	69	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	DistanceAlongFast	82	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	FirstPointOnPolyline	41	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	GenerateSegmentSpatialIndex	61	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersection	119	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMulti	61	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMultiInternal	147	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	InitializePartStarts	66	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	InitializeSegmentFirstIndexes	235	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	Intersects	11	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	IsValid	17	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	IsValidPolyline	16	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	LastPointOnPolyline	48	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolyline	10	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolylineInternal	137	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PartEndIndex	65	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PartSegment	77	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PartSegmentCount	31	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PartStartIndex	27	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PartsCount	26	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PointCountInPart	85	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	PointDataChanged	20	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	ResetLength	16	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	Segment	71	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	SegmentCount	46	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	Segments	88	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	ToString	29	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	get_Length	83	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Polyline	get_UsingQuadTree	2	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	.ctor	57	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	.ctor	22	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	.ctor	29	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	AddDensifyPoints	71	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	Assign	15	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	ClipToExtent	55	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	ClipToExtent	325	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	Clip_Parametric	93	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DeltaM	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DeltaX	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DeltaY	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DeltaZ	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DistanceToPoint	20	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	DistanceToPoint	207	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	HasM	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	HasZ	24	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	Intersects	23	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	Intersects	421	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	88	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	76	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	57	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	MidPoint	194	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	MidPointXY	104	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	NearestPoint	181	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	PointAtFraction	162	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	ToString	33	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	Translate	40	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	ZAtFraction	21	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_Length	18	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MaxM	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MaxX	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MaxY	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MaxZ	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MinM	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MinX	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MinY	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SegmentM	get_MinZ	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex	ReasonableBinCount	35	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex	ReasonableSegmentBinCount	9	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	75	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	14	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	Add	312	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	Add	157	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	Add	45	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	DefaultSpatialIndex	48	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetBinRange	147	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	92	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	19	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	48	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	100	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	Initialize	131	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	get_Bins	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	get_Extent	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1	get_Raster	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	.ctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	_Lambda$__0	25	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	.ctor	7	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	_Lambda$__0	54	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	.ctor	22	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	_Lambda$__0	13	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	GetMaxValue	109	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	GetMinValue	109	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	Max3	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	MaxMin3	56	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	Min3Index	28	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	ProgressMod	33	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Math	SwapD	11	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	9	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	247	primitive	numpy / inline arithmetic	
-RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	227	primitive	numpy / inline arithmetic	
-Utility.Core	Utility.Math	ArraySetAll	8	primitive	numpy	
-Utility.Core	Utility.Math	ArraySetAll	16	primitive	numpy	
-Utility.Core	Utility.Math	ArraySetAll	46	primitive	numpy	
-Utility.Core	Utility.Math	ArraySetAllInternal_P4	206	primitive	numpy	
-Utility.Core	Utility.Math	EnsureArraySize	20	primitive	numpy	
-Utility.Core	Utility.Math	EnsureArraySize	36	primitive	numpy	
-Utility.Core	Utility.Math	GetInRange	14	primitive	numpy	
-Utility.Core	Utility.Math	Min3Index	44	primitive	numpy	
-Utility.Core	Utility.Math	OverlappingRange	45	primitive	numpy	
-Utility.Core	Utility.Math	RangeOverlaps	14	primitive	numpy	
-Utility.Core	Utility.Math	SubtractRange	143	primitive	numpy	
-RasMapperLib	RasMapperLib.CircleM	Compute	46	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.CircleM	ComputeCenter	163	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.CircleM	ContainsPoint	26	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	.cctor	7	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	.ctor	58	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	AddOctagonPointsAndTriangles	496	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	CheckIfCurTriangleAndNeighborFormQuad	839	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeMaximalExtent	224	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeOffset	49	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	ComputeTIN	1740	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	DelaunayInsertPoint	290	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	DelaunayInsertPoints	109	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	DeleteTrianglesLeftOfStitchEdge	490	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceBreakLineEdges	86	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceEdgeSegment	872	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceEdgeSegments	58	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforceInternalMaxEdgeLengthConstraint	161	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	EnforcePerimeterEdges	33	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertBreaklinePoints	171	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertMassPoints	23	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertPerimeterPoints	127	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	InsertStitchSegments	271	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	IsSuperPoint	9	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	IsSuperTriangle	60	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	IsTriangleInsideInsertionHole	575	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	IsXColinear	36	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	IsYColinear	36	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	MakeInsertionHoleFromDeletedTrianglesAndFill	875	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted	48	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted_MultiPart	835	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	MarkBadTrianglesAsDeleted_SinglePart	867	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	ResetGlobalVars	70	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	RotateAroundPoint_DeleteTriangles	53	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	RotateAroundPoint_DeleteTriangles	122	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleArea	162	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleCenter	137	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory	TriangleMaxEdgeLength	34	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory/_Closure$__50-0	.ctor	34	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DelaunayTINFactory/_Closure$__50-0	_Lambda$__0	112	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	.ctor	28	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	GetRemappedPoints	74	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	GetUsedPointArray	97	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	Rasterize	150	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	RemoveDeletedTriangles	369	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	SqueezePoints	194	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	TrianglePointMs	104	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin	get_Triangles	7	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin/_Closure$__46-0	.ctor	34	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.DevelopmentTin/_Closure$__46-0	_Lambda$__0	17	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.PlaneM	SetCoeffientsPtDeltaDelta	287	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.PlaneM	SetCoeffientsPtPtPt	28	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.PlaneM	Z	64	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.PlaneM	dZ_dX	15	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	.ctor	47	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	AddTriangle	84	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	AdjacentTriangle	79	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	ClosestPoint	91	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	CrossProduct	56	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	Edge	217	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	EdgeFirstPoint	79	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	EdgeLastPoint	79	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	FindTriangleAndNearestPointIndex	60	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	FindTriangleAndPointIndexes	160	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	FindTriangleContainingPoint	640	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	SetEdgeType	331	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	UpdatePointZM	97	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TINFactory	e012Before	31	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	.ctor	59	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	ChangeAT	79	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	CircumCircleCompute	53	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	GetCCWTriangle	115	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	GetCWTriangle	115	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsDeleted	13	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge0Breakline	12	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge0Perimeter	12	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge1Breakline	12	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge1Perimeter	13	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge2Breakline	12	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	IsEdge2Perimeter	13	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	MarkDeleted	16	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.DevelopmentTriangle	SetEdge	108	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.InsertionHoleEdge	.ctor	37	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.TriangleStruct	EdgePoint0	34	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
-RasMapperLib	RasMapperLib.TinHelpers.TriangleStruct	EdgePoint1	34	substituted	property_tables._stitch_triangles (scipy Delaunay)	stitch TIN for cells; RASMapper's own TIN to be ported
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.cctor	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	AddInBounds	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Bin	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Geospatial.Rasters.IRasterDefinition.get_RasterDefinition	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	.cctor	139	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Clone	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Contains	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDXDYRatio	73	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDimensions	172	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinHeight	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinWidth	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Equals	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Extend	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Geospatial.Vectors.IExtent.get_Extent	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	GetHashCode	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Overlaps_EdgePedantic	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	ToString	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Translate	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_Bot	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_Center	52	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaY	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_Height	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_LeftMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerLeft	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_RightMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperLeft	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent/<>c	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent/<>c	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.LineIntersection	.cctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	21	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	.cctor	57	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	CloseToXY	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	Distance	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	DistanceTo	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	Equals	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	Equals	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	GetHashCode	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	To	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	32	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	AsPoint2D	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	DebuggerDisplay	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point3D	Translate	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	.cctor	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	AsPoint2D	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	DebuggerDisplay	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Point4D	Translate	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	55	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_1	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_2	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_3	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point3D>b__48_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point4D>b__52_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	AddInternal	63	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Contains	6	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	GetEnumerator	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Initialize	239	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	PointDataModified	40	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAt	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAtInternal	53	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	System.Collections.IEnumerable.GetEnumerator	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	TrackM	60	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	TrackZ	60	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	64	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasM	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasZ	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_M	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_MFillValue	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point3D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point4D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_PointCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Z	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_ZFillValue	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasM	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasZ	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_Item	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.cctor	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Compare	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Equals	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.PointOnPolyline	ToString	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Contains	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Contains	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Contains	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Contains	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Contains	155	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	ContainsAll	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	FromExtent	86	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	IsVertexVerticallyBetweenNeighbors	173	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	NextPointIndex	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	PointDataModified	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	PreviousPointIndex	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	Rasterize	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon	get_SegmentCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__0	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__1	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	34	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segment4D>b__13_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	GetAllIntersections	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	GetFirstIntersection	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	Intersects	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	PointDataModified	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IEnumerable<Geospatial.Vectors.Segment>.GetEnumerator	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IReadOnlyList<Geospatial.Vectors.Segment>.get_Item	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline	get_Segment4D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	.ctor	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	MoveNext	306	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.Generic.IEnumerable<Geospatial.Vectors.LineIntersection>.GetEnumerator	67	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.Generic.IEnumerator<Geospatial.Vectors.LineIntersection>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	.cctor	21	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	301	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Clip_Parametric	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Densify	62	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Equals	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	GetExtent	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	GetHashCode	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	InterpolatedY	117	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Intersects	499	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	MBROverlaps	78	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Midpoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	PointAtFraction	46	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	846	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	ToString	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_Length	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_MaxX	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_MaxY	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_MinX	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	get_MinY	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment	op_Equality	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	<Rasterize>b__0	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	PointAtFraction	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaX	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaZ	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_Length2D	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_MidPoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	AsSegment2D	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	PointAtFraction	86	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	Translate	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaM	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaX	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaZ	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_Length2D	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_MidPoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	.cctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	CrossProduct	56	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	Equals	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	GetHashCode	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.Vector	Negate	20	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	get_Count	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	get_Item	77	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	set_Item	56	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	MoveNext	294	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point3D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	get_Count	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	get_Item	236	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	MoveNext	677	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point4D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	.ctor	49	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	get_Count	34	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	get_Item	105	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	MoveNext	261	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Segment4D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection/<GetEnumerator_Internal>d__9	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	get_Count	34	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	get_Item	85	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	MoveNext	251	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Segment>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.IDisposable.Dispose	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	get_Count	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	get_Item	90	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle3D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	get_Count	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	get_Item	90	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle4D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	get_Count	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	get_Item	90	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	MoveNext	216	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	.cctor	139	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	ToPolygon	73	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	get_HasM	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	get_HasZ	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	get_Height	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Extent	get_Width	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Feature	GetExtent	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Feature	MBROverlaps	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Feature	MBROverlaps	76	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Feature	PointLabel	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	.cctor	58	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	CopyPoints	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	CopyTo	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	FirstPointM	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	GetEnumerator	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	LastPointM	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	Dispose	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	MoveNext	157	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Point2D	ConvertToCSV	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Point2D	ToString	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	.ctor	51	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	get_ASegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	get_BFraction	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	get_BPointOnPolyline	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	get_BSegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointIntersect	get_Point	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	.cctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	Equal	64	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	EqualXYZMWithNaN	116	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	NullPoint	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	ToCSString	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	ToCSString	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	ToSString	112	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointM	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	Add	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	Equals	71	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	FilterDouglasPeucker	251	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	FilterXY	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	FilterXY	285	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	PointM	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	PointMCount	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	Segment	40	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	SegmentCount	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	ToString	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointMs	ToString	81	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointOnPolyline	.ctor	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointOnPolyline	ToString	104	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointOnPolyline	get_Fraction	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointOnPolyline	get_PointM	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.PointOnPolyline	get_SegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	.cctor	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	ClipPolyline	526	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	Contains	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	Contains	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	Contains	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	Contains	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	Contains	500	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	ContainsAll	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	FilterXY	133	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	IsValid	74	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	MergePointMs	182	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	PartPoints	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	PointDataChanged	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon	get_UsingQuadTree	2	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-1	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	.cctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	.ctor	95	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	Clone	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	CopyPointsAsPointOnPolyline	101	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	CumulativeSegmentLengths	69	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	DistanceAlongFast	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	FirstPointOnPolyline	41	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	GenerateSegmentSpatialIndex	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersection	119	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMulti	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMultiInternal	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	Intersects	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	LastPointOnPolyline	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolyline	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolylineInternal	137	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	PointDataChanged	20	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	ResetLength	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	Segments	88	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.Polyline	get_UsingQuadTree	2	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SegmentM	NearestPoint	181	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SegmentM	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex	ReasonableSegmentBinCount	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	Add	312	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	Add	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetBinRange	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	100	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	_Lambda$__0	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	_Lambda$__0	54	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	_Lambda$__0	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
+Utility.Core	Utility.Math	ArraySetAll	46	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	EnsureArraySize	36	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	GetInRange	14	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	Min3Index	44	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	OverlappingRange	45	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	RangeOverlaps	14	primitive, only for unported features	numpy	only reached from unported features
+Utility.Core	Utility.Math	SubtractRange	143	primitive, only for unported features	numpy	only reached from unported features
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex	FromPolygons	104	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex	ReasonableBinCount	30	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	<FromPolygons>b__7_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	20	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	95	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Initialize	128	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	get_Raster	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_MaxResizedBinCount	8	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_Raster	8	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	.ctor	30	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	.ctor	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Contains	19	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Contains	42	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	IsFinite	79	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	IsNull	53	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	IsValid	39	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Union	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Union	74	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Union	171	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Bottom	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaX	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Left	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Right	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Top	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Width	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent/<>c	<Union>b__67_0	25	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	<Union>b__65_0	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	ComputeExtent	153	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Count	12	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Item	13	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Points	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	ComputeArea	116	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	ComputeTin	29	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	IsValid	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	IsValidPolygon	23	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	get_Area	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	get_AreaTolerance	27	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segments>b__7_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	get_SegmentCount	14	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	get_Segments	25	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaX	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	.ctor	49	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.DistinctSpatialIndex	.ctor	64	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.DistinctSpatialIndex	_Lambda$__3-0	12	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	.ctor	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	.ctor	103	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	.ctor	55	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	.ctor	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	.ctor	234	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	CenterPointM	246	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	Contains	76	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	Contains	83	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	EnforceMinDXDYRatio	74	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	EnforceMinDimensions	173	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	EnforceMinHeight	17	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	EnforceMinWidth	17	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	IsFinite	189	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	IsNullOrInfinite	23	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	ReplaceOrMax	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	ReplaceOrMin	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	RoughlyContains	84	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	Translate	19	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	Translate	136	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	Union	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	UnionXY	83	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_Bottom	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_DeltaX	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_DeltaY	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_Left	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_LeftMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_LowerLeft	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_LowerMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_LowerRight	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MaxDeltaXY	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MaxM	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MaxX	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MaxY	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MaxZ	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MinM	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MinX	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MinY	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_MinZ	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_Right	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_RightMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_Top	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_UpperLeft	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_UpperMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Extent	get_UpperRight	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Feature	.ctor	14	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Feature	MBROverlaps	113	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Feature	set_OverrideSymbology	8	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	.ctor	125	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	ComputeExtent	63	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	GetExtentXY	30	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYM	60	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZ	42	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZM	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	PointDataChanged	75	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	PointM	13	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	PointMCount	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_Count	12	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_HasM	10	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_HasZ	10	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MaxM	45	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MaxX	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MaxY	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MaxZ	45	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MinM	45	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MinX	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MinY	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_MinZ	45	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	get_UsingQuadTree	2	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	.ctor	22	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	.ctor	10	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	.ctor	97	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	CompareX	40	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	DistanceTo	64	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	Equal	26	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	Equal	36	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Point2D	IsUndefined	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	.ctor	52	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	.ctor	19	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	.ctor	37	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	CloseTo	20	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	CloseTo	91	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Delta	58	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	DistanceTo	70	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	DistanceTo	51	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	EqualXY	36	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	HasM	15	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	HasZ	15	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	IsDefined	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	MidPoint	98	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	NegateXY	32	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Sort3PointsByY	197	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Swap	27	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Translate	58	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Translate	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointM	Undefined	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	.ctor	8	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	AddRange	91	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	AddRangeReverse	73	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	Clone	21	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	ComputeExtent	289	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	ComputeLength	60	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	CopyTo	67	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	MaxMinIndexes	236	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	MaxMinIndexes	236	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	MaxMinValue	103	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	RemoveRange	16	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointMs	Reverse	74	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	.ctor	9	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	EnsureFirstPointEqualsLast	67	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	GetNextPointOnPart	22	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	GetPreviousPointOnPart	30	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	Initialize	56	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	IsVertexVerticallyBetweenNeighbors	188	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	Rasterize	60	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	get_Area	247	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	_Lambda$__0	17	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	.ctor	72	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	.ctor	79	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	InitializePartStarts	66	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	InitializeSegmentFirstIndexes	235	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	IsValid	17	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	IsValidPolyline	16	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PartEndIndex	65	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PartSegment	77	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PartSegmentCount	31	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PartStartIndex	27	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PartsCount	26	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	PointCountInPart	85	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	Segment	71	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	SegmentCount	46	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	get_Length	83	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	.ctor	57	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	.ctor	22	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	AddDensifyPoints	71	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	Assign	15	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	ClipToExtent	55	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	ClipToExtent	325	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	Clip_Parametric	93	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DeltaM	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DeltaX	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DeltaY	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DeltaZ	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DistanceToPoint	20	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	DistanceToPoint	207	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	HasM	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	HasZ	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	Intersects	23	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	Intersects	421	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	88	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	76	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	57	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	MidPoint	194	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	MidPointXY	104	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	PointAtFraction	162	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	Translate	40	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	ZAtFraction	21	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_Length	18	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MaxM	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MaxX	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MaxY	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MaxZ	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MinM	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MinX	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MinY	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	get_MinZ	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex	ReasonableBinCount	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	75	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	Add	157	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	DefaultSpatialIndex	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	Initialize	131	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	get_Bins	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	get_Raster	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	GetMaxValue	109	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	GetMinValue	109	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	Max3	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	MaxMin3	56	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	Min3Index	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	ProgressMod	33	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Math	SwapD	11	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	9	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	247	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	227	primitive, used by ported code	numpy / inline arithmetic	
+Utility.Core	Utility.Math	ArraySetAll	8	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	ArraySetAll	16	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	ArraySetAllInternal_P4	206	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	EnsureArraySize	20	primitive, used by ported code	numpy	

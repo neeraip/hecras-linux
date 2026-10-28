@@ -22,6 +22,8 @@ import h5py
 import numpy as np
 from osgeo import gdal
 
+from . import tin
+
 F32 = np.float32
 NODATA = -9999.0
 # .NET's float.NaN, which RASMapper writes: a NaN with the sign bit set.
@@ -290,8 +292,9 @@ def _as_layer(terrain) -> "TerrainLayer":
 
 def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
     """RenderBlock.SetRowCol's stitches for render blocks rows r0..r1, cols
-    c0..c1: the flagged edges of blocks with data, as ((x, y, z), (x, y, z))
-    running clockwise round the block (so no data lies on their left)."""
+    c0..c1: the flagged edges of blocks with data, as ((x, y, z, m), (x, y, z, m))
+    with m the block size, running clockwise round the block (so no data lies
+    on their left)."""
     if lv.mask is None:
         return []
     nr, nc = lv.z.shape
@@ -305,10 +308,11 @@ def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
     for r, c in zip(rows + r0, cols + c0):
         b = int(lv.mask[r, c])
         minx, maxx, maxy, miny, _, _ = (float(v) for v in lv.block_bounds(r, c))
-        A = (minx, maxy, float(lv.z[r, c]))
-        B = (maxx, maxy, float(lv.z[r, c + 1]))
-        C = (maxx, miny, float(lv.z[r + 1, c + 1]))
-        D = (minx, miny, float(lv.z[r + 1, c]))
+        m = float(lv.tile_frame(r // lv.tile, c // lv.tile)[2])
+        A = (minx, maxy, float(lv.z[r, c]), m)
+        B = (maxx, maxy, float(lv.z[r, c + 1]), m)
+        C = (maxx, miny, float(lv.z[r + 1, c + 1]), m)
+        D = (minx, miny, float(lv.z[r + 1, c]), m)
         if b & 8:
             segs.append((D, A))
         if b & 0x10:
@@ -318,116 +322,6 @@ def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
         if b & 2:
             segs.append((C, D))
     return segs
-
-
-def _stitch_triangles(segs: list, cell: float) -> list:
-    """The triangles RASMapper's stitch TIN keeps (DelaunayTINFactory with
-    stitches only): a Delaunay triangulation of the stitch points without
-    triangles that span more than about two pixels or lie on the data side of
-    a stitch edge, so what is left bridges narrow gaps in the data. Each
-    triangle is three (x, y, z) points, counter-clockwise."""
-    from scipy.spatial import Delaunay
-    pts = {}
-    for a, b in segs:
-        pts.setdefault(a[:2], a)
-        pts.setdefault(b[:2], b)
-    keys = list(pts)
-    if len(keys) < 3:
-        return []
-    xy = np.array(keys)
-    # Points all on one line make no triangles (and qhull refuses them).
-    if np.linalg.matrix_rank(xy[1:] - xy[0], tol=1e-9 * max(1.0, float(np.ptp(xy)))) < 2:
-        return []
-    index = {k: i for i, k in enumerate(keys)}
-    tri = Delaunay(xy)
-    simp = tri.simplices.copy()
-    # counter-clockwise
-    v = xy[simp]
-    cw = ((v[:, 1, 0] - v[:, 0, 0]) * (v[:, 2, 1] - v[:, 0, 1])
-          - (v[:, 1, 1] - v[:, 0, 1]) * (v[:, 2, 0] - v[:, 0, 0])) < 0
-    simp[cw] = simp[cw][:, [0, 2, 1]]
-    nbr = tri.neighbors.copy()
-    nbr[cw] = nbr[cw][:, [0, 2, 1]]
-    deleted = np.zeros(len(simp), bool)
-    limit = cell * 2.0001
-    v = xy[simp]
-    for i, j in ((0, 1), (1, 2), (2, 0)):
-        d = np.abs(v[:, i] - v[:, j])
-        deleted |= (d[:, 0] > limit) | (d[:, 1] > limit)
-    edges = {frozenset((index[a[:2]], index[b[:2]])) for a, b in segs}
-    # triangle across each edge: edge k of a triangle is opposite vertex k
-    def edge_of(t, k):
-        return frozenset((simp[t][(k + 1) % 3], simp[t][(k + 2) % 3]))
-    tri_of_edge = {}
-    for t in range(len(simp)):
-        for k in range(3):
-            tri_of_edge.setdefault((simp[t][(k + 1) % 3], simp[t][(k + 2) % 3]), t)
-    def rotate(t0, p):
-        # delete triangles round point p from t0, both ways, until a stitch edge
-        for direction in (1, 2):
-            t = t0
-            seen = {t0}
-            while True:
-                k = int(np.where(simp[t] == p)[0][0])
-                kk = (k + direction) % 3            # edge opposite kk contains p
-                if edge_of(t, kk) in edges:
-                    break
-                t = nbr[t][kk]
-                # A zero-area triangle (collinear grid points) has no orientation,
-                # so a walk round p can loop without returning to t0.
-                if t == -1 or t in seen:
-                    break
-                seen.add(t)
-                deleted[t] = True
-    for a, b in segs:
-        ia, ib = index[a[:2]], index[b[:2]]
-        # the triangle with directed edge b->a has a..b on its left side
-        t = tri_of_edge.get((ib, ia))
-        if t is None:
-            continue
-        deleted[t] = True
-        for p in simp[t]:
-            rotate(t, p)
-    return [[pts[keys[i]] for i in simp[t]] for t in range(len(simp)) if not deleted[t]]
-
-
-def _paint_triangles(tris, values, rows, cols, min_x, max_y, cs):
-    """Tin.Rasterize / RasterizeTriangle.ComputeCellsZNew onto a raster."""
-    max_x, min_y = min_x + cols * cs, max_y - rows * cs
-    for p0, p1, p2 in tris:
-        xs, ys = (p0[0], p1[0], p2[0]), (p0[1], p1[1], p2[1])
-        if (ys[0] == ys[1] == ys[2]) or (xs[0] == xs[1] == xs[2]):
-            continue
-        lo_x, hi_x, lo_y, hi_y = min(xs), max(xs), min(ys), max(ys)
-        if lo_x > max_x or hi_x < min_x or lo_y > max_y or hi_y < min_y:
-            continue
-        col = lambda x: int(np.floor((x - min_x) / cs))
-        row = lambda y: int(np.floor((max_y - y) / cs))
-        c0 = col(lo_x) if not lo_x < min_x else 0
-        r_bot = row(lo_y) if not lo_y < min_y else rows - 1
-        c1 = col(hi_x) if not hi_x > max_x else cols - 1
-        r_top = row(hi_y) if not hi_y > max_y else 0
-        ox, oy = min_x + cs * (c0 + 0.5), max_y - cs * (r_bot + 0.5)
-        q = [(p[0] - ox, p[1] - oy) for p in (p0, p1, p2)]
-        def bary(v0, v1):
-            dx, dy = v0[1] - v1[1], v1[0] - v0[0]
-            return v0[0] * v1[1] - v0[1] * v1[0], dx, dy
-        s0, dx0, dy0 = bary(q[1], q[2])
-        s1, dx1, dy1 = bary(q[2], q[0])
-        s2, dx2, dy2 = bary(q[0], q[1])
-        total = s0 + s1 + s2
-        for r in range(r_bot, r_top - 1, -1):
-            if 0 <= r < rows:
-                w0, w1, w2 = s0, s1, s2
-                for c in range(c0, c1 + 1):
-                    if w0 >= 0.0 and w1 >= 0.0 and w2 >= 0.0 and 0 <= c < cols:
-                        values[r * cols + c] = F32((w0 * p0[2] + w1 * p1[2] + w2 * p2[2]) / total)
-                    w0 += dx0 * cs
-                    w1 += dx1 * cs
-                    w2 += dx2 * cs
-            s0 += dy0 * cs
-            s1 += dy1 * cs
-            s2 += dy2 * cs
 
 
 def _interpolate(a, b, c, d, xf, yf):
@@ -1099,7 +993,7 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
     # empty, at its own pyramid level; stitches from the render blocks under
     # the raster, two blocks either side, are bridged by a TIN painted over.
     vals = np.full(rows * cols, np.nan, dtype=F32)
-    segs, stitch_cell = [], 0.0
+    segs = []
     for raster in _as_layer(terrain).rasters:
         level = raster.level_for(cs)
         v = raster.sample(X.ravel(), Y.ravel(), level)
@@ -1108,12 +1002,11 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
         bc = np.floor((xc[[0, -1]] - lv.x0) / lv.cell).astype(int)
         br = np.floor((lv.y0 - yc[[0, -1]]) / lv.cell).astype(int)
         found = _stitch_segments(lv, br.min() - 2, br.max() + 2, bc.min() - 2, bc.max() + 2)
-        if found:
-            segs.extend(found)
-            stitch_cell = max(stitch_cell, lv.cell)
+        # ResampleInternal orders each raster's stitches by SegmentM.GetHashCode
+        segs.extend(sorted(found, key=lambda sg: tin.segment_hash(sg[0])))
     if len(segs) > 1:
         vals = np.where(np.isfinite(vals), vals, F32(NODATA)).astype(F32)
-        _paint_triangles(_stitch_triangles(segs, stitch_cell), vals, rows, cols, rmin_x, rmax_y, cs)
+        tin.paint(tin.StitchTin(segs).compute(), vals, rows, cols, rmin_x, rmax_y, cs, F32)
         vals = np.where(vals == F32(NODATA), np.nan, vals).astype(F32)
     inside = _rasterize(poly, rows, cols, rmin_x, rmax_y, rmax_x, cs).ravel()
     sel = inside & np.isfinite(vals)

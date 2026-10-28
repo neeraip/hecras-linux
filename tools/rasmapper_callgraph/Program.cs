@@ -6,9 +6,9 @@
 //       RasMapperLib.RASD2FlowArea CreatePropertyTables reach.tsv 4 \
 //       RasMapperLib.TerrainLayer RasMapperLib.LandCoverLayer ...
 //
-// Writes reach.tsv (methods followed) and reach.tsv.stopped (methods the
-// rules in stop.tsv record but don't follow: UI, progress, I/O, project model,
-// other features).
+// Writes reach.tsv (methods followed), reach.tsv.stopped (methods the rules
+// in stop.tsv record but don't follow: UI, progress, I/O, project model, other
+// features) and reach.tsv.edges (caller, callee).
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -52,6 +52,8 @@ List<MethodDefinition> Implementations(MethodDefinition m)
     return res;
 }
 
+string Describe(MethodDefinition m) =>
+    $"{m.DeclaringType.FullName}::{m.Name}({string.Join(",", m.Parameters.Select(p => p.ParameterType.Name))})";
 var nParams = args.Length > 4 ? int.Parse(args[4]) : -1;
 var root = types.First(t => t.FullName == rootType).Methods
                 .Where(m => m.Name == rootMethod && m.HasBody && (nParams < 0 || m.Parameters.Count == nParams)).ToList();
@@ -108,6 +110,7 @@ void Visit(MethodDefinition target, int depth, string from)
     if (cctor != null) Visit(cctor, depth, target.FullName);
 }
 
+var edges = new HashSet<(string, string)>();
 while (queue.Count > 0)
 {
     var (m, depth, _) = queue.Dequeue();
@@ -118,6 +121,7 @@ while (queue.Count > 0)
         MethodDefinition? md = null;
         try { md = mr.Resolve(); } catch { }
         if (md == null) continue;
+        if (hecNames.Contains(md.Module.Assembly.Name.Name)) edges.Add((m.FullName, md.FullName));
         if (ins.OpCode == OpCodes.Newobj && hecNames.Contains(md.Module.Assembly.Name.Name)
             && instantiated.Add(md.DeclaringType.FullName))
         {
@@ -141,6 +145,15 @@ using var w = new StreamWriter(outPath);
 w.WriteLine("depth\tassembly\ttype\tmethod\til_bytes\treached_from");
 foreach (var (m, depth, from) in seen.Values.OrderBy(v => v.depth).ThenBy(v => v.m.DeclaringType.FullName).ThenBy(v => v.m.Name))
     w.WriteLine($"{depth}\t{m.Module.Assembly.Name.Name}\t{m.DeclaringType.FullName}\t{m.Name}({string.Join(",", m.Parameters.Select(p => p.ParameterType.Name))})\t{(m.HasBody ? m.Body.CodeSize : 0)}\t{from}");
+using (var ew = new StreamWriter(outPath + ".edges"))
+{
+    string Key(string full) => seen.TryGetValue(full, out var v) ? Describe(v.m) : stopped.TryGetValue(full, out var st) ? Describe(st.m) : "";
+    foreach (var (a, b) in edges)
+    {
+        var ka = Key(a); var kb = Key(b);
+        if (ka != "" && kb != "") ew.WriteLine($"{ka}\t{kb}");
+    }
+}
 using (var sw = new StreamWriter(outPath + ".stopped"))
 {
     sw.WriteLine("category\tassembly\ttype\tmethod\til_bytes\treached_from");
