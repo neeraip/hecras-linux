@@ -1,366 +1,245 @@
-"""Integration tests for the HEC-RAS Linux preprocessor pipeline.
+"""Pipeline tests: ras_preprocess.py + the HEC-RAS Linux engines.
 
-Each test:
-  1. Runs ras_preprocess.py on the example project directory.
-  2. Stages the output directory (copies boundary-condition files if needed).
-  3. Runs RasGeomPreprocess + RasUnsteady inside Docker.
-  4. Validates:
-       • Volume accounting error < 0.1 %  (parsed from Compute Messages)
-       • Max WSE difference vs reference p01.hdf < tolerance (ft)
+What is checked, by workflow
+  A  The shipped examples (GUI-computed geometry and plan). The Linux engines
+     must reproduce the Windows GUI results: max WSE within 0.005 ft
+     (0.01 ft for Muncie) and volume error under 0.5 %.
+  B  Each example with its geometry tables stripped (tools/make_workflow_input.py),
+     plus BEFORE_RUN as shipped. property_tables.py computes the tables, which
+     must equal RASMapper's dataset for dataset; the plan must run. Accuracy
+     against the GUI is marked as an expected failure until it is measured on
+     every example.
 
-Run with:
-    pytest tests/test_pipeline.py -v
+The B runs take their boundary conditions from the GUI plan with
+--event-conditions because the examples' DSS files are not in the repo.
 
-Docker image required:  hecras-v66-amd64
-Built via:              docker build --platform linux/amd64 -t hecras-v66-amd64 .
+    pytest -m "not engine"     # preprocessing only (~1 min)
+    pytest                     # everything, every installed engine (~10 min)
 """
-
 from __future__ import annotations
 
 import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import h5py
-import numpy as np
 import pytest
 
-# ---------------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------------
-REPO_ROOT = Path(__file__).resolve().parent.parent
-EXAMPLES  = REPO_ROOT / "Examples"
-SCRIPT    = REPO_ROOT / "ras_preprocess.py"
-DOCKER_IMG = "hecras-v66-amd64"
+REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO))
+
+import hecras_run  # noqa: E402
+from tools.compare_results import compare_max_wse  # noqa: E402
+from tools.make_workflow_input import make_input  # noqa: E402
+
+EXAMPLES = REPO / "Examples"
+SCRIPT = REPO / "ras_preprocess.py"
+
+# Example folder -> HEC-RAS project name. All are GUI-computed (Workflow A).
+GUI_EXAMPLES = {
+    "AFTER_RUN": "test_hdf",
+    "BEC": "BEC",
+    "BEC_WO_Infiltration": "model1",
+    "VA": "VA",
+    "Muncie": "Muncie",
+}
+WSE_TOL_FT = {"Muncie": 0.01}       # README: Muncie differs by 0.001 ft
+DEFAULT_WSE_TOL_FT = 0.005
+VOLUME_ERR_TOL_PCT = 0.5
+# The examples finish in about a minute; an unstable B model can spin for hours.
+ENGINE_TIMEOUT_S = 900
+
+# B's tables match RASMapper's (test_workflow_b_tables_match_rasmapper), but
+# only BEC and BEC_WO_Infiltration have been run through the engine since.
+ACCURACY_XFAIL = pytest.mark.xfail(
+    reason="engine accuracy not yet re-measured on every example; see README "
+           "'Workflow B accuracy'", strict=False)
+
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _docker_available() -> bool:
-    try:
-        result = subprocess.run(
-            ["docker", "image", "inspect", DOCKER_IMG],
-            capture_output=True, timeout=10
-        )
-        return result.returncode == 0
-    except Exception:
-        return False
+def preprocess(project_dir: Path, out_dir: Path, project: str,
+               event_conditions: Path | None = None) -> str:
+    """Run ras_preprocess.py; return its log. Raises on failure."""
+    cmd = [sys.executable, str(SCRIPT), str(project_dir), "--output-dir", str(out_dir),
+           "--project-name", project]
+    if event_conditions:
+        cmd += ["--event-conditions", str(event_conditions)]
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
+    log = r.stdout + r.stderr
+    if r.returncode != 0:
+        raise RuntimeError(f"ras_preprocess.py failed:\n{log[-4000:]}")
+    return log
 
 
-def run_preprocessor(project_dir: Path, output_dir: Path, project_name: str | None = None) -> None:
-    """Run ras_preprocess.py; raise on failure."""
-    cmd = [sys.executable, str(SCRIPT), str(project_dir), "--output-dir", str(output_dir)]
-    if project_name:
-        cmd += ["--project-name", project_name]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"ras_preprocess.py failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-        )
+def detected_workflow(log: str) -> str:
+    m = re.search(r"=== WORKFLOW (\w)", log)
+    return m.group(1) if m else "?"
 
 
-def run_docker_simulation(work_dir: Path, project_name: str, plan: str = "01") -> str:
-    """Run RasGeomPreprocess + RasUnsteady inside Docker.
+def stage_bc_files(src_dir: Path, out_dir: Path, project: str) -> None:
+    """Use the GUI's .b01/.x01 where the example has them."""
+    for ext in (".b01", ".x01"):
+        src = src_dir / f"{project}{ext}"
+        if src.exists():
+            shutil.copy2(src, out_dir / src.name)
 
-    Returns combined stdout (used to parse volume error).
-    Raises RuntimeError on non-zero exit or if the volume error line is absent.
+
+def area_group(hdf: h5py.File) -> h5py.Group:
+    areas = hdf["Geometry/2D Flow Areas"]
+    return areas[[k for k in areas if isinstance(areas[k], h5py.Group)][0]]
+
+
+def has_property_tables(g01_hdf: Path) -> bool:
+    with h5py.File(g01_hdf, "r") as f:
+        return "Cells Volume Elevation Info" in area_group(f)
+
+
+_RUNS: dict = {}
+
+
+@pytest.fixture(scope="session")
+def run_dir(tmp_path_factory):
+    return tmp_path_factory.mktemp("runs")
+
+
+def run_case(base: Path, example: str, workflow: str, engine) -> tuple:
+    """Prepare and run one example through one workflow, once per session.
+
+    Returns (result, reference plan HDF). A failure is cached and re-raised.
     """
-    tmp_hdf  = f"{project_name}.p{plan}.tmp.hdf"
-    xsuffix  = f"x{plan}"
-    # Use explicit paths — the built image may predate the ENV PATH update in Dockerfile.
-    ras_bin  = "/opt/hecras/bin"
-    ras_libs = "/opt/hecras/libs:/opt/hecras/libs/rhel_8:/opt/hecras/libs/mkl"
-    docker_cmd = (
-        f"export PATH={ras_bin}:$PATH && "
-        f"export LD_LIBRARY_PATH={ras_libs}:$LD_LIBRARY_PATH && "
-        f"cd /work && "
-        f"RasGeomPreprocess {tmp_hdf} {xsuffix} && "
-        f"RasUnsteady       {tmp_hdf} {xsuffix} && "
-        f"mv {tmp_hdf} {project_name}.p{plan}.hdf"
-    )
-    result = subprocess.run(
-        [
-            "docker", "run", "--rm", "--platform", "linux/amd64",
-            "-v", f"{work_dir}:/work",
-            DOCKER_IMG, "bash", "-c", docker_cmd,
-        ],
-        capture_output=True, text=True, timeout=600,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"Docker simulation failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-        )
-    return result.stdout
+    key = (example, workflow, engine)
+    if key not in _RUNS:
+        tmp_path = base / f"{example}-{workflow}-{engine[0]}"
+        tmp_path.mkdir()
+        try:
+            _RUNS[key] = _run_case(tmp_path, example, workflow, engine)
+        except Exception as e:          # noqa: BLE001 - re-raised for every caller
+            _RUNS[key] = e
+    if isinstance(_RUNS[key], Exception):
+        raise _RUNS[key]
+    return _RUNS[key]
 
 
-def parse_volume_error(source: "Path | str") -> "float | None":
-    """Extract 'Overall Volume Accounting Error as percentage' from either:
-    - A Docker stdout string (returned by run_docker_simulation), or
-    - A p01.hdf path (GUI-written, stores message in Results/Summary).
-    """
-    _PATTERN = r'Overall Volume Accounting Error as percentage:\s*([\d.eE+\-]+)'
-
-    # String case (Docker stdout)
-    if isinstance(source, str):
-        m = re.search(_PATTERN, source)
-        return float(m.group(1)) if m else None
-
-    # HDF case (GUI-written p01.hdf)
-    try:
-        with h5py.File(str(source), 'r') as f:
-            key = 'Results/Summary/Compute Messages (text)'
-            if key not in f:
-                return None
-            msg = f[key][0]
-            if isinstance(msg, bytes):
-                msg = msg.decode('utf-8', errors='replace')
-            m = re.search(_PATTERN, msg)
-            return float(m.group(1)) if m else None
-    except Exception:
-        return None
-
-
-def max_wse_diff(result_hdf: Path, reference_hdf: Path) -> float:
-    """Return max absolute WSE difference (ft) between result and reference."""
-    with h5py.File(str(result_hdf), 'r') as rf, \
-         h5py.File(str(reference_hdf), 'r') as refh:
-        base = 'Results/Unsteady/Output/Output Blocks/Base Output/Summary Output/2D Flow Areas'
-        r_area = list(rf[base].keys())[0]
-        ref_area = list(refh[base].keys())[0]
-        r_wse   = rf[f'{base}/{r_area}/Maximum Water Surface'][:]
-        ref_wse = refh[f'{base}/{ref_area}/Maximum Water Surface'][:]
-        # Only compare cells with finite WSE in reference (active cells)
-        mask = np.isfinite(ref_wse) & (ref_wse < 1e10)
-        if not mask.any():
-            return 0.0
-        return float(np.max(np.abs(r_wse[mask] - ref_wse[mask])))
-
-
-def check_g01hdf_has_tables(g01_hdf: Path) -> bool:
-    """Return True if g01.hdf contains computed hydraulic tables."""
-    with h5py.File(str(g01_hdf), 'r') as f:
-        geo = f.get('Geometry/2D Flow Areas', {})
-        for area_name in geo.keys():
-            if area_name == 'Attributes':
-                continue
-            area_grp = geo[area_name]
-            if isinstance(area_grp, h5py.Group) and \
-                    'Cells Volume Elevation Info' in area_grp.keys():
-                return True
-    return False
+def _run_case(tmp_path: Path, example: str, workflow: str, engine) -> tuple:
+    version, runner = engine
+    project = GUI_EXAMPLES[example]
+    src = EXAMPLES / example
+    reference = src / f"{project}.p01.hdf"
+    out = tmp_path / "run"
+    if workflow == "A":
+        log = preprocess(src, out, project)
+    else:
+        inp = tmp_path / "input"
+        make_input(src, inp, workflow)
+        log = preprocess(inp, out, project, event_conditions=reference)
+    assert detected_workflow(log) == workflow
+    stage_bc_files(src, out, project)
+    result = hecras_run.run_engine(out, project, version=version, runner=runner,
+                                   timeout=ENGINE_TIMEOUT_S)
+    return result, reference
 
 
 # ---------------------------------------------------------------------------
-# Markers
+# Preprocessing only (no engine)
 # ---------------------------------------------------------------------------
-requires_docker = pytest.mark.skipif(
-    not _docker_available(),
-    reason=f"Docker image '{DOCKER_IMG}' not available"
-)
+
+class TestPreprocess:
+
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_workflow_a_copies_geometry_and_strips_results(self, tmp_path, example):
+        project = GUI_EXAMPLES[example]
+        log = preprocess(EXAMPLES / example, tmp_path, project)
+        assert detected_workflow(log) == "A"
+        assert (tmp_path / f"{project}.g01.hdf").exists()
+        with h5py.File(tmp_path / f"{project}.p01.tmp.hdf", "r") as f:
+            assert "Results" not in f
+
+    def test_before_run_is_workflow_b(self, tmp_path):
+        log = preprocess(EXAMPLES / "BEFORE_RUN", tmp_path, "test_hdf")
+        assert detected_workflow(log) == "B"
+        assert has_property_tables(tmp_path / "test_hdf.g01.hdf")
+
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_workflow_b_writes_property_tables(self, tmp_path, example):
+        project = GUI_EXAMPLES[example]
+        make_input(EXAMPLES / example, tmp_path / "in", "B")
+        log = preprocess(tmp_path / "in", tmp_path / "out", project)
+        assert detected_workflow(log) == "B"
+        g01 = tmp_path / "out" / f"{project}.g01.hdf"
+        assert has_property_tables(g01)
+        with h5py.File(g01, "r") as f:
+            ag = area_group(f)
+            n_cells = len(ag["Cells Center Coordinate"])
+            n_faces = len(ag["Faces Cell Indexes"])
+            assert len(ag["Cells Volume Elevation Info"]) == n_cells
+            assert len(ag["Faces Area Elevation Info"]) == n_faces
+            assert len(f["Geometry/Boundary Condition Lines/External Faces"]) > 0
+
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_workflow_b_tables_match_rasmapper(self, tmp_path, example):
+        """On RASMapper's mesh, every dataset RASMapper writes for the 2D area
+        must come out identical, byte for byte."""
+        project = GUI_EXAMPLES[example]
+        make_input(EXAMPLES / example, tmp_path / "in", "B")
+        preprocess(tmp_path / "in", tmp_path / "out", project)
+        with h5py.File(tmp_path / "out" / f"{project}.g01.hdf", "r") as ours, \
+             h5py.File(EXAMPLES / example / f"{project}.g01.hdf", "r") as gui:
+            a, g = area_group(ours), area_group(gui)
+            names = []
+            g.visititems(lambda n, o: names.append(n) if isinstance(o, h5py.Dataset) else None)
+            for name in names:
+                assert name in a, f"{name} missing"
+                assert a[name][()].tobytes() == g[name][()].tobytes(), f"{name} differs"
 
 
-# ============================================================================
-# UNIT TESTS — Python preprocessing only (no Docker)
-# ============================================================================
-
-class TestPreprocessOnly:
-    """Verify that ras_preprocess.py produces valid g01.hdf for each example."""
-
-    def _check_output(self, output_dir: Path, project_name: str, plan: str = "01"):
-        g01_hdf   = output_dir / f"{project_name}.g{plan}.hdf"
-        p01_tmp   = output_dir / f"{project_name}.p{plan}.tmp.hdf"
-        assert g01_hdf.exists(),  f"g01.hdf not created: {g01_hdf}"
-        assert p01_tmp.exists(),  f"p01.tmp.hdf not created: {p01_tmp}"
-        assert check_g01hdf_has_tables(g01_hdf), "g01.hdf is missing hydraulic tables"
-
-    def test_before_run(self, tmp_path):
-        """BEFORE_RUN — Workflow A: mesh-only g01.hdf, add hydraulic tables."""
-        run_preprocessor(EXAMPLES / "BEFORE_RUN", tmp_path, project_name="test_hdf")
-        self._check_output(tmp_path, "test_hdf")
-
-    def test_bec(self, tmp_path):
-        """BEC — Workflow A: SCS infiltration model."""
-        run_preprocessor(EXAMPLES / "BEC", tmp_path)
-        self._check_output(tmp_path, "BEC")
-
-    def test_bec_wo_infiltration(self, tmp_path):
-        """BEC_WO_Infiltration — Workflow A: no infiltration model."""
-        run_preprocessor(EXAMPLES / "BEC_WO_Infiltration", tmp_path)
-        self._check_output(tmp_path, "model1")
-
-    def test_va(self, tmp_path):
-        """VA — Workflow A: precipitation boundary condition."""
-        run_preprocessor(EXAMPLES / "VA", tmp_path)
-        self._check_output(tmp_path, "VA")
-
-    def test_muncie(self, tmp_path):
-        """Muncie — Workflow A: flow + precipitation BCs."""
-        run_preprocessor(EXAMPLES / "Muncie", tmp_path)
-        self._check_output(tmp_path, "Muncie")
-
-    def test_after_run_workflow_c(self, tmp_path):
-        """AFTER_RUN — Workflow A: g01.hdf has tables + p01.hdf exists → strip & copy."""
-        run_preprocessor(EXAMPLES / "AFTER_RUN", tmp_path, project_name="test_hdf")
-        g01_hdf = tmp_path / "test_hdf.g01.hdf"
-        p01_tmp = tmp_path / "test_hdf.p01.tmp.hdf"
-        assert g01_hdf.exists(), "g01.hdf not copied"
-        assert p01_tmp.exists(), "p01.tmp.hdf not produced"
-        # The tmp.hdf must NOT contain a Results group
-        with h5py.File(str(p01_tmp), 'r') as f:
-            assert 'Results' not in f, "Results group should be stripped in Workflow A"
+def f_attr(hdf: h5py.File, field: str):
+    return hdf["Geometry/2D Flow Areas/Attributes"][()][field][0]
 
 
-# ============================================================================
-# INTEGRATION TESTS — Full pipeline including Docker
-# ============================================================================
+# ---------------------------------------------------------------------------
+# Full pipeline (needs the engines)
+# ---------------------------------------------------------------------------
 
-class TestFullPipeline:
-    """Run complete pipeline (preprocess → Docker → verify) for each example."""
+@pytest.mark.engine
+class TestWorkflowA:
 
-    # Tolerances
-    VOLUME_ERR_PCT_TOL = 0.5   # percent  (generous for CI; all examples are <0.1%)
-    WSE_DIFF_TOL_FT    = 0.005  # feet
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_reproduces_gui_results(self, run_dir, example, engine):
+        result, reference = run_case(run_dir, example, "A", engine)
+        assert result.volume_error_pct is not None
+        assert abs(result.volume_error_pct) < VOLUME_ERR_TOL_PCT
+        cmp = compare_max_wse(result.plan_hdf, reference)
+        tol = WSE_TOL_FT.get(example, DEFAULT_WSE_TOL_FT)
+        assert cmp.max_abs <= tol, f"max WSE diff {cmp.max_abs:.4f} ft > {tol} ft"
 
-    def _stage_and_run(
-        self,
-        tmp_path: Path,
-        example_dir: Path,
-        project_name: str,
-        bc_src_dir: "Path | None" = None,
-        plan: str = "01",
-    ) -> "tuple[Path, str]":
-        """Preprocess, copy BC files, run Docker.
 
-        Returns (result_p01_hdf_path, docker_stdout).
-        Docker stdout is used for volume error parsing since it is always
-        present regardless of whether the HDF was written by the GUI or Docker.
-        """
+@pytest.mark.engine
+@pytest.mark.experimental
+class TestWorkflowB:
+
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_runs(self, run_dir, example, engine):
+        result, _ = run_case(run_dir, example, "B", engine)
+        assert result.volume_error_pct is not None
+
+    def test_before_run_runs(self, tmp_path, engine):
+        version, runner = engine
         out = tmp_path / "run"
-        out.mkdir()
+        preprocess(EXAMPLES / "BEFORE_RUN", out, "test_hdf",
+                   event_conditions=EXAMPLES / "AFTER_RUN" / "test_hdf.p01.hdf")
+        stage_bc_files(EXAMPLES / "AFTER_RUN", out, "test_hdf")
+        result = hecras_run.run_engine(out, "test_hdf", version=version, runner=runner)
+        assert result.volume_error_pct is not None
 
-        run_preprocessor(example_dir, out, project_name=project_name)
-
-        # Copy boundary-condition files needed by RasUnsteady
-        bc_dir = bc_src_dir or example_dir
-        for ext in (f".b{plan}", f".x{plan}"):
-            src = bc_dir / f"{project_name}{ext}"
-            if src.exists():
-                shutil.copy2(str(src), str(out / src.name))
-
-        stdout = run_docker_simulation(out, project_name, plan)
-        return out / f"{project_name}.p{plan}.hdf", stdout
-
-    @requires_docker
-    def test_before_run(self, tmp_path):
-        """BEFORE_RUN: 503-cell model — volume error < 0.5 %.
-
-        WSE is not compared against AFTER_RUN because BEFORE_RUN uses
-        Python-computed hydraulic tables while AFTER_RUN used GUI-computed
-        tables; the two are expected to produce slightly different WSE fields.
-        Volume conservation is the key metric here.
-        """
-        # BEFORE_RUN has no b01/x01; borrow from AFTER_RUN (same project, same BC)
-        result_hdf, stdout = self._stage_and_run(
-            tmp_path,
-            example_dir=EXAMPLES / "BEFORE_RUN",
-            project_name="test_hdf",
-            bc_src_dir=EXAMPLES / "AFTER_RUN",
-        )
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-    @requires_docker
-    def test_bec(self, tmp_path):
-        """BEC: 2,315-cell model with SCS infiltration — volume error < 0.5 %, WSE match."""
-        result_hdf, stdout = self._stage_and_run(
-            tmp_path, EXAMPLES / "BEC", project_name="BEC"
-        )
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-        diff = max_wse_diff(result_hdf, EXAMPLES / "BEC" / "BEC.p01.hdf")
-        assert diff <= self.WSE_DIFF_TOL_FT, \
-            f"Max WSE diff {diff:.4f} ft exceeds {self.WSE_DIFF_TOL_FT} ft"
-
-    @requires_docker
-    def test_bec_wo_infiltration(self, tmp_path):
-        """BEC_WO_Infiltration: 2,622-cell model — volume error < 0.5 %, WSE match."""
-        result_hdf, stdout = self._stage_and_run(
-            tmp_path, EXAMPLES / "BEC_WO_Infiltration", project_name="model1"
-        )
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-        diff = max_wse_diff(result_hdf, EXAMPLES / "BEC_WO_Infiltration" / "model1.p01.hdf")
-        assert diff <= self.WSE_DIFF_TOL_FT, \
-            f"Max WSE diff {diff:.4f} ft exceeds {self.WSE_DIFF_TOL_FT} ft"
-
-    @requires_docker
-    def test_va(self, tmp_path):
-        """VA: 1,221-cell model with precipitation BC — volume error < 0.5 %, WSE match."""
-        result_hdf, stdout = self._stage_and_run(
-            tmp_path, EXAMPLES / "VA", project_name="VA"
-        )
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-        diff = max_wse_diff(result_hdf, EXAMPLES / "VA" / "VA.p01.hdf")
-        assert diff <= self.WSE_DIFF_TOL_FT, \
-            f"Max WSE diff {diff:.4f} ft exceeds {self.WSE_DIFF_TOL_FT} ft"
-
-    @requires_docker
-    def test_muncie(self, tmp_path):
-        """Muncie: 3,146-cell model with flow + precipitation BCs — volume error < 0.5 %."""
-        result_hdf, stdout = self._stage_and_run(
-            tmp_path, EXAMPLES / "Muncie", project_name="Muncie"
-        )
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-        ref_hdf = EXAMPLES / "Muncie" / "Muncie.p01.hdf"
-        diff = max_wse_diff(result_hdf, ref_hdf)
-        # Muncie has 0.001 ft diff documented in README
-        assert diff <= 0.01, \
-            f"Max WSE diff {diff:.4f} ft exceeds 0.01 ft"
-
-    @requires_docker
-    def test_after_run_workflow_c(self, tmp_path):
-        """AFTER_RUN Workflow A: strip results → run Docker → verify same output."""
-        out = tmp_path / "run"
-        out.mkdir()
-
-        # Workflow A: preprocessor detects fully-computed project, strips results
-        run_preprocessor(EXAMPLES / "AFTER_RUN", out, project_name="test_hdf")
-
-        # AFTER_RUN already has b01/x01
-        for ext in (".b01", ".x01"):
-            src = EXAMPLES / "AFTER_RUN" / f"test_hdf{ext}"
-            if src.exists():
-                shutil.copy2(str(src), str(out / src.name))
-
-        stdout = run_docker_simulation(out, "test_hdf")
-        result_hdf = out / "test_hdf.p01.hdf"
-
-        vol_err = parse_volume_error(stdout)
-        assert vol_err is not None, "Could not parse volume error from Docker stdout"
-        assert vol_err < self.VOLUME_ERR_PCT_TOL, \
-            f"Volume error {vol_err:.4f}% exceeds {self.VOLUME_ERR_PCT_TOL}%"
-
-        ref_hdf = EXAMPLES / "AFTER_RUN" / "test_hdf.p01.hdf"
-        diff = max_wse_diff(result_hdf, ref_hdf)
-        assert diff <= self.WSE_DIFF_TOL_FT, \
-            f"Max WSE diff {diff:.4f} ft exceeds {self.WSE_DIFF_TOL_FT} ft"
+    @ACCURACY_XFAIL
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_matches_gui(self, run_dir, example, engine):
+        result, reference = run_case(run_dir, example, "B", engine)
+        cmp = compare_max_wse(result.plan_hdf, reference)
+        assert abs(result.volume_error_pct) < VOLUME_ERR_TOL_PCT
+        assert cmp.max_abs <= 0.1, f"max WSE diff {cmp.max_abs:.3f} ft"

@@ -1,0 +1,6 @@
+.git
+Examples
+tests
+**/__pycache__
+*.pdf
+*.zip

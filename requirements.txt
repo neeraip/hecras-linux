@@ -1,0 +1,7 @@
+# Python 3.9+. GDAL is easiest from conda-forge or your OS packages
+# (e.g. apt install python3-gdal), since pip builds it from source.
+numpy
+scipy
+h5py
+gdal
+pytest         # tests only
