@@ -195,10 +195,21 @@ from the IL of HEC's DLLs, with its status and our counterpart.
 
 ### Workflow A — GUI-computed project
 
-**When:** `g01.hdf` already has hydraulic tables **and** a `p01.hdf` exists.
-The preprocessor copies `g01.hdf` and writes `p01.tmp.hdf` from `p01.hdf`
-without its `Results` group. `RasGeomPreprocess` and `RasUnsteady` then
-recompute from scratch.
+**When:** `g01.hdf` already has hydraulic tables that still fit it, **and** a
+`p01.hdf` exists. The preprocessor copies `g01.hdf` and writes `p01.tmp.hdf`
+from `p01.hdf` without its `Results` group. `RasGeomPreprocess` and
+`RasUnsteady` then recompute from scratch.
+
+Whether the tables still fit is RASMapper's own test, without its file dates
+(`preprocess.tables_current`). They don't when:
+
+- the mesh's cell or face count no longer matches them
+- a table setting (tolerances, laminar depth, Manning's *n*, *Multiple Face
+  Mann n*, *Composite LC*) differs from what they were computed with
+- the terrain or a land layer is a different file
+- the geometry has calibration or override regions, whose hash isn't ported
+
+Then the project goes to Workflow B. `--tables always` sends it there regardless.
 
 ### Workflow B — RASMapper mesh, tables not computed
 

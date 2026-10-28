@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 import h5py
+import numpy as np
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
@@ -195,6 +196,39 @@ class TestPreprocess:
             for name in names:
                 assert name in a, f"{name} missing"
                 assert a[name][()].tobytes() == g[name][()].tobytes(), f"{name} differs"
+
+
+class TestTablesCurrent:
+    """tables_current: when a geometry's property tables can be reused."""
+
+    def test_gui_tables_are_current(self):
+        from hecras_linux.preprocess import tables_current
+        assert tables_current(EXAMPLES / "BEC" / "BEC.g01.hdf")[0]
+
+    def test_missing_tables(self):
+        from hecras_linux.preprocess import tables_current
+        current, why = tables_current(EXAMPLES / "BEFORE_RUN" / "test_hdf.g01.hdf")
+        assert not current and "no hydraulic tables" in why
+
+    def test_changed_setting(self, tmp_path):
+        from hecras_linux.preprocess import tables_current
+        g = tmp_path / "BEC.g01.hdf"
+        shutil.copy(EXAMPLES / "BEC" / "BEC.g01.hdf", g)
+        with h5py.File(g, "a") as hf:
+            rows = hf["Geometry/2D Flow Areas/Attributes"][()]
+            rows["Cell Vol Tol"] = 0.05
+            hf["Geometry/2D Flow Areas/Attributes"][...] = rows
+        current, why = tables_current(g)
+        assert not current and "Cell Volume Tolerance" in why
+
+    def test_changed_terrain(self, tmp_path):
+        from hecras_linux.preprocess import tables_current
+        g = tmp_path / "BEC.g01.hdf"
+        shutil.copy(EXAMPLES / "BEC" / "BEC.g01.hdf", g)
+        with h5py.File(g, "a") as hf:
+            hf["Geometry"].attrs["Terrain Filename"] = np.bytes_(r".\Terrain\Other.hdf")
+        current, why = tables_current(g)
+        assert not current and "terrain" in why
 
 
 def f_attr(hdf: h5py.File, field: str):

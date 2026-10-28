@@ -1476,6 +1476,9 @@ def main():
     parser.add_argument("--event-conditions", type=Path, default=None, metavar="HDF",
                         help="Workflow B: copy boundary/initial conditions from this HDF "
                              "(e.g. a GUI-run .p01.hdf) instead of leaving them to the DSS file")
+    parser.add_argument("--tables", choices=("auto", "always"), default="auto",
+                        help="auto: compute the property tables only when the geometry has none "
+                             "or they no longer fit it (tables_current); always: compute them")
     args = parser.parse_args()
 
     project_dir = args.project_dir
@@ -1544,8 +1547,15 @@ def main():
     src_p01_tmp = project_dir / f"{name}.p{plan}.tmp.hdf"
     p01_tmp_path = output_dir / f"{name}.p{plan}.tmp.hdf"
 
+    reuse = False
     if src_g01_hdf.exists() and _g01hdf_has_tables(src_g01_hdf) and \
             (src_p01_hdf.exists() or src_p01_tmp.exists()):
+        if args.tables == "always":
+            logger.info("Property tables: computing them (asked to)")
+        else:
+            reuse, why = tables_current(src_g01_hdf)
+            logger.info("Property tables: %s", "reusing them" if reuse else f"computing them ({why})")
+    if reuse:
         # ===================================================================
         # WORKFLOW A: GUI already ran geometry compute — just strip results
         # and hand off to RasGeomPreprocess + RasUnsteady.
@@ -1947,6 +1957,62 @@ def _g01hdf_has_tables(g01_hdf_path: Path) -> bool:
     except Exception:
         pass
     return False
+
+
+# What the tables were computed with: the area group's attribute, the setting it records and,
+# for files, the geometry attribute naming the current one (RASD2FlowArea.CreatePropertyTables).
+_TABLE_SETTINGS = (("Cell Volume Tolerance", "cell_volume_tolerance"),
+                   ("Face Profile Tolerance", "face_profile_tolerance"),
+                   ("Face Area Elevation Tolerance", "face_area_elevation_tolerance"),
+                   ("Face Area Conveyance Ratio", "face_conveyance_ratio"),
+                   ("Cell Minimum Area Fraction", "cell_min_area_fraction"),
+                   ("Laminar Depth", "laminar_depth"))
+_TABLE_LAYERS = ("Terrain", "Land Cover", "Infiltration", "Percent Impervious")
+_REGION_GROUPS = ("Land Cover (Manning's n)", "Infiltration", "Percent Impervious")
+
+
+def tables_current(g01_hdf_path: Path) -> tuple:
+    """Whether a geometry's property tables still fit it, as RASMapper's
+    CheckPropertyTablesVerifiableStates decides, minus its file-date checks
+    (dates don't survive a project's trip through a zip and S3): (current,
+    reason). Calibration and override regions always count as changed, since
+    RASMapper's hash of them isn't ported."""
+    with h5py.File(str(g01_hdf_path), "r") as hf:
+        geo = hf["Geometry"]
+        areas = geo.get("2D Flow Areas")
+        if areas is None:
+            return True, "no 2D flow areas"
+        attrs = areas["Attributes"][()]
+        for row in attrs:
+            name = row["Name"].decode("utf-8", "replace").strip("\x00").strip()
+            grp = areas.get(name)
+            if grp is None or "Cells Volume Elevation Info" not in grp:
+                return False, f"2D area '{name}' has no hydraulic tables"
+            n_cells, n_faces = len(grp["Cells Center Coordinate"]), len(grp["Faces FacePoint Indexes"])
+            if len(grp["Cells Volume Elevation Info"]) != n_cells or len(grp["Faces Area Elevation Info"]) != n_faces:
+                return False, f"2D area '{name}': the mesh changed since its tables were computed"
+            current = table_settings(g01_hdf_path, name)
+            for attr, key in _TABLE_SETTINGS:
+                stored = grp.attrs.get(attr)
+                if stored is None or np.float32(stored) != np.float32(current[key]):
+                    return False, f"2D area '{name}': {attr} changed since its tables were computed"
+            if "Mann" in attrs.dtype.names:
+                n = float(row["Mann"]) if np.isfinite(row["Mann"]) else 0.06
+                if np.float32(grp.attrs.get("Manning's n", np.nan)) != np.float32(n):
+                    return False, f"2D area '{name}': Manning's n changed since its tables were computed"
+            for attr, key in (("Multiple Face Mann n", "multi_face_n"), ("Composite LC", "composite_lc")):
+                if bool(grp.attrs.get(attr, not current[key])) != current[key]:
+                    return False, f"2D area '{name}': {attr} changed since its tables were computed"
+            for layer in _TABLE_LAYERS:
+                now = geo.attrs.get(f"{layer} Filename", b"")
+                then = grp.attrs.get(f"{layer} Filename", b"")
+                if (now or then) and now != then:
+                    return False, f"2D area '{name}': its {layer.lower()} layer changed since its tables were computed"
+        for group in _REGION_GROUPS:
+            info = geo.get(f"{group}/Polygon Info")
+            if info is not None and len(info):
+                return False, f"the geometry has {group} regions, whose changes can't be checked"
+    return True, "tables are current"
 
 
 def _find_terrain_layer(project_dir: Path, g01_hdf: Path = None):
