@@ -59,6 +59,17 @@ class _Level:
     rb_x0: float = 0.0       # RasterFileInfo.RenderBlockTiles: the grid of
     rb_y0: float = 0.0       # tiles of render blocks, whose spacing RASMapper
     rb_cell: float = 0.0     # recomputes from its extent
+    ntw: int = 0             # tiles wide and tall
+    ntt: int = 0
+
+    def tile_has_data(self, tr, tc):
+        """RasterFileInfo.TileHasAnyData."""
+        t = self.tile
+        if not (0 <= tr < self.ntt and 0 <= tc < self.ntw):
+            return False
+        if self.mask is not None:
+            return bool((self.mask[tr * t:(tr + 1) * t, tc * t:(tc + 1) * t] & 1).any())
+        return bool(np.isfinite(self.z[tr * t:(tr + 1) * t, tc * t:(tc + 1) * t]).any())
 
     def tile_frame(self, tr, tc):
         """RasterM.SetCellTileRasterM: a tile's left x, top y and block size,
@@ -125,7 +136,7 @@ class Terrain:
             span = t * cell
             x, y = ext_min_x + cell * 0.5, ext_max_y - cell * 0.5
             rb_cell = max(((x + ntw * span) - x) / ntw, (y - (y - ntt * span)) / ntt)
-            self.levels.append(_Level(z, cell, x, y, t, None, x, y, rb_cell))
+            self.levels.append(_Level(z, cell, x, y, t, None, x, y, rb_cell, ntw, ntt))
         self.min_x, self.max_y = gt[0], gt[3]
         self.max_x = gt[0] + ds.RasterXSize * gt[1]
         self.min_y = gt[3] + ds.RasterYSize * gt[5]
@@ -188,6 +199,35 @@ class Terrain:
         r, c, xf, yf = lv.locate(np.asarray(x, dtype=np.float64), np.asarray(y, dtype=np.float64), tr, tc)
         ok, a, b, cv, d = self._corners(lv, r, c)
         return np.where(ok, _interpolate(a, b, cv, d, xf, yf), np.nan)
+
+
+class TerrainLayer:
+    """A RASMapper terrain: its terrain HDF's rasters in priority order
+    (TerrainLayer.RasterFilesInfo), or a single GeoTIFF."""
+
+    def __init__(self, path: str):
+        path = Path(path)
+        self.rasters = []
+        if path.suffix.lower() != ".hdf":
+            self.rasters.append(Terrain(str(path)))
+            return
+        with h5py.File(str(path), "r") as hf:
+            layers = []
+            for name, grp in hf["Terrain"].items():
+                if isinstance(grp, h5py.Group) and "File" in grp.attrs:
+                    layers.append((int(grp.attrs.get("Priority", 0)), grp.attrs["File"].decode()))
+        for _, tif in sorted(layers, key=lambda pr: pr[0]):
+            self.rasters.append(Terrain(str(path.parent / tif)))
+        if not self.rasters:
+            raise ValueError(f"{path}: no rasters listed under /Terrain")
+
+
+def _as_layer(terrain) -> "TerrainLayer":
+    if isinstance(terrain, TerrainLayer):
+        return terrain
+    layer = TerrainLayer.__new__(TerrainLayer)
+    layer.rasters = [terrain]
+    return layer
 
 
 def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
@@ -395,102 +435,275 @@ def _segment_intersections(ax, ay, bx, by, sx0, sy0, sx1, sy1, eps=1e-6):
     return hit, np.clip(t1, 0, 1), np.clip(t2, 0, 1)
 
 
-def _blocks_on_segment(lv: _Level, ax, ay, bx, by):
-    """Render blocks a segment passes through (row, col)."""
-    ca = (ax - lv.x0) / lv.cell
-    cb = (bx - lv.x0) / lv.cell
-    ra = (lv.y0 - ay) / lv.cell
-    rb = (lv.y0 - by) / lv.cell
-    ts = [0.0, 1.0]
-    for u0, u1 in ((ca, cb), (ra, rb)):
-        if u1 != u0:
-            lo, hi = sorted((u0, u1))
-            ks = np.arange(np.floor(lo) - 1, np.ceil(hi) + 2)
-            ts.extend(((ks - u0) / (u1 - u0)).tolist())
-    ts = np.unique(np.clip(ts, 0, 1))
-    mids = np.concatenate([(ts[:-1] + ts[1:]) / 2, ts])
-    cols = np.floor(ca + mids * (cb - ca)).astype(np.int64)
-    rows = np.floor(ra + mids * (rb - ra)).astype(np.int64)
-    return np.unique(np.stack([rows, cols], axis=1), axis=0)
+def _dotnet_sort(items: list, key) -> None:
+    """List<T>.Sort(Comparison) on .NET Framework 4.7.2 (introsort: insertion
+    sort up to 16 items, median-of-three quicksort, heapsort past the depth
+    limit), in place. Matches RASMapper's order of equal keys, which the
+    profile filter is sensitive to."""
+    n = len(items)
+    if n < 2:
+        return
+    k = [key(v) for v in items]
+
+    def cmp(a, b):
+        return -1 if a < b else (0 if a == b else 1)
+
+    def swap(i, j):
+        items[i], items[j] = items[j], items[i]
+        k[i], k[j] = k[j], k[i]
+
+    def swap_if_greater(i, j):
+        if i != j and cmp(k[i], k[j]) > 0:
+            swap(i, j)
+
+    def insertion(lo, hi):
+        for i in range(lo, hi):
+            j = i
+            tv, tk = items[i + 1], k[i + 1]
+            while j >= lo and cmp(tk, k[j]) < 0:
+                items[j + 1], k[j + 1] = items[j], k[j]
+                j -= 1
+            items[j + 1], k[j + 1] = tv, tk
+
+    def down_heap(i, m, lo):
+        dv, dk = items[lo + i - 1], k[lo + i - 1]
+        while i <= m // 2:
+            child = 2 * i
+            if child < m and cmp(k[lo + child - 1], k[lo + child]) < 0:
+                child += 1
+            if not cmp(dk, k[lo + child - 1]) < 0:
+                break
+            items[lo + i - 1], k[lo + i - 1] = items[lo + child - 1], k[lo + child - 1]
+            i = child
+        items[lo + i - 1], k[lo + i - 1] = dv, dk
+
+    def heapsort(lo, hi):
+        m = hi - lo + 1
+        for i in range(m // 2, 0, -1):
+            down_heap(i, m, lo)
+        for i in range(m, 1, -1):
+            swap(lo, lo + i - 1)
+            down_heap(1, i - 1, lo)
+
+    def partition(lo, hi):
+        mid = lo + (hi - lo) // 2
+        swap_if_greater(lo, mid)
+        swap_if_greater(lo, hi)
+        swap_if_greater(mid, hi)
+        pivot = k[mid]
+        swap(mid, hi - 1)
+        left, right = lo, hi - 1
+        while left < right:
+            left += 1
+            while cmp(k[left], pivot) < 0:
+                left += 1
+            right -= 1
+            while cmp(pivot, k[right]) < 0:
+                right -= 1
+            if left >= right:
+                break
+            swap(left, right)
+        swap(left, hi - 1)
+        return left
+
+    def intro(lo, hi, depth):
+        while hi > lo:
+            size = hi - lo + 1
+            if size <= 16:
+                if size == 1:
+                    return
+                if size == 2:
+                    swap_if_greater(lo, hi)
+                    return
+                if size == 3:
+                    swap_if_greater(lo, hi - 1)
+                    swap_if_greater(lo, hi)
+                    swap_if_greater(hi - 1, hi)
+                    return
+                insertion(lo, hi)
+                return
+            if depth == 0:
+                heapsort(lo, hi)
+                return
+            depth -= 1
+            p = partition(lo, hi)
+            intro(p + 1, hi, depth)
+            hi = p - 1
+
+    intro(0, n - 1, 2 * (n.bit_length() - 1))
 
 
-def face_profile(terrain: Terrain, pts: np.ndarray, tol: float) -> tuple:
+def _clip(ax, ay, bx, by, min_x, max_x, min_y, max_y):
+    """SegmentM.ClipToExtent: the segment clipped to an extent, or None."""
+    if (max(ax, bx) < min_x or min(ax, bx) > max_x or max(ay, by) < min_y or min(ay, by) > max_y):
+        return None
+    t0, t1 = 0.0, 1.0
+    dx, dy = bx - ax, by - ay
+    for p, q in ((-dx, ax - min_x), (dx, max_x - ax), (-dy, ay - min_y), (dy, max_y - ay)):
+        if p < 0:
+            r = q / p
+            if r > t1:
+                return None
+            if r > t0:
+                t0 = r
+        elif p > 0:
+            r = q / p
+            if r < t0:
+                return None
+            if r < t1:
+                t1 = r
+        elif q < 0:
+            return None
+    nbx, nby = (ax + t1 * dx, ay + t1 * dy) if t1 < 1.0 else (bx, by)
+    nax, nay = (ax + t0 * dx, ay + t0 * dy) if t0 > 0.0 else (ax, ay)
+    return nax, nay, nbx, nby
+
+
+def _walk_cells(ax, ay, bx, by, min_x, max_x, min_y, max_y, cell, rows, cols, tol=0.0):
+    """RasterizeSegment.ComputeCells: the raster cells a segment passes
+    through, in order from A, as (row, col)."""
+    inside = lambda x, y: (min_x - tol <= x <= max_x + tol) and (min_y - tol <= y <= max_y + tol)
+    if not (inside(ax, ay) and inside(bx, by)):
+        c = _clip(ax, ay, bx, by, min_x, max_x, min_y, max_y)
+        if c is None:
+            return []
+        ax, ay, bx, by = c
+    row = lambda y: int(np.floor((max_y - y) / cell))
+    col = lambda x: int(np.floor((x - min_x) / cell))
+    r0, c0, r1, c1 = row(ay), col(ax), row(by), col(bx)
+    r0 = 0 if r0 < 0 else (rows - 1 if r0 == rows else r0)
+    c0 = 0 if c0 < 0 else (cols - 1 if c0 == cols else c0)
+    r1 = 0 if r1 < 0 else (rows - 1 if r1 == rows else r1)
+    c1 = 0 if c1 < 0 else (cols - 1 if c1 == cols else c1)
+    dc, dr = c1 - c0, r1 - r0
+    dx, dy = bx - ax, by - ay
+    if dc == 0 and dr == 0:
+        return [(r0, c0)]
+    if dc == 0:
+        s = 1 if dr > 0 else -1
+        return [(r, c0) for r in range(r0, r1 + s, s)]
+    if dr == 0:
+        s = 1 if dc > 0 else -1
+        return [(r0, c) for c in range(c0, c1 + s, s)]
+    out = [(r0, c0)]
+    r, c = r0, c0
+    min_y_of = lambda r: max_y - cell * (r + 1)
+    max_y_of = lambda r: max_y - cell * r
+    max_x_of = lambda c: min_x + cell * (c + 1)
+    min_x_of = lambda c: min_x + cell * c
+    while not (c == c1 and r == r1):
+        ty = ((min_y_of(r) if dr > 0 else max_y_of(r)) - ay) / dy
+        tx = ((max_x_of(c) if dc > 0 else min_x_of(c)) - ax) / dx
+        step_row = (ty < tx) and (r < r1 if dr > 0 else r > r1)
+        if step_row or c == c1:
+            r += 1 if dr > 0 else -1
+        else:
+            c += 1 if dc > 0 else -1
+        out.append((r, c))
+    return out
+
+
+def _tile_profile(terrain, lv, tr, tc, ax, ay, bx, by, start, length):
+    """ComputeProfilesOnTile: the segment's points on one tile, in RASMapper's
+    order: ends that lie on the tile, then each block it crosses, eight edges
+    each (centre to corners, then the sides)."""
+    t = lv.tile
+    min_x, max_y, cell = lv.tile_frame(tr, tc)
+    max_x = lv.rb_x0 + lv.rb_cell * (tc + 1)
+    min_y = lv.rb_y0 - lv.rb_cell * (tr + 1)
+    pts = []
+    for (px, py, s) in ((ax, ay, start), (bx, by, start + length)):
+        if min_x - 1e-7 <= px <= max_x + 1e-7 and min_y - 1e-7 <= py <= max_y + 1e-7:
+            z = terrain.sample(np.array([px]), np.array([py]), 0, (tr, tc))[0]
+            if np.isfinite(z):
+                pts.append((F32(s), F32(z)))
+    cells = _walk_cells(ax, ay, bx, by, min_x, max_x, min_y, max_y, cell, t, t, 1e-7)
+    if not cells:
+        return pts
+    lr = np.array([rc[0] for rc in cells])
+    lc = np.array([rc[1] for rc in cells])
+    ok, a, b, c, d = Terrain._corners(lv, tr * t + lr, tc * t + lc)
+    lr, lc, a, b, c, d = lr[ok], lc[ok], a[ok], b[ok], c[ok], d[ok]
+    if len(lr) == 0:
+        return pts
+    bminx, bmaxx = min_x + cell * lc, min_x + cell * (lc + 1)
+    bmaxy, bminy = max_y - cell * lr, max_y - cell * (lr + 1)
+    cx, cy = min_x + cell * (lc + 0.5), max_y - cell * (lr + 0.5)
+    ez = ((((a + b) + c) + d) * F32(0.5)).astype(np.float64) * 0.5
+    A = (bminx, bmaxy, a.astype(np.float64))
+    B = (bmaxx, bmaxy, b.astype(np.float64))
+    C = (bmaxx, bminy, c.astype(np.float64))
+    D = (bminx, bminy, d.astype(np.float64))
+    E = (cx, cy, ez)
+    edges = [(E, A), (E, B), (E, C), (E, D), (A, B), (B, C), (C, D), (D, A)]
+    hits, ss, zz = [], [], []
+    for p, q in edges:
+        h, t1, t2 = _segment_intersections(ax, ay, bx, by, p[0], p[1], q[0], q[1])
+        hits.append(h)
+        ss.append((start + length * t1).astype(F32))
+        zz.append((p[2] + (q[2] - p[2]) * t2).astype(F32))
+    hits, ss, zz = np.stack(hits, 1), np.stack(ss, 1), np.stack(zz, 1)   # block x edge
+    for i in range(len(lr)):
+        for e in range(8):
+            if hits[i, e]:
+                pts.append((ss[i, e], zz[i, e]))
+    return pts
+
+
+def face_profile(terrain, pts: np.ndarray, tol: float) -> tuple:
     """TerrainLayer.ComputeProfiles for one face polyline: (station, elevation)
-    as float32 arrays, thinned with the face profile tolerance."""
+    as float32 arrays, thinned with the face profile tolerance. Each raster
+    adds the points where it has data; the whole is then sorted and thinned."""
+    profile = []
+    for raster in _as_layer(terrain).rasters:
+        profile.extend(_raster_profile(raster, pts, tol))
+    if not profile:
+        return np.empty(0, F32), np.empty(0, F32)
+    total = float(np.sum(np.hypot(np.diff(pts[:, 0]), np.diff(pts[:, 1]))))
+    _dotnet_sort(profile, key=lambda p: p[0])
+    if abs(float(profile[-1][0]) - total) > 0.001:
+        profile.append((F32(total), profile[-1][1]))
+    if abs(float(profile[0][0])) > 0.001:
+        profile.append((F32(0), profile[0][1]))
+    _dotnet_sort(profile, key=lambda p: p[0])
+    s = np.array([p[0] for p in profile], F32)
+    z = np.array([p[1] for p in profile], F32)
+    if tol > 0:
+        keep = _dp_keep(s, z, tol)
+        s, z = s[keep], z[keep]
+    return s, z
+
+
+def _raster_profile(terrain: Terrain, pts: np.ndarray, tol: float) -> list:
+    """TerrainLayer.ComputeProfilesOnRaster: one raster's points along a face
+    polyline, each tile's thinned on its own."""
     lv = terrain.levels[0]
-    st_all, z_all = [], []
-    seg_start = 0.0
+    t = lv.tile
+    tiles_max_x = lv.rb_x0 + lv.rb_cell * lv.ntw
+    tiles_min_y = lv.rb_y0 - lv.rb_cell * lv.ntt
+    # Which tiles each segment crosses, in the order RASMapper finds them.
+    work = {}
+    start = 0.0
     for (ax, ay), (bx, by) in zip(pts[:-1], pts[1:]):
         length = float(np.hypot(bx - ax, by - ay))
-        blocks = _blocks_on_segment(lv, ax, ay, bx, by)
-        ok, a, b, c, d = Terrain._corners(lv, blocks[:, 0], blocks[:, 1])
-        blocks, a, b, c, d = blocks[ok], a[ok], b[ok], c[ok], d[ok]
-        tile = lv.tile
-        tiles = {}
-        if len(blocks):
-            minx, maxx, maxy, miny, cx, cy = lv.block_bounds(blocks[:, 0], blocks[:, 1])
-            e = (((a + b) + c) + d) * F32(0.5)
-            ez = e.astype(np.float64) * 0.5
-            A = (minx, maxy, a.astype(np.float64))
-            B = (maxx, maxy, b.astype(np.float64))
-            C = (maxx, miny, c.astype(np.float64))
-            D = (minx, miny, d.astype(np.float64))
-            E = (cx, cy, ez)
-            edges = [(E, A), (E, B), (E, C), (E, D), (A, B), (B, C), (C, D), (D, A)]
-            tid = (blocks[:, 0] // tile) * 1_000_000 + blocks[:, 1] // tile
-            for (p, q) in edges:
-                hit, t1, t2 = _segment_intersections(ax, ay, bx, by, p[0], p[1], q[0], q[1])
-                zz = (p[2] + (q[2] - p[2]) * t2).astype(F32)
-                ss = (seg_start + length * t1).astype(F32)
-                for k in np.where(hit)[0]:
-                    tiles.setdefault(int(tid[k]), []).append((ss[k], zz[k]))
-        # Segment ends go to every tile whose extent holds them.
-        for (px_, py_, s) in ((ax, ay, seg_start), (bx, by, seg_start + length)):
-            # every tile whose extent holds the point (Extent.RoughlyContains),
-            # each evaluating it in its own frame
-            tc0 = int(np.floor((px_ - lv.rb_x0) / lv.rb_cell))
-            tr0 = int(np.floor((lv.rb_y0 - py_) / lv.rb_cell))
-            for tr in (tr0 - 1, tr0, tr0 + 1):
-                for tc in (tc0 - 1, tc0, tc0 + 1):
-                    min_x, max_y, _ = lv.tile_frame(tr, tc)
-                    max_x = lv.rb_x0 + lv.rb_cell * (tc + 1)
-                    min_y = lv.rb_y0 - lv.rb_cell * (tr + 1)
-                    if not (min_x - 1e-7 <= px_ <= max_x + 1e-7 and min_y - 1e-7 <= py_ <= max_y + 1e-7):
-                        continue
-                    z = terrain.sample(np.array([px_]), np.array([py_]), 0, (tr, tc))[0]
-                    if np.isfinite(z):
-                        tiles.setdefault(tr * 1_000_000 + tc, []).append((F32(s), F32(z)))
-        for key in sorted(tiles):
-            pts_t = sorted(tiles[key], key=lambda p: p[0])
-            sx = np.array([p[0] for p in pts_t], dtype=F32)
-            sz = np.array([p[1] for p in pts_t], dtype=F32)
-            if tol > 0:
-                idx = _dp_keep(sx, sz, tol)
-                sx, sz = sx[idx], sz[idx]
-            st_all.append(sx)
-            z_all.append(sz)
-        seg_start += length
-    if not st_all:
-        return np.empty(0, F32), np.empty(0, F32)
-    s = np.concatenate(st_all)
-    z = np.concatenate(z_all)
-    order = np.argsort(s, kind="stable")
-    s, z = list(s[order]), list(z[order])
-    total = float(np.sum(np.hypot(np.diff(pts[:, 0]), np.diff(pts[:, 1]))))
-    if abs(float(s[-1]) - total) > 0.001:
-        s.append(F32(total))
-        z.append(z[-1])
-    if abs(float(s[0])) > 0.001:
-        s.append(F32(0))
-        z.append(z[0])
-    s = np.array(s, dtype=F32)
-    z = np.array(z, dtype=F32)
-    order = np.argsort(s, kind="stable")
-    s, z = s[order], z[order]
-    if tol > 0:
-        idx = _dp_keep(s, z, tol)
-        s, z = s[idx], z[idx]
-    return s, z
+        clipped = _clip(ax, ay, bx, by, lv.rb_x0, tiles_max_x, tiles_min_y, lv.rb_y0)
+        if clipped is not None:
+            for tr, tc in _walk_cells(*clipped, lv.rb_x0, tiles_max_x, tiles_min_y, lv.rb_y0,
+                                      lv.rb_cell, lv.ntt, lv.ntw):
+                if lv.tile_has_data(tr, tc):
+                    work.setdefault((tr, tc), []).append((ax, ay, bx, by, start, length))
+        start += length
+    profile = []
+    for (tr, tc), segs in work.items():
+        for ax, ay, bx, by, s0, length in segs:
+            part = _tile_profile(terrain, lv, tr, tc, ax, ay, bx, by, s0, length)
+            _dotnet_sort(part, key=lambda p: p[0])
+            if tol > 0 and part:
+                keep = _dp_keep(np.array([p[0] for p in part], F32),
+                                np.array([p[1] for p in part], F32), tol)
+                part = [part[i] for i in keep]
+            profile.extend(part)
+    return profile
 
 
 class _HP:
@@ -810,20 +1023,28 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
     min_x, min_y = poly.min(axis=0)
     max_x, max_y = poly.max(axis=0)
     rows, cols, rmin_x, rmax_y, rmax_x, rmin_y, cs = _cell_raster(max_x, min_x, max_y, min_y)
-    level = terrain.level_for(cs)
     xc = rmin_x + cs * (np.arange(cols) + 0.5)
     yc = rmax_y - cs * (np.arange(rows) + 0.5)
     X, Y = np.meshgrid(xc, yc)
-    vals = terrain.sample(X.ravel(), Y.ravel(), level)
-    # TerrainLayer.Resample: stitches from the render blocks under the raster,
-    # two blocks either side, bridged by a TIN painted over the values.
-    lv = terrain.levels[level]
-    bc = np.floor((xc[[0, -1]] - lv.x0) / lv.cell).astype(int)
-    br = np.floor((lv.y0 - yc[[0, -1]]) / lv.cell).astype(int)
-    segs = _stitch_segments(lv, br.min() - 2, br.max() + 2, bc.min() - 2, bc.max() + 2)
+    # TerrainLayer.Resample: each raster fills what the ones before it left
+    # empty, at its own pyramid level; stitches from the render blocks under
+    # the raster, two blocks either side, are bridged by a TIN painted over.
+    vals = np.full(rows * cols, np.nan, dtype=F32)
+    segs, stitch_cell = [], 0.0
+    for raster in _as_layer(terrain).rasters:
+        level = raster.level_for(cs)
+        v = raster.sample(X.ravel(), Y.ravel(), level)
+        vals = np.where(np.isnan(vals), v, vals).astype(F32)
+        lv = raster.levels[level]
+        bc = np.floor((xc[[0, -1]] - lv.x0) / lv.cell).astype(int)
+        br = np.floor((lv.y0 - yc[[0, -1]]) / lv.cell).astype(int)
+        found = _stitch_segments(lv, br.min() - 2, br.max() + 2, bc.min() - 2, bc.max() + 2)
+        if found:
+            segs.extend(found)
+            stitch_cell = max(stitch_cell, lv.cell)
     if len(segs) > 1:
         vals = np.where(np.isfinite(vals), vals, F32(NODATA)).astype(F32)
-        _paint_triangles(_stitch_triangles(segs, lv.cell), vals, rows, cols, rmin_x, rmax_y, cs)
+        _paint_triangles(_stitch_triangles(segs, stitch_cell), vals, rows, cols, rmin_x, rmax_y, cs)
         vals = np.where(vals == F32(NODATA), np.nan, vals).astype(F32)
     inside = _rasterize(poly, rows, cols, rmin_x, rmax_y, rmax_x, cs).ravel()
     sel = inside & np.isfinite(vals)

@@ -2127,7 +2127,9 @@ def main():
             lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings)
 
         # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
-        terrain = property_tables.Terrain(str(terrain_tif))
+        terrain_path = _find_terrain_layer(project_dir, src_g01_hdf) or terrain_tif
+        logger.info("Terrain: %s", terrain_path)
+        terrain = property_tables.TerrainLayer(str(terrain_path))
         settings = table_settings(src_g01_hdf, meta["area_name"])
         face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
         cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
@@ -2158,7 +2160,9 @@ def main():
             lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), g01.default_mannings)
 
         # Step B4: Face tables, then cell tables (a cell's minimum depends on its faces)
-        terrain = property_tables.Terrain(str(terrain_tif))
+        terrain_path = _find_terrain_layer(project_dir) or terrain_tif
+        logger.info("Terrain: %s", terrain_path)
+        terrain = property_tables.TerrainLayer(str(terrain_path))
         settings = table_settings()
         face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
         cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
@@ -2489,6 +2493,24 @@ def _g01hdf_has_tables(g01_hdf_path: Path) -> bool:
     except Exception:
         pass
     return False
+
+
+def _find_terrain_layer(project_dir: Path, g01_hdf: Path = None):
+    """The terrain RASMapper uses: the geometry's own Terrain Filename (a
+    terrain HDF listing its rasters) when it has one, else a terrain HDF in
+    Terrain/, else a terrain GeoTIFF."""
+    if g01_hdf is not None and g01_hdf.exists():
+        with h5py.File(str(g01_hdf), "r") as hf:
+            name = hf["Geometry"].attrs.get("Terrain Filename", b"").decode("utf-8", "replace")
+        if name:
+            path = (project_dir / name.replace("\\", "/")).resolve()
+            if path.exists():
+                return path
+    for hdf in sorted((project_dir / "Terrain").glob("*.hdf")):
+        with h5py.File(str(hdf), "r") as hf:
+            if "Terrain" in hf:
+                return hdf
+    return _find_terrain_tif(project_dir)
 
 
 def _find_terrain_tif(project_dir):
