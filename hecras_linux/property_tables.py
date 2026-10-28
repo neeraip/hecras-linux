@@ -15,12 +15,15 @@ is the mean of the four corners.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from pathlib import Path
 
 import h5py
 import numpy as np
 from osgeo import gdal
+
+from . import tin
 
 F32 = np.float32
 NODATA = -9999.0
@@ -220,6 +223,154 @@ class TerrainLayer:
             self.rasters.append(Terrain(str(path.parent / tif)))
         if not self.rasters:
             raise ValueError(f"{path}: no rasters listed under /Terrain")
+        # TerrainLayer.Level0StitchTIN: the triangles RASMapper stores to bridge
+        # the seams between rasters, sampled along faces after the rasters.
+        with h5py.File(str(path), "r") as hf:
+            pts = hf.get("Terrain/Stitch TIN Points")
+            tri = hf.get("Terrain/Stitch TIN Triangles")
+            if pts is not None and tri is not None and len(pts) and len(tri):
+                self.stitch_points = pts[()].astype(np.float64)
+                self.stitch_triangles = tri[()].astype(np.int64)
+                v = self.stitch_points[self.stitch_triangles][:, :, :2]
+                self.stitch_bounds = np.concatenate([v.min(axis=1), v.max(axis=1)], axis=1)
+
+        self.modifications = _read_modifications(path)
+
+    stitch_points = None
+    stitch_triangles = None
+    modifications = ()
+
+    def stitch_profile(self, pts: np.ndarray) -> list:
+        """Tin.ComputeProfiles on the stitch TIN for one polyline: segment ends
+        inside a triangle and crossings of triangle edges, as (station, z),
+        sorted and filtered at zero tolerance."""
+        if self.stitch_triangles is None:
+            return []
+        P, T = self.stitch_points, self.stitch_triangles
+        out = []
+        start = 0.0
+        for (ax, ay), (bx, by) in zip(pts[:-1], pts[1:]):
+            length = float(np.hypot(bx - ax, by - ay))
+            lo_x, hi_x, lo_y, hi_y = min(ax, bx), max(ax, bx), min(ay, by), max(ay, by)
+            b = self.stitch_bounds
+            near = np.nonzero((b[:, 0] <= hi_x) & (b[:, 2] >= lo_x) & (b[:, 1] <= hi_y) & (b[:, 3] >= lo_y))[0]
+            for t in near:
+                p0, p1, p2 = P[T[t, 0]], P[T[t, 1]], P[T[t, 2]]
+                for (px, py, s) in ((ax, ay, start), (bx, by, start + length)):
+                    n1, n2, n3 = p1[1] - p2[1], p0[0] - p2[0], p2[0] - p1[0]
+                    n4 = p0[1] - p2[1]
+                    den = n1 * n2 + n3 * n4
+                    dx, dy = px - p2[0], py - p2[1]
+                    l0 = (n1 * dx + n3 * dy) / den
+                    l1 = (n2 * dy - n4 * dx) / den
+                    l2 = 1.0 - l0 - l1
+                    if 0 <= l0 <= 1 and 0 <= l1 <= 1 and 0 <= l2 <= 1:
+                        out.append((F32(s), F32(p0[2] * l0 + p1[2] * l1 + p2[2] * l2)))
+                for e0, e1 in ((p0, p1), (p1, p2), (p2, p0)):
+                    hit, t1, t2 = _segment_intersections(ax, ay, bx, by, np.array([e0[0]]), np.array([e0[1]]),
+                                                         np.array([e1[0]]), np.array([e1[1]]))
+                    if hit[0]:
+                        dx, dy = bx - ax, by - ay
+                        ex, ey = e1[0] - e0[0], e1[1] - e0[1]
+                        den = ey * dx - ex * dy
+                        u = (ex * (ay - e0[1]) - ey * (ax - e0[0])) / den   # unclamped t1
+                        x, y = ax + u * dx, ay + u * dy
+                        st = start + float(np.hypot(x - ax, y - ay))
+                        out.append((F32(st), F32(e0[2] + (e1[2] - e0[2]) * t2[0])))
+            start += length
+        if not out:
+            return []
+        _dotnet_sort(out, key=lambda q: q[0])
+        keep = _dp_keep(np.array([q[0] for q in out], F32), np.array([q[1] for q in out], F32), 0.0)
+        return [out[i] for i in keep]
+
+
+MOD_TYPES = ("SetValue", "AddValue", "TakeHigher", "TakeLower")
+
+
+def _read_modifications(path: Path) -> list:
+    """The terrain's elevation modifications that the port applies: polygons
+    with one elevation (no boundary elevations, Z values or stored profile),
+    as (ring, type, value, triangles). Anything else is refused."""
+    out = []
+    with h5py.File(str(path), "r") as hf:
+        grp = hf.get("Modifications")
+        if grp is None:
+            return out
+        for name, layer in grp.items():
+            info = layer.get("Polygon Info") if isinstance(layer, h5py.Group) else None
+            if info is None or not len(info):
+                if isinstance(layer, h5py.Group) and any(len(d) for d in layer.values()
+                                                         if isinstance(d, h5py.Dataset)):
+                    raise SystemExit(f"ras_preprocess.py: terrain modification layer '{name}' "
+                                     "isn't supported yet. Use Workflow A.")
+                continue
+            attrs, pts = layer["Attributes"][()], layer["Polygon Points"][()]
+            prof = layer.get("Profile Info")
+            for k, (start, count, _, parts) in enumerate(info[()]):
+                a = attrs[k]
+                kind = a["Elevation Type"].decode().strip()
+                flat = (parts == 1 and kind in MOD_TYPES
+                        and not a["Generate Boundary Elevations"] and not a["Use ShapeFile Z Elevations"]
+                        and (prof is None or prof[k][1] == 0))
+                if not flat:
+                    raise SystemExit(f"ras_preprocess.py: terrain modification '{a['Name'].decode()}' "
+                                     "isn't supported yet (only single-part polygons with one "
+                                     "elevation). Use Workflow A.")
+                value = float(a["Elevation Value"])
+                if np.isnan(value):
+                    continue
+                ring = pts[start:start + count].astype(np.float64)
+                if np.array_equal(ring[0], ring[-1]):
+                    ring = ring[:-1]
+                tri = tin.PolygonTin(ring)
+                P = tri.points
+                tris = [tuple((P[q][0], P[q][1], value) for q in (t.p0, t.p1, t.p2))
+                        for t in tri.tris if not t.deleted()]
+                out.append((np.vstack([ring, ring[:1]]), kind, F32(value), tris))
+    return out
+
+
+def _apply_modifications(mods, vals, rows, cols, min_x, max_x, min_y, max_y, cs):
+    """ElevationModificationGroup.ObstructRaster on a resampled raster: each
+    polygon's TIN painted onto it, then GetReplacementValue (no data, NaN
+    here, takes the modification's value)."""
+    for ring, kind, value, tris in mods:
+        lo, hi = ring.min(axis=0), ring.max(axis=0)
+        if lo[0] > max_x or hi[0] < min_x or lo[1] > max_y or hi[1] < min_y:
+            continue
+        mod = [None] * (rows * cols)
+        tin.paint_bary(tris, mod, rows, cols, min_x, max_x, min_y, max_y, cs)
+        for n, m in enumerate(mod):
+            if m is None:
+                continue
+            m = F32(m)
+            orig = vals[n]
+            if np.isnan(orig) or kind == "SetValue":
+                vals[n] = m
+            elif kind == "AddValue":
+                vals[n] = F32(orig + m)
+            elif kind == "TakeHigher" and m > orig:
+                vals[n] = m
+            elif kind == "TakeLower" and m < orig:
+                vals[n] = m
+
+
+def _crosses_modification(layer, pts) -> bool:
+    """Whether a face touches a modification polygon, whose profiles
+    (ObstructProfiles) aren't ported."""
+    lo, hi = pts.min(axis=0), pts.max(axis=0)
+    for ring, *_ in layer.modifications:
+        rlo, rhi = ring.min(axis=0), ring.max(axis=0)
+        if (hi < rlo).any() or (lo > rhi).any():
+            continue
+        if points_in_ring(ring, pts[:, 0], pts[:, 1]).any():
+            return True
+        for a, b in zip(pts[:-1], pts[1:]):
+            for c, d in zip(ring[:-1], ring[1:]):
+                if tin._seg_intersect(a, b, c, d)[0]:
+                    return True
+    return False
 
 
 def _as_layer(terrain) -> "TerrainLayer":
@@ -227,13 +378,15 @@ def _as_layer(terrain) -> "TerrainLayer":
         return terrain
     layer = TerrainLayer.__new__(TerrainLayer)
     layer.rasters = [terrain]
+    layer.stitch_triangles = None
     return layer
 
 
 def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
     """RenderBlock.SetRowCol's stitches for render blocks rows r0..r1, cols
-    c0..c1: the flagged edges of blocks with data, as ((x, y, z), (x, y, z))
-    running clockwise round the block (so no data lies on their left)."""
+    c0..c1: the flagged edges of blocks with data, as ((x, y, z, m), (x, y, z, m))
+    with m the block size, running clockwise round the block (so no data lies
+    on their left)."""
     if lv.mask is None:
         return []
     nr, nc = lv.z.shape
@@ -247,10 +400,11 @@ def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
     for r, c in zip(rows + r0, cols + c0):
         b = int(lv.mask[r, c])
         minx, maxx, maxy, miny, _, _ = (float(v) for v in lv.block_bounds(r, c))
-        A = (minx, maxy, float(lv.z[r, c]))
-        B = (maxx, maxy, float(lv.z[r, c + 1]))
-        C = (maxx, miny, float(lv.z[r + 1, c + 1]))
-        D = (minx, miny, float(lv.z[r + 1, c]))
+        m = float(lv.tile_frame(r // lv.tile, c // lv.tile)[2])
+        A = (minx, maxy, float(lv.z[r, c]), m)
+        B = (maxx, maxy, float(lv.z[r, c + 1]), m)
+        C = (maxx, miny, float(lv.z[r + 1, c + 1]), m)
+        D = (minx, miny, float(lv.z[r + 1, c]), m)
         if b & 8:
             segs.append((D, A))
         if b & 0x10:
@@ -260,109 +414,6 @@ def _stitch_segments(lv: _Level, r0, r1, c0, c1) -> list:
         if b & 2:
             segs.append((C, D))
     return segs
-
-
-def _stitch_triangles(segs: list, cell: float) -> list:
-    """The triangles RASMapper's stitch TIN keeps (DelaunayTINFactory with
-    stitches only): a Delaunay triangulation of the stitch points without
-    triangles that span more than about two pixels or lie on the data side of
-    a stitch edge, so what is left bridges narrow gaps in the data. Each
-    triangle is three (x, y, z) points, counter-clockwise."""
-    from scipy.spatial import Delaunay
-    pts = {}
-    for a, b in segs:
-        pts.setdefault(a[:2], a)
-        pts.setdefault(b[:2], b)
-    keys = list(pts)
-    if len(keys) < 3:
-        return []
-    xy = np.array(keys)
-    index = {k: i for i, k in enumerate(keys)}
-    tri = Delaunay(xy)
-    simp = tri.simplices.copy()
-    # counter-clockwise
-    v = xy[simp]
-    cw = ((v[:, 1, 0] - v[:, 0, 0]) * (v[:, 2, 1] - v[:, 0, 1])
-          - (v[:, 1, 1] - v[:, 0, 1]) * (v[:, 2, 0] - v[:, 0, 0])) < 0
-    simp[cw] = simp[cw][:, [0, 2, 1]]
-    nbr = tri.neighbors.copy()
-    nbr[cw] = nbr[cw][:, [0, 2, 1]]
-    deleted = np.zeros(len(simp), bool)
-    limit = cell * 2.0001
-    v = xy[simp]
-    for i, j in ((0, 1), (1, 2), (2, 0)):
-        d = np.abs(v[:, i] - v[:, j])
-        deleted |= (d[:, 0] > limit) | (d[:, 1] > limit)
-    edges = {frozenset((index[a[:2]], index[b[:2]])) for a, b in segs}
-    # triangle across each edge: edge k of a triangle is opposite vertex k
-    def edge_of(t, k):
-        return frozenset((simp[t][(k + 1) % 3], simp[t][(k + 2) % 3]))
-    tri_of_edge = {}
-    for t in range(len(simp)):
-        for k in range(3):
-            tri_of_edge.setdefault((simp[t][(k + 1) % 3], simp[t][(k + 2) % 3]), t)
-    def rotate(t0, p):
-        # delete triangles round point p from t0, both ways, until a stitch edge
-        for direction in (1, 2):
-            t = t0
-            while True:
-                k = int(np.where(simp[t] == p)[0][0])
-                kk = (k + direction) % 3            # edge opposite kk contains p
-                if edge_of(t, kk) in edges:
-                    break
-                t = nbr[t][kk]
-                if t == -1 or t == t0:
-                    break
-                deleted[t] = True
-    for a, b in segs:
-        ia, ib = index[a[:2]], index[b[:2]]
-        # the triangle with directed edge b->a has a..b on its left side
-        t = tri_of_edge.get((ib, ia))
-        if t is None:
-            continue
-        deleted[t] = True
-        for p in simp[t]:
-            rotate(t, p)
-    return [[pts[keys[i]] for i in simp[t]] for t in range(len(simp)) if not deleted[t]]
-
-
-def _paint_triangles(tris, values, rows, cols, min_x, max_y, cs):
-    """Tin.Rasterize / RasterizeTriangle.ComputeCellsZNew onto a raster."""
-    max_x, min_y = min_x + cols * cs, max_y - rows * cs
-    for p0, p1, p2 in tris:
-        xs, ys = (p0[0], p1[0], p2[0]), (p0[1], p1[1], p2[1])
-        if (ys[0] == ys[1] == ys[2]) or (xs[0] == xs[1] == xs[2]):
-            continue
-        lo_x, hi_x, lo_y, hi_y = min(xs), max(xs), min(ys), max(ys)
-        if lo_x > max_x or hi_x < min_x or lo_y > max_y or hi_y < min_y:
-            continue
-        col = lambda x: int(np.floor((x - min_x) / cs))
-        row = lambda y: int(np.floor((max_y - y) / cs))
-        c0 = col(lo_x) if not lo_x < min_x else 0
-        r_bot = row(lo_y) if not lo_y < min_y else rows - 1
-        c1 = col(hi_x) if not hi_x > max_x else cols - 1
-        r_top = row(hi_y) if not hi_y > max_y else 0
-        ox, oy = min_x + cs * (c0 + 0.5), max_y - cs * (r_bot + 0.5)
-        q = [(p[0] - ox, p[1] - oy) for p in (p0, p1, p2)]
-        def bary(v0, v1):
-            dx, dy = v0[1] - v1[1], v1[0] - v0[0]
-            return v0[0] * v1[1] - v0[1] * v1[0], dx, dy
-        s0, dx0, dy0 = bary(q[1], q[2])
-        s1, dx1, dy1 = bary(q[2], q[0])
-        s2, dx2, dy2 = bary(q[0], q[1])
-        total = s0 + s1 + s2
-        for r in range(r_bot, r_top - 1, -1):
-            if 0 <= r < rows:
-                w0, w1, w2 = s0, s1, s2
-                for c in range(c0, c1 + 1):
-                    if w0 >= 0.0 and w1 >= 0.0 and w2 >= 0.0 and 0 <= c < cols:
-                        values[r * cols + c] = F32((w0 * p0[2] + w1 * p1[2] + w2 * p2[2]) / total)
-                    w0 += dx0 * cs
-                    w1 += dx1 * cs
-                    w2 += dx2 * cs
-            s0 += dy0 * cs
-            s1 += dy1 * cs
-            s2 += dy2 * cs
 
 
 def _interpolate(a, b, c, d, xf, yf):
@@ -654,9 +705,18 @@ def face_profile(terrain, pts: np.ndarray, tol: float) -> tuple:
     """TerrainLayer.ComputeProfiles for one face polyline: (station, elevation)
     as float32 arrays, thinned with the face profile tolerance. Each raster
     adds the points where it has data; the whole is then sorted and thinned."""
+    layer = _as_layer(terrain)
+    if getattr(layer, "modifications", ()) and _crosses_modification(layer, pts):
+        raise SystemExit("ras_preprocess.py: a face crosses a terrain modification; "
+                         "face profiles through modifications aren't supported yet. "
+                         "Use Workflow A.")
     profile = []
-    for raster in _as_layer(terrain).rasters:
+    for raster in layer.rasters:
         profile.extend(_raster_profile(raster, pts, tol))
+    stitched = layer.stitch_profile(pts) if isinstance(layer, TerrainLayer) else []
+    if stitched:
+        profile.extend(stitched)
+        _dotnet_sort(profile, key=lambda p: p[0])
     if not profile:
         return np.empty(0, F32), np.empty(0, F32)
     total = float(np.sum(np.hypot(np.diff(pts[:, 0]), np.diff(pts[:, 1]))))
@@ -899,6 +959,138 @@ def face_table(s, z, mann_n, elev_tol, k_tol, laminar) -> list:
         hp.n = n
     if k_tol <= 0:
         return geom
+    return _refine(geom, width, laminar, elev_tol, k_tol)
+
+
+def face_table_n_profile(s, z, n_stations, n_values, mesh_n, elev_tol, k_tol, laminar) -> list:
+    """ProfileHydraulicPropertiesTable with a Manning's n profile along the
+    face (Multiple Face Mann n): the face is split where n changes and each
+    row's n is the wetted-perimeter composite of the parts. A row with n 0
+    (the face didn't split) takes the face's own n when written."""
+    zmin, zmax = z.min(), z.max()
+    width = F32(s[-1] - s[0])
+    subs, n_lo, n_hi = _n_subsections(s, z, n_stations, n_values, mesh_n, width)
+    if F32(zmax - zmin) <= 0:
+        n = F32(0)
+        if subs:
+            total_len, total = F32(0), 0.0
+            for ps, _, sn in subs:
+                length = F32(ps[-1] - ps[0])
+                total += float(length) * float(sn) ** 1.5
+                total_len = F32(total_len + length)
+            n = F32((total / float(total_len)) ** (2.0 / 3.0))
+        rows = [_HP(zmin, 0, width, width, F32(float(width) * 0.5), n)]
+        if F32(laminar) > 0:
+            rows.append(_HP(F32(zmin + F32(laminar)), F32(width * F32(laminar)), width, width,
+                            F32(width * F32(0.5)), n))
+        return rows
+    elevs = _sample_elevations(z, laminar, elev_tol)
+    if subs:
+        parts = [(_profile_properties(ps, pz, elevs), sn) for ps, pz, sn in subs]
+        geom = [None] * len(elevs)
+        cx, n = F32(0), F32(0)
+        for r in range(len(elevs) - 1, -1, -1):
+            hp = _HP(elevs[r])
+            moment, k = 0.0, 0.0
+            for g, sn in parts:
+                e = g[r]
+                hp.area = F32(hp.area + e.area)
+                hp.tw = F32(hp.tw + e.tw)
+                hp.wp = F32(hp.wp + e.wp)
+                moment += float(F32(e.area * e.cx))
+                k += float(e.wp) * float(sn) ** 1.5
+            if float(hp.area) > 0:
+                cx = F32(moment / float(hp.area))
+                n = F32((k / float(hp.wp)) ** 0.6666666865348816)
+                n = n_lo if n < n_lo else (n_hi if n > n_hi else n)
+            hp.cx, hp.n = cx, n
+            geom[r] = hp
+    else:
+        geom = _profile_properties(s, z, elevs)
+    if k_tol <= 0 or np.isnan(k_tol):
+        return geom
+    return _refine(geom, width, laminar, elev_tol, k_tol, top=zmax)
+
+
+def _n_subsections(s, z, n_stations, n_values, mesh_n, width):
+    """The face profile's parts, one per Manning's n reach, as (stations,
+    elevations, n); None unless there are at least two. Also the lowest and
+    highest n, which bound the composite."""
+    xs = [F32(x) for x in n_stations]
+    ns = [F32(mesh_n) if (np.isnan(v) or v <= 0) else F32(v) for v in n_values]
+    if len(xs) <= 1:
+        return None, None, None
+    last = F32(s[-1])
+    short = F32(width / F32(1000))
+    for j in range(len(xs) - 1, -1, -1):
+        nxt = last if j >= len(xs) - 1 else xs[j + 1]
+        if F32(nxt - xs[j]) < short:
+            del xs[j], ns[j]
+    if len(xs) <= 1:
+        return None, None, None
+    xs[0] = F32(0)
+    subs = []
+    for k in range(len(xs)):
+        nxt = last if k >= len(xs) - 1 else xs[k + 1]
+        ps, pz = _sub_section(s, z, xs[k], nxt)
+        if len(ps) <= 1 or not (ps[-1] > ps[0]):
+            continue
+        subs.append((np.array(ps, F32), np.array(pz, F32), ns[k]))
+    if len(subs) <= 1:
+        return None, None, None
+    return subs, min(ns), max(ns)
+
+
+def _sub_section(s, z, left, right):
+    """Profile.GetSubSection: the profile between two stations, with points
+    interpolated where it is cut."""
+    ps, pz = [], []
+
+    def add(x, y):
+        if not ps or not (ps[-1] == x and pz[-1] == y):
+            ps.append(x)
+            pz.append(y)
+
+    for i in range(len(s) - 1):
+        xl, yl, xr, yr = s[i], z[i], s[i + 1], z[i + 1]
+        if xl > right or xr < left:
+            continue
+        if xl == xr:
+            if xl == left:
+                ps.clear()
+                pz.clear()
+                if yl > yr:
+                    add(xl, yl)
+                    add(xr, yr)
+            elif xl == right:
+                if yl < yr:
+                    add(xl, yl)
+                    add(xr, yr)
+                break
+            else:
+                add(xl, yl)
+                add(xr, yr)
+        elif xl >= left and xr <= right:
+            add(xl, yl)
+            add(xr, yr)
+        else:
+            m = F32(F32(yr - yl) / F32(xr - xl))
+            if xl < left:
+                add(F32(left), F32(yl + F32(m * F32(left - xl))))
+            else:
+                add(xl, yl)
+            if xr > right:
+                add(F32(right), F32(yl + F32(m * F32(right - xl))))
+            else:
+                add(xr, yr)
+    return ps, pz
+
+
+def _refine(geom, width, laminar, elev_tol, k_tol, top=None) -> list:
+    """The rows kept from the sampled geometry: interpolation tolerance on
+    conveyance, conveyance that must rise, then thinning; extended upward
+    when the last row falls short of the full width (or, with an n profile,
+    of the profile's top)."""
     lst = [geom[0]]
     start = 1
     if F32(laminar) > 0:
@@ -916,7 +1108,7 @@ def face_table(s, z, mann_n, elev_tol, k_tol, laminar) -> list:
             out.append(_bisect_conveyance(lst[i - 1], lst[i], prev, elev_tol))
         out.append(item)
     out = _filter_on_conveyance(k_tol, out)
-    if out[-1].tw < lst[-1].tw:
+    if out[-1].tw < lst[-1].tw or (top is not None and out[-1].elev < top):
         hi = lst[-1].copy()
         while True:
             lo = hi.copy()
@@ -946,6 +1138,434 @@ def centroid_at_area(rows, fraction=0.05):
     i = lo
     f = F32(F32(target - areas[i - 1]) / F32(areas[i] - areas[i - 1]))
     return F32(rows[i].cx * f + rows[i - 1].cx * F32(F32(1) - f))
+
+
+# ----------------------------------------------------------------------------
+# Manning's n along faces (Multiple Face Mann n)
+# ----------------------------------------------------------------------------
+
+N_NODATA = F32(-9999)
+
+
+def _seg_length(ax, ay, bx, by):
+    """PointM.DistanceTo."""
+    return math.pow(math.pow(ax - bx, 2.0) + math.pow(ay - by, 2.0), 0.5)
+
+
+@dataclass
+class ClassTiles:
+    """A classification raster's tile grid as RASMapper reads it
+    (LandCoverLayer.TileRaster): tiles from the GeoTIFF's origin, one more
+    row and column than the file has, each read as 256 x 256 cells."""
+    min_x: float
+    max_y: float
+    tile: float
+    rows: int
+    cols: int
+    classes: object     # classes(min_x, max_y, cell_size) -> 256 x 256 class indexes
+
+    @classmethod
+    def from_tif(cls, tif: Path, classes) -> "ClassTiles":
+        ds = gdal.Open(str(tif))
+        gt = ds.GetGeoTransform()
+        bw, bh = ds.GetRasterBand(1).GetBlockSize()
+        w, h = ds.RasterXSize, ds.RasterYSize
+        ds = None
+        pixel = max(w * gt[1] / w, h * -gt[5] / h)
+        span = bw * pixel
+        ntw, ntt = -(-w // bw), -(-h // bh)
+        tile = max(((gt[0] + ntw * span) - gt[0]) / ntw, (gt[3] - (gt[3] - ntt * span)) / ntt)
+        return cls(gt[0], gt[3], tile, ntt + 1, ntw + 1, classes)
+
+
+def face_n_profiles(polylines: list, tiles: ClassTiles, n_of_class, replace_nodata: float,
+                    decimal_places: int = 1, regions: list = (), n_in_region=None) -> list:
+    """RASGeometry.ExtractManningsNPolylines: for each face polyline, (stations,
+    n) where n changes, float32. n_of_class[c] is class c's n, -9999 where it
+    has none; -9999 in the result becomes replace_nodata. regions are the
+    calibration region rings, in feature order; n_in_region(c, r) is class
+    c's n inside region r."""
+    lengths = [[_seg_length(*p[j], *p[j + 1]) for j in range(len(p) - 1)] for p in polylines]
+    raster = _n_from_raster(polylines, lengths, tiles, n_of_class)
+    totals = []
+    for i in range(len(polylines)):
+        total = 0.0
+        for length in lengths[i]:
+            total += length
+        totals.append(total)
+    if len(regions):
+        vector = _n_from_regions(polylines, lengths, totals, regions)
+        raster = _combine_n(raster, vector, totals, n_in_region)
+    out = []
+    for i, p in enumerate(polylines):
+        total = totals[i]
+        values = raster.get(i) or [(0.0, total, -1, -1, N_NODATA)]
+        values = _fill_n_gaps(values, total, 1.0 / math.pow(10.0, decimal_places))
+        out.append(_n_breaks(values, F32(replace_nodata)))
+    return out
+
+
+def _n_from_raster(polylines, lengths, tiles, n_of_class) -> dict:
+    """ExtractLCVariablePolylinesRegionsRasterExtraction: per face, runs of
+    one class as (start, end, class, -1, n)."""
+    t = tiles
+    max_x = t.min_x + t.tile * t.cols
+    min_y = t.max_y - t.tile * t.rows
+    work = {}     # tile -> [(face, segment, start station)], in the order first reached
+    for i, p in enumerate(polylines):
+        start = 0.0
+        for j in range(len(p) - 1):
+            (ax, ay), (bx, by) = p[j], p[j + 1]
+            clipped = _clip(ax, ay, bx, by, t.min_x, max_x, min_y, t.max_y)
+            if clipped is not None:
+                for rc in _walk_cells(*clipped, t.min_x, max_x, min_y, t.max_y,
+                                      t.tile, t.rows, t.cols):
+                    work.setdefault(rc, []).append((i, j, start))
+            start += lengths[i][j]
+    hits = {}
+    for (tr, tc), segs in work.items():
+        x0, x1 = t.min_x + t.tile * tc, t.min_x + t.tile * (tc + 1)
+        y1, y0 = t.max_y - t.tile * tr, t.max_y - t.tile * (tr + 1)
+        cs = max((x1 - x0) / 256, (y1 - y0) / 256)
+        classes = t.classes(x0, y1, cs)
+        for i, j, start in segs:
+            (ax, ay), (bx, by) = polylines[i][j], polylines[i][j + 1]
+            length = lengths[i][j]
+            for r, c in _walk_cells(ax, ay, bx, by, x0, x1, y0, y1, cs, 256, 256):
+                if not (0 <= r < 256 and 0 <= c < 256):
+                    continue
+                lc = int(classes[r, c])
+                px0, px1 = x0 + cs * c, x0 + cs * (c + 1)
+                py1, py0 = y1 - cs * r, y1 - cs * (r + 1)
+                corners = ((px0, py0), (px0, py1), (px1, py1), (px1, py0))
+                found = []
+                for k in range(4):
+                    hit, _, _, t1, _ = tin._seg_intersect((ax, ay), (bx, by), corners[k],
+                                                          corners[(k + 1) % 4])
+                    if hit:
+                        found.append(start + length * t1)
+                inside = lambda x, y: px0 <= x <= px1 and py0 <= y <= py1
+                if found:
+                    a = found[0]
+                    b = found[1] if len(found) > 1 else (start if inside(ax, ay) else start + length)
+                    entry = (min(a, b), max(a, b))
+                elif inside(ax, ay) and inside(bx, by):
+                    entry = (start, start + length)
+                else:
+                    continue
+                hits.setdefault(i, []).append((*entry, lc, -1, F32(n_of_class[lc])))
+    runs = {}
+    for i in range(len(polylines)):
+        if i not in hits:
+            continue
+        lst = sorted(hits[i], key=lambda v: v[0])
+        merged = [[0.0, lst[0][1], lst[0][2], -1, lst[0][4]]]
+        for k, item in enumerate(lst):
+            value = list(merged[-1])
+            idx = len(merged) - 1
+            if item[2] != value[2]:
+                merged.append(list(item))
+                value[1] = item[0]
+                merged[idx] = value
+                value = list(item)
+                idx = len(merged) - 1
+            if k == len(lst) - 1:
+                value[1] = item[1]
+                merged[idx] = value
+        runs[i] = [tuple(v) for v in merged]
+    return runs
+
+
+def _n_tolerance(total):
+    return max(total / 10000.0, 1e-05)
+
+
+def _overlapping_range(amin, amax, bmin, bmax):
+    """Utility.Math.OverlappingRange: (overlaps, left, right)."""
+    if not (amax < bmin) and not (amin > bmax):
+        return True, min(max(amin, bmin), bmax), min(max(amax, bmin), bmax)
+    return False, amin, amax
+
+
+def _subtract_range(amin, amax, bmin, bmax) -> list:
+    """Utility.Math.SubtractRange: what is left of a after removing b."""
+    hit, left, right = _overlapping_range(amin, amax, bmin, bmax)
+    if not hit:
+        return [(amin, amax)]
+    if amin < left and amax == right:
+        return [(amin, left)]
+    if left == amin and right < amax:
+        return [(right, amax)]
+    if left == amin and right == amax:
+        return []
+    if left > amin and right < amax:
+        return [(amin, left), (right, amax)]
+    return [(amin, amax)]
+
+
+def points_in_ring(ring: np.ndarray, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """RasMapperLib Polygon.Contains for many points: the edges below each
+    point, counted over half-open x ranges (ring closed, first point last)."""
+    xa, ya, xb, yb = ring[:-1, 0], ring[:-1, 1], ring[1:, 0], ring[1:, 1]
+    lo, hi = ring.min(axis=0), ring.max(axis=0)
+    out = np.zeros(len(x), dtype=bool)
+    for k in range(0, len(x), 2000):
+        px, py = x[k:k + 2000, None], y[k:k + 2000, None]
+        span = ((xa <= px) & (xb > px)) | ((xb <= px) & (xa > px))
+        with np.errstate(divide="ignore", invalid="ignore"):
+            f = (xb - px) / (xb - xa)
+            below = py > ya * f + yb * (1.0 - f)
+        odd = ((span & below).sum(axis=1) % 2) == 1
+        box = ((px >= lo[0]) & (px <= hi[0]) & (py >= lo[1]) & (py <= hi[1]))[:, 0]
+        out[k:k + 2000] = odd & box
+    return out
+
+
+def _station_of(p, lengths, cum, x, y) -> float:
+    """Polyline.NearestPointOnPolyline then DistanceAlongFast: the station of
+    the face point nearest (x, y)."""
+    best, seg = math.inf, 0
+    for i in range(len(p) - 1):
+        (ax, ay), (bx, by) = p[i], p[i + 1]
+        length = lengths[i]
+        if length == 0.0:
+            d = _seg_length(ax, ay, x, y)
+        else:
+            along = ((bx - ax) * (x - ax) + (by - ay) * (y - ay)) / length
+            if along < 0.0:
+                d = _seg_length(ax, ay, x, y)
+            elif along > length:
+                d = _seg_length(bx, by, x, y)
+            else:
+                d0 = _seg_length(ax, ay, x, y)
+                r = d0 * d0 - along * along
+                d = math.sqrt(r) if r > 0.0 else 0.0
+        if d < best:
+            best, seg = d, i
+    (ax, ay), (bx, by) = p[seg], p[seg + 1]
+    length = lengths[seg]
+    if length == 0.0:
+        t = 0.0
+    else:
+        along = ((bx - ax) * (x - ax) + (by - ay) * (y - ay)) / length
+        t = 0.0 if along < 0.0 else (1.0 if along > length else along / length)
+    return (cum[seg - 1] if seg > 0 else 0.0) + length * t
+
+
+class _SegmentIndex:
+    """SpatialIndex<int> of a ring's segments (Polyline.GenerateSegmentSpatialIndex):
+    each segment filed in the grid cells it crosses. A query walks the cells
+    along a segment and returns their segments in that order, first
+    occurrence kept, which decides the order of coincident intersections."""
+
+    def __init__(self, ring):
+        n = len(ring) - 1
+        bins = max(1, min(4096, int(round(n / 32.0)))) * 4
+        lo, hi = ring.min(axis=0), ring.max(axis=0)
+        (self.rows, self.cols, self.min_x, self.max_y, self.max_x, self.min_y,
+         self.cs) = _cell_raster(hi[0], lo[0], hi[1], lo[1], bins)
+        self.bins = {}
+        for k in range(n):
+            for rc in self._cells(*ring[k], *ring[k + 1]):
+                self.bins.setdefault(rc, []).append(k)
+
+    def _cells(self, ax, ay, bx, by):
+        return _walk_cells(ax, ay, bx, by, self.min_x, self.max_x, self.min_y, self.max_y,
+                           self.cs, self.rows, self.cols)
+
+    def query(self, ax, ay, bx, by) -> list:
+        if _clip(ax, ay, bx, by, self.min_x, self.max_x, self.min_y, self.max_y) is None:
+            return []
+        out, seen, filled = [], set(), 0
+        for rc in self._cells(ax, ay, bx, by):
+            if rc in self.bins:
+                filled += 1
+                out.extend(self.bins[rc])
+        if filled <= 1:
+            return out
+        return [k for k in out if not (k in seen or seen.add(k))]
+
+
+def _region_pieces(p, lengths, total, ring, index=None) -> list:
+    """Polygon.ClipPolyline: the station ranges of a face inside a region,
+    each end projected back onto the face as RASMapper does."""
+    starts, cum, acc = [0.0], [], 0.0
+    for length in lengths:
+        acc += length
+        cum.append(acc)
+    for length in lengths[:-1]:
+        starts.append(starts[-1] + length)
+    index = index or _SegmentIndex(ring)
+    edges = list(zip(ring[:-1], ring[1:]))
+    hits = []      # (face segment, fraction, station, polygon edge, x, y)
+    for b in range(len(p) - 1):
+        fa, fb = p[b], p[b + 1]
+        for a in index.query(fa[0], fa[1], fb[0], fb[1]):
+            ea, eb = edges[a]
+            hit, x, y, _, t2 = tin._seg_intersect(ea, eb, fa, fb)
+            if not hit:
+                continue
+            if hits and hits[-1][4] == x and hits[-1][5] == y:
+                continue
+            hits.append((b, t2, starts[b] + lengths[b] * t2, a, x, y))
+    inside = lambda pt: bool(points_in_ring(ring, np.array([pt[0]]), np.array([pt[1]]))[0])
+    if not hits:      # the whole face, still projected end to end
+        if not inside(p[0]):
+            return []
+        return [(_station_of(p, lengths, cum, *p[0]), _station_of(p, lengths, cum, *p[-1]))]
+    hits.sort(key=lambda h: (h[0], h[1]))
+    ea, eb = edges[hits[0][3]]
+    if tin._dist_to_segment(ea, eb, p[0]) < 0.0001:
+        skip = len(hits) != 1 or inside(p[-1])
+    else:
+        skip = not inside(p[0])
+    pieces, start = [], tuple(p[0])
+    for k in range(len(hits) + 1):
+        end = (hits[k][4], hits[k][5]) if k < len(hits) else tuple(p[-1])
+        if skip:
+            start, skip = end, False
+            continue
+        pieces.append((_station_of(p, lengths, cum, *start), _station_of(p, lengths, cum, *end)))
+        skip = True
+    return pieces
+
+
+def _n_from_regions(polylines, lengths, totals, regions) -> dict:
+    """ExtractLCVariablePolylinesRegionsVectorExtraction: per face, the
+    region ranges as (start, end, region, region, NaN), a higher region
+    index taking precedence where they overlap."""
+    out = {}
+    indexes = [_SegmentIndex(ring) for ring in regions]
+    for i, p in enumerate(polylines):
+        items = []
+        lo, hi = p.min(axis=0), p.max(axis=0)
+        for r, ring in enumerate(regions):
+            rlo, rhi = ring.min(axis=0), ring.max(axis=0)
+            if (hi < rlo).any() or (lo > rhi).any():
+                continue
+            for a, b in _region_pieces(p, lengths[i], totals[i], ring, indexes[r]):
+                items.append([min(a, b), max(a, b), r, r, F32(np.nan)])
+        if not items:
+            continue
+        lst = sorted(items, key=lambda v: -v[3])
+        tol = _n_tolerance(totals[i])
+        k = 0
+        while k < len(lst):
+            hi_item = lst[k]
+            if hi_item is None:
+                k += 1
+                continue
+            m = k + 1
+            while m < len(lst):
+                lo_item = lst[m]
+                if lo_item is not None and lo_item[3] < hi_item[3]:
+                    left = [r for r in _subtract_range(lo_item[0], lo_item[1], hi_item[0], hi_item[1])
+                            if not abs(r[0] - r[1]) < tol]
+                    if not left:
+                        lst[m] = None
+                    else:
+                        lst[m] = [left[0][0], left[0][1], *lo_item[2:]]
+                        if len(left) == 2:
+                            lst.insert(m + 1, [left[1][0], left[1][1], *lo_item[2:]])
+                m += 1
+            k += 1
+        out[i] = sorted((tuple(v) for v in lst if v is not None), key=lambda v: v[0])
+    return out
+
+
+def _combine_n(raster, vector, totals, n_in_region) -> dict:
+    """ExtractLCVariablePolylineRegionsCombine: region ranges take the n of
+    the land cover under them for that region; raster runs keep the rest."""
+    out = {}
+    for i in range(len(totals)):
+        if i in vector and i in raster:
+            tol = _n_tolerance(totals[i])
+            vec = [list(v) for v in vector[i]]
+            ras = [list(v) for v in sorted(raster[i], key=lambda v: v[0])]
+            k = 0
+            while k < len(vec):
+                v = vec[k]
+                if abs(v[1] - v[0]) < tol:
+                    k += 1
+                    continue
+                m = 0
+                while m < len(ras):
+                    rv = ras[m]
+                    if rv is None or abs(rv[1] - rv[0]) < tol:
+                        m += 1
+                        continue
+                    if rv[0] > v[1]:
+                        break
+                    hit, left, right = _overlapping_range(rv[0], rv[1], v[0], v[1])
+                    if not hit or left == right:
+                        m += 1
+                        continue
+                    rest = _subtract_range(v[0], v[1], rv[0], rv[1])
+                    merged = [left, right, v[2], v[3], F32(n_in_region(rv[2], v[3]))]
+                    vec[k] = merged
+                    for a, b in rest:
+                        if a >= right:
+                            vec.insert(k + 1, [a, b, v[2], v[3], v[4]])
+                    rem = _subtract_range(rv[0], rv[1], v[0], v[1])
+                    if not rem:
+                        ras[m] = None
+                    else:
+                        ras[m] = [rem[0][0], rem[0][1], *rv[2:]]
+                        if len(rem) == 2:
+                            ras.insert(m + 1, [rem[1][0], rem[1][1], *rv[2:]])
+                    v = merged
+                    m += 1
+                k += 1
+            both = [tuple(v) for v in vec] + [tuple(v) for v in ras if v is not None]
+            out[i] = sorted((v for v in both if v[0] != v[1]), key=lambda v: v[0])
+        elif i in vector:
+            out[i] = vector[i]
+        elif i in raster:
+            out[i] = raster[i]
+    return out
+
+
+def _fill_n_gaps(values, total, tol) -> list:
+    """ExtractLCVariablePolylineFillNoData: no-data runs where the face has none."""
+    out = list(values)
+    end = 0.0
+    lst = sorted(values, key=lambda v: v[0])
+    for v in lst:
+        if v[0] > end and v[0] - end > tol:
+            out.append((end, v[0], -1, -1, N_NODATA))
+        end = v[1]
+    if not lst or end < total:
+        out.append((end, total, -1, -1, N_NODATA))
+    return out
+
+
+def _n_breaks(values, replace_nodata) -> tuple:
+    """ExtractLCVariablePolyineSort: the stations where n changes."""
+    lst = sorted(values, key=lambda v: v[0])
+    first = lst[0]
+    xs, ns = [first[0]], [first[4]]
+    prev_n, end, end_n = first[4], first[1], first[4]
+    override, override_end = first[3] != -1, first[1] if first[3] != -1 else 0.0
+    for v in lst:
+        if v == first:
+            continue
+        if override and v[0] > override_end:
+            xs.append(override_end)
+            ns.append(end_n)
+        if v[3] != -1:
+            xs.append(v[0])
+            ns.append(v[4])
+            override_end, override = v[1], True
+        elif v[4] != prev_n:
+            xs.append(v[0])
+            ns.append(v[4])
+            override = False
+        prev_n = v[4]
+        if v[1] > end:
+            end, end_n = v[1], v[4]
+    s = np.array(xs, dtype=F32)
+    n = np.array([replace_nodata if v == N_NODATA else v for v in ns], dtype=F32)
+    return s, n
 
 
 # ----------------------------------------------------------------------------
@@ -1029,7 +1649,7 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
     # empty, at its own pyramid level; stitches from the render blocks under
     # the raster, two blocks either side, are bridged by a TIN painted over.
     vals = np.full(rows * cols, np.nan, dtype=F32)
-    segs, stitch_cell = [], 0.0
+    segs = []
     for raster in _as_layer(terrain).rasters:
         level = raster.level_for(cs)
         v = raster.sample(X.ravel(), Y.ravel(), level)
@@ -1038,13 +1658,15 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
         bc = np.floor((xc[[0, -1]] - lv.x0) / lv.cell).astype(int)
         br = np.floor((lv.y0 - yc[[0, -1]]) / lv.cell).astype(int)
         found = _stitch_segments(lv, br.min() - 2, br.max() + 2, bc.min() - 2, bc.max() + 2)
-        if found:
-            segs.extend(found)
-            stitch_cell = max(stitch_cell, lv.cell)
+        # ResampleInternal orders each raster's stitches by SegmentM.GetHashCode
+        segs.extend(sorted(found, key=lambda sg: tin.segment_hash(sg[0])))
     if len(segs) > 1:
         vals = np.where(np.isfinite(vals), vals, F32(NODATA)).astype(F32)
-        _paint_triangles(_stitch_triangles(segs, stitch_cell), vals, rows, cols, rmin_x, rmax_y, cs)
+        tin.paint(tin.StitchTin(segs).compute(), vals, rows, cols, rmin_x, rmax_y, cs, F32)
         vals = np.where(vals == F32(NODATA), np.nan, vals).astype(F32)
+    mods = getattr(_as_layer(terrain), "modifications", ())
+    if mods:
+        _apply_modifications(mods, vals, rows, cols, rmin_x, rmax_x, rmin_y, rmax_y, cs)
     inside = _rasterize(poly, rows, cols, rmin_x, rmax_y, rmax_x, cs).ravel()
     sel = inside & np.isfinite(vals)
     if not sel.any():

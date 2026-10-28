@@ -26,7 +26,7 @@ import h5py
 import numpy as np
 from osgeo import gdal
 
-from . import property_tables
+from . import property_tables, tin
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ def _cell_polygon(mesh: MeshData, ci: int, face_of_pair: dict) -> np.ndarray:
 def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
     """The 2D area's property-table settings from the Attributes table of its
     g01.hdf, which RASMapper writes with the mesh; defaults otherwise."""
-    settings = dict(property_tables.DEFAULTS)
+    settings = dict(property_tables.DEFAULTS, composite_lc=False, multi_face_n=False)
     if g01_hdf_path is None:
         return settings
     fields = {"cell_volume_tolerance": "Cell Vol Tol",
@@ -116,40 +116,49 @@ def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
         for key, field in fields.items():
             if field in rows.dtype.names and np.isfinite(row[field]):
                 settings[key] = float(row[field])
-        for flag in ("Multiple Face Mann n", "Composite LC"):
-            if flag in rows.dtype.names and row[flag]:
-                raise SystemExit(f"ras_preprocess.py: '{flag}' is on for '{area_name}'; "
-                                 "property tables for it aren't supported. "
-                                 "Turn it off in RASMapper, or use Workflow A.")
+        settings["composite_lc"] = bool("Composite LC" in rows.dtype.names and row["Composite LC"])
+        settings["multi_face_n"] = bool("Multiple Face Mann n" in rows.dtype.names
+                                        and row["Multiple Face Mann n"])
     return settings
 
 
 def compute_face_properties(mesh: MeshData, terrain: "property_tables.Terrain",
-                            mannings_per_face: np.ndarray, settings: dict) -> dict:
+                            mannings_per_face: np.ndarray, settings: dict,
+                            n_profiles: list = None, mesh_n: float = None) -> dict:
     """Per-face minimum elevation, low-elevation centroid and (elevation, area,
-    wetted perimeter, Manning's n) table, as RASMapper computes them."""
+    wetted perimeter, Manning's n) table, as RASMapper computes them. With
+    n_profiles (Multiple Face Mann n), each face's n varies along it."""
     logger.info("Computing face properties from terrain...")
     n_faces = mesh.n_faces
     min_elevs = np.full(n_faces, property_tables.NAN, dtype=np.float32)
     low_elev_centroid = np.zeros(n_faces, dtype=np.float32)
     face_ae_info = np.zeros((n_faces, 2), dtype=np.int32)
     face_ae_values = []
+    profile_info = np.zeros((n_faces, 2), dtype=np.int32)
+    profile_values = []
+    tables = (settings["face_area_elevation_tolerance"], settings["face_conveyance_ratio"],
+              settings["laminar_depth"])
 
     for fi in range(n_faces):
         stations, elevs = property_tables.face_profile(
             terrain, _face_polyline(mesh, fi), settings["face_profile_tolerance"])
+        profile_info[fi] = [len(profile_values), len(stations)]
+        profile_values.extend(zip(stations, elevs))
         if len(stations) == 0:
             face_ae_info[fi] = [len(face_ae_values), 0]
             continue
         n = np.float32(mannings_per_face[fi])
-        rows = property_tables.face_table(stations, elevs, n,
-                                          settings["face_area_elevation_tolerance"],
-                                          settings["face_conveyance_ratio"],
-                                          settings["laminar_depth"])
+        if n_profiles is not None and len(n_profiles[fi][0]) > 1:
+            rows = property_tables.face_table_n_profile(stations, elevs, *n_profiles[fi],
+                                                        mesh_n, *tables)
+        else:
+            rows = property_tables.face_table(stations, elevs, n, *tables)
         min_elevs[fi] = rows[0].elev
         low_elev_centroid[fi] = property_tables.centroid_at_area(rows)
         face_ae_info[fi] = [len(face_ae_values), len(rows)]
-        face_ae_values.extend([r.elev, r.area, r.wp, n] for r in rows)
+        multi = n_profiles is not None
+        face_ae_values.extend([r.elev, r.area, r.wp, r.n if multi and r.n != 0 else n]
+                              for r in rows)
 
     missing = int((face_ae_info[:, 1] == 0).sum())
     if missing:
@@ -162,6 +171,8 @@ def compute_face_properties(mesh: MeshData, terrain: "property_tables.Terrain",
         "face_ae_info": face_ae_info,
         "face_ae_values": np.array(face_ae_values, dtype=np.float32).reshape(-1, 4)
                           if face_ae_values else np.empty((0, 4), dtype=np.float32),
+        "profile_info": profile_info,
+        "profile_values": np.array(profile_values, dtype=np.float32).reshape(-1, 2),
     }
 
 
@@ -238,7 +249,8 @@ def _default_land_cover(mesh: MeshData, default_mannings: float) -> dict:
 
 
 def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
-                      default_mannings: float = 0.06) -> dict:
+                      default_mannings: float = 0.06, composite: bool = False,
+                      calibration: dict = None) -> dict:
     """Sample Manning's n and land cover properties per cell.
 
     LandCover.hdf structure (File Type = 'HEC Land Cover'):
@@ -280,7 +292,8 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         name_to_imperv = {}
         for i in range(len(var_names)):
             n_str = var_names[i].decode('utf-8', errors='replace').strip() if isinstance(var_names[i], bytes) else str(var_names[i]).strip()
-            name_to_mann[n_str] = float(mann_vals[i])
+            name_to_mann[n_str] = float((calibration or {}).get("base", {}).get(n_str.lower(),
+                                                                         mann_vals[i]))
             name_to_imperv[n_str] = float(imperv_vals[i])
 
         # Build ID -> Manning's n + calibration table from /Raster Map
@@ -332,13 +345,44 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         lc_ids = np.full(len(points), nodata_id, dtype=np.int64)
         lc_ids[inside] = lc_raster[rows[inside], cols[inside]]
         lc_ids[~np.isin(lc_ids, list(id_to_mann))] = nodata_id
-        return lc_ids, np.array([id_to_mann.get(int(i), nodata_mann) for i in lc_ids],
-                                dtype=np.float32)
+        n = np.array([id_to_mann.get(int(i), nodata_mann) for i in lc_ids], dtype=np.float32)
+        # ParameterResampler.SamplePoints: per point, the first region that
+        # sets an n for its land cover and whose TIN holds the point.
+        if region_tins:
+            for k, i in enumerate(lc_ids):
+                name = id_to_name.get(int(i), "").lower()
+                for (_, mapping), region in zip(regions, region_tins):
+                    v = mapping.get(name)
+                    if v is not None and region.contains(points[k]):
+                        n[k] = v
+                        break
+        n[(n == np.float32(-9999)) | np.isnan(n) | (n == np.finfo(np.float32).max)] = default_mannings
+        return lc_ids, n
 
-    cell_ids, mannings = lookup(mesh.cell_centers)
-    classifications[~mesh.cell_is_boundary] = cell_ids[~mesh.cell_is_boundary]
+    regions = (calibration or {}).get("regions", [])
+    region_tins = [tin.PolygonTin(ring[:-1]) for ring, mapping in regions]
+    # Face midpoints first, then cells: a region's TIN search starts where the
+    # last one ended, which decides points on the region's edge.
     mid = (mesh.face_points[mesh.faces_fp_idx[:, 0]] + mesh.face_points[mesh.faces_fp_idx[:, 1]]) / 2
     face_ids, face_mannings = lookup(mid)
+    cell_ids, mannings = lookup(mesh.cell_centers)
+    classifications[~mesh.cell_is_boundary] = cell_ids[~mesh.cell_is_boundary]
+
+    percent_impervious = None
+    if composite and ids is not None:
+        # Interior cells average their whole raster instead (faces keep midpoints).
+        layer = _ClassRaster(Path(lc_hdf_path))
+        if Path(lc_tif_path) != layer.tif:
+            layer.tif = Path(lc_tif_path)
+            layer.raster, layer.gt = lc_raster, lc_gt
+        names = [id_to_name.get(int(i), "") for i in ids]
+        table = {"ManningsN": np.array([name_to_mann.get(n, np.nan) for n in names], dtype=np.float32),
+                 "Percent Impervious": np.array([name_to_imperv.get(n, np.nan) for n in names], dtype=np.float32)}
+        nd = names.index("NoData") if "NoData" in names else 0
+        cls, avg = _composite_cells(mesh, {"lc": (layer.classes_at, table, nd, ids)})["lc"]
+        mannings[:mesh.n_interior] = avg["ManningsN"]
+        classifications[:mesh.n_interior] = cls
+        percent_impervious = avg["Percent Impervious"]
 
     n_assigned = int(np.sum(mannings != default_mannings))
     logger.info("  Manning's n range: %.4f – %.4f  (%d/%d cells from land cover)",
@@ -348,6 +392,7 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         "face_mannings_n": face_mannings,
         "classifications": classifications,
         "face_classifications": face_ids.astype(np.int32),
+        "percent_impervious": percent_impervious,
         "calibration_table": cal_table,
         "id_to_name": id_to_name,
         "name_to_imperv": name_to_imperv if 'name_to_imperv' in dir() else {},
@@ -355,27 +400,199 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
     }
 
 
+def face_n_profiles(mesh: MeshData, lc_hdf: Path, lc_tif: Path, lc_data: dict,
+                    default_mannings: float, calibration: dict = None) -> list:
+    """Each face's Manning's n profile from the land cover raster
+    (RASGeometry.ExtractManningsNPolylines): (stations, n) where n changes."""
+    layer = _ClassRaster(lc_hdf)
+    if lc_tif != layer.tif:
+        layer.tif = lc_tif
+        ds = gdal.Open(str(lc_tif))
+        layer.raster, layer.gt = ds.GetRasterBand(1).ReadAsArray(), ds.GetGeoTransform()
+        ds = None
+    n_of_class = np.array([lc_data["id_to_mann"].get(int(i), property_tables.N_NODATA)
+                           for i in layer.ids], dtype=np.float32)
+
+    def classes(min_x, max_y, cs):
+        centres = (np.arange(256) + 0.5) * cs
+        x, y = np.meshgrid(min_x + centres, max_y - centres)
+        return layer.classes_at(np.column_stack([x.ravel(), y.ravel()]), cs).reshape(256, 256)
+
+    regions = (calibration or {}).get("regions", [])
+    names = [n.lower() for n in layer.names]
+
+    def n_in_region(c, r):
+        """FinalNValueLayer.GetManningsFromTable: the region's n for the class,
+        else the class's own."""
+        v = regions[r][1].get(names[c], np.nan) if 0 <= c < len(names) else np.nan
+        return v if not np.isnan(v) else n_of_class[c]
+
+    tiles = property_tables.ClassTiles.from_tif(lc_tif, classes)
+    polylines = [_face_polyline(mesh, fi) for fi in range(mesh.n_faces)]
+    return property_tables.face_n_profiles(polylines, tiles, n_of_class, default_mannings,
+                                           regions=[r for r, _ in regions],
+                                           n_in_region=n_in_region)
+
+
+def _valid_n(v) -> bool:
+    return v > 0 and v != float(np.finfo(np.float32).max) and not np.isnan(v)
+
+
+def read_calibration(g01_hdf: Path) -> dict:
+    """The geometry's Manning's n calibration (RasLandCoverRegions): base n
+    overrides by land cover name, and the region polygons in feature order,
+    each with its n by land cover name. Names are lower case; only values
+    that are set (positive) are kept."""
+    out = {"base": {}, "regions": []}
+    grp_path = "Geometry/Land Cover (Manning's n)"
+    with h5py.File(str(g01_hdf), "r") as hf:
+        grp = hf.get(grp_path)
+        if grp is None:
+            return out
+        table = grp["Calibration Table"][()] if "Calibration Table" in grp else None
+        names = []
+        if "Polygon Info" in grp and len(grp["Polygon Info"]):
+            info, pts = grp["Polygon Info"][()], grp["Polygon Points"][()]
+            attrs = grp["Attributes"][()]
+            for k, (start, count, _, parts) in enumerate(info):
+                if parts != 1:
+                    raise SystemExit("ras_preprocess.py: a Manning's n calibration region has "
+                                     "several parts; that isn't supported yet. Use Workflow A.")
+                names.append(attrs["Name"][k].decode("utf-8", "replace").strip())
+                ring = pts[start:start + count].astype(np.float64)
+                if not np.array_equal(ring[0], ring[-1]):
+                    ring = np.vstack([ring, ring[:1]])
+                if property_tables.polygon_area(ring, signed=True) < 0:   # EnsurePositivePolygonOrientations
+                    ring = ring[::-1].copy()
+                out["regions"].append([ring, {}])
+    if table is None or not table.dtype.names or len(table.dtype.names) < 2:
+        return out
+    fields = {f.lower(): f for f in table.dtype.names}
+    lc = [r.decode("utf-8", "replace").strip().lower() for r in table[fields["land cover name"]]]
+    base = fields.get("base manning's n value")
+    if base:
+        out["base"] = {n: float(v) for n, v in zip(lc, table[base]) if _valid_n(float(v))}
+    for (ring, mapping), name in zip(out["regions"], names):
+        col = fields.get(name.lower())
+        if col:
+            mapping.update({n: float(v) for n, v in zip(lc, table[col]) if _valid_n(float(v))})
+    return out
+
+
+class _ClassRaster:
+    """A RASMapper classification layer (LandCover.hdf, Soils.hdf, ...): its
+    Raster Map IDs and raster, read once."""
+
+    def __init__(self, layer_hdf: Path):
+        with h5py.File(str(layer_hdf), "r") as hf:
+            rmap = hf["Raster Map"][()]
+        self.ids = rmap["ID"].astype(np.int64)
+        self.names = [n.decode("utf-8", "replace").strip() for n in rmap["Name"]]
+        self.tif = layer_hdf.with_suffix(".tif")
+        ds = gdal.Open(str(self.tif))
+        self.raster = ds.GetRasterBand(1).ReadAsArray()
+        self.gt = ds.GetGeoTransform()
+        ds = None
+        self._levels = None
+        # pixel value -> class index (position in the Raster Map); 0 (NoData) otherwise
+        self._lookup = {int(v): i for i, v in enumerate(self.ids)}
+
+    def _level_for(self, cell_size: float):
+        """RasterPyramid.GetBestPyramidLevel: the finest level, unless the target
+        pixel is at least the next level's size; returns (raster, geotransform)."""
+        if self._levels is None:
+            ds = gdal.Open(str(self.tif))
+            band = ds.GetRasterBand(1)
+            width = ds.RasterXSize * self.gt[1]
+            self._levels = [(self.raster, self.gt)]
+            for i in range(band.GetOverviewCount()):
+                ov = band.GetOverview(i)
+                cell = width / ov.XSize
+                self._levels.append((ov.ReadAsArray(), (self.gt[0], cell, 0.0, self.gt[3], 0.0, -cell)))
+            ds = None
+        for i, (_, gt) in enumerate(self._levels):
+            if gt[1] >= cell_size:
+                return self._levels[max(i - 1, 0)]
+        return self._levels[-1]
+
+    def classes_at(self, points: np.ndarray, cell_size: float = None) -> np.ndarray:
+        """Class index at each point: the pixel's ID's position in the Raster
+        Map, 0 (the NoData class) off the raster or on an unlisted value. With
+        cell_size, the pixel comes from the pyramid level RASMapper resamples a
+        raster of that pixel size from."""
+        r, gt = (self.raster, self.gt) if cell_size is None else self._level_for(cell_size)
+        cols = np.floor((points[:, 0] - gt[0]) / gt[1]).astype(np.int64)
+        rows = np.floor((points[:, 1] - gt[3]) / gt[5]).astype(np.int64)
+        inside = (rows >= 0) & (rows < r.shape[0]) & (cols >= 0) & (cols < r.shape[1])
+        classes = np.zeros(len(points), dtype=np.int64)
+        vals = r[rows[inside], cols[inside]].astype(np.int64)
+        uniq, inv = np.unique(vals, return_inverse=True)
+        classes[inside] = np.array([self._lookup.get(int(v), 0) for v in uniq], dtype=np.int64)[inv]
+        return classes
+
+
 def _classify_points(layer_hdf: Path, points: np.ndarray) -> tuple:
-    """A RASMapper classification layer's class at each point: the index of the
-    pixel's ID in the layer's Raster Map, 0 (its NoData class) off the raster
-    or on an unlisted value. Returns (class indexes, number of classes)."""
-    with h5py.File(str(layer_hdf), "r") as hf:
-        ids = hf["Raster Map"]["ID"][()].astype(np.int64)
-    ds = gdal.Open(str(layer_hdf.with_suffix(".tif")))
-    raster = ds.GetRasterBand(1).ReadAsArray()
-    gt = ds.GetGeoTransform()
-    ds = None
-    cols = np.floor((points[:, 0] - gt[0]) / gt[1]).astype(int)
-    rows = np.floor((points[:, 1] - gt[3]) / gt[5]).astype(int)
-    inside = (rows >= 0) & (rows < raster.shape[0]) & (cols >= 0) & (cols < raster.shape[1])
-    index_of = {int(v): i for i, v in enumerate(ids)}
-    classes = np.zeros(len(points), dtype=np.int64)
-    classes[inside] = [index_of.get(int(v), 0) for v in raster[rows[inside], cols[inside]]]
-    return classes, len(ids)
+    """A RASMapper classification layer's class at each point (see _ClassRaster).
+    Returns (class indexes, number of classes)."""
+    layer = _ClassRaster(layer_hdf)
+    return layer.classes_at(points), len(layer.ids)
+
+
+def _composite_cells(mesh: MeshData, samplers: dict) -> dict:
+    """RASMapper's cell-averaged land cover (Composite LC, the CreatePropertyTables
+    loop over ComputeAssociationCellAverageValue): each layer is sampled at the
+    pixel centres of the cell's raster (the same as its volume table's), its
+    variables averaged over the cell's pixels and its class the most common.
+
+    RASMapper never clears the pixel mask between cells: each thread's mask
+    keeps every pixel of the cells it handled before, and Parallel.SmartFor
+    hands out cells in chunks of 1,000. That is reproduced (a fresh mask per
+    chunk, assuming one thread per chunk), so values match RASMapper's; on a
+    mesh of more than 1,000 cells RASMapper's own result depends on how its
+    threads pick up the chunks.
+
+    samplers: name -> (classes(points) -> class indexes, {variable: value per
+    class index}, NoData class index, class IDs). Returns name -> (class ID per
+    interior cell, {variable: float32 average per interior cell})."""
+    out = {name: (np.zeros(mesh.n_interior, dtype=np.int32),
+                  {v: np.zeros(mesh.n_interior, dtype=np.float32) for v in table})
+           for name, (_, table, _, _) in samplers.items()}
+    face_of_pair = {}
+    for fi, (a, b) in enumerate(mesh.faces_fp_idx):
+        face_of_pair[(int(a), int(b))] = face_of_pair[(int(b), int(a))] = fi
+    mask = np.zeros(property_tables.CELL_RASTER_SIZE, dtype=bool)
+    for ci in range(mesh.n_interior):
+        if ci % 1000 == 0:
+            mask[:] = False
+        polygon = _cell_polygon(mesh, ci, face_of_pair)
+        x0, y0 = polygon.min(axis=0)
+        x1, y1 = polygon.max(axis=0)
+        rows, cols, min_x, max_y, max_x, _, cs = property_tables._cell_raster(x1, x0, y1, y0)
+        n = rows * cols
+        mask[:n] |= property_tables._rasterize(polygon, rows, cols, min_x, max_y, max_x, cs).ravel()
+        cell_mask = mask[:n]
+        xc = min_x + cs * (np.arange(cols) + 0.5)
+        yc = max_y - cs * (np.arange(rows) + 0.5)
+        X, Y = np.meshgrid(xc, yc)
+        points = np.column_stack([X.ravel(), Y.ravel()])
+        for name, (classes_at, table, nd, class_ids) in samplers.items():
+            classes = classes_at(points, cs)
+            cells_cls, cells_var = out[name]
+            for var, per_class in table.items():
+                vals = per_class[classes][cell_mask]
+                keep = ~np.isnan(vals) & (vals != np.float32(-9999)) & (vals != np.finfo(np.float32).max)
+                total = np.add.reduce(vals[keep], dtype=np.float32) if keep.sum() < 2 else \
+                    np.add.accumulate(vals[keep], dtype=np.float32)[-1]
+                with np.errstate(invalid="ignore", divide="ignore"):
+                    cells_var[var][ci] = np.float32(total) / np.float32(keep.sum())
+            c = classes[cell_mask]
+            counts = np.bincount(c[c != nd], minlength=len(class_ids))
+            cells_cls[ci] = class_ids[int(np.argmax(counts))]
+    return out
 
 
 def sample_infiltration(mesh: MeshData, inf_hdf_path: str,
-                        lc_tif_path: str = None) -> dict:
+                        lc_tif_path: str = None, composite: bool = False) -> dict:
     """Infiltration parameters per interior cell and class per face, as
     RASMapper assigns them: the infiltration class at a cell's centre (a face's
     midpoint) selects a row of the layer's Variables table.
@@ -406,19 +623,32 @@ def sample_infiltration(mesh: MeshData, inf_hdf_path: str,
     layers = [inf_hdf.parent / d.replace("\\", "/").lstrip("./") for d in deps] or [inf_hdf]
     cell_cls = np.zeros(len(cell_points), dtype=np.int64)
     face_cls = np.zeros(len(face_points), dtype=np.int64)
-    for layer in layers:
-        c, count = _classify_points(layer, cell_points)
-        f, _ = _classify_points(layer, face_points)
-        cell_cls = cell_cls * count + c
-        face_cls = face_cls * count + f
+    rasters = [_ClassRaster(layer) for layer in layers]
+
+    def classes_at(points, cell_size=None):
+        cls = np.zeros(len(points), dtype=np.int64)
+        for r in rasters:
+            cls = cls * len(r.ids) + r.classes_at(points, cell_size)
+        return cls
+
+    cell_cls = classes_at(cell_points)
+    face_cls = classes_at(face_points)
     if cell_cls.max(initial=0) >= len(variables) or face_cls.max(initial=0) >= len(variables):
         raise ValueError(f"{inf_hdf}: classes from {', '.join(map(str, layers))} "
                          f"don't fit its {len(variables)} Variables rows")
 
-    result["cell_classifications"] = cell_cls.astype(np.int32)
+    names = [n for n in variables.dtype.names if n != "Name"]
     result["face_classifications"] = face_cls.astype(np.int32)
-    result["variables"] = {name: variables[name][cell_cls].astype(np.float32)
-                           for name in variables.dtype.names if name != "Name"}
+    if composite:
+        var_names = [n.decode("utf-8", "replace").strip() for n in variables["Name"]]
+        nd = var_names.index("NoData") if "NoData" in var_names else 0
+        table = {n: variables[n].astype(np.float32) for n in names}
+        cls, avg = _composite_cells(mesh, {"inf": (classes_at, table, nd, np.arange(len(variables)))})["inf"]
+        result["cell_classifications"] = cls
+        result["variables"] = avg
+    else:
+        result["cell_classifications"] = cell_cls.astype(np.int32)
+        result["variables"] = {n: variables[n][cell_cls].astype(np.float32) for n in names}
     result["available"] = True
     return result
 
@@ -740,7 +970,7 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
                                      mesh: MeshData, cell_props: dict,
                                      face_props: dict, lc_data: dict,
                                      inf_data: dict, bc_ext_faces: np.ndarray,
-                                     projection_wkt: str = ""):
+                                     projection_wkt: str = "", settings: dict = None):
     """Copy the RASMapper-created g01.hdf to output_path, then add the
     hydraulic tables (volume-elevation curves, face area-elevation profiles,
     Manning's n per cell, infiltration, percent-impervious, BC external faces)
@@ -784,13 +1014,13 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
         # --- Perimeter 1 group attrs (added during Compute Geometry) ---
         ag.attrs['Cell Volume Tolerance'] = np.float32(0.01)
         ag.attrs['Cell Minimum Area Fraction'] = np.float32(0.01)
-        ag.attrs['Composite LC'] = np.uint8(0)
+        ag.attrs['Composite LC'] = np.uint8((settings or {}).get('composite_lc', False))
         ag.attrs['Connection Profile Hash'] = np.bytes_('')
         ag.attrs['Face Area Conveyance Ratio'] = np.float32(0.02)
         ag.attrs['Face Area Elevation Tolerance'] = np.float32(0.01)
         ag.attrs['Face Profile Tolerance'] = np.float32(0.01)
         ag.attrs["Manning's n"] = np.float32(default_mannings)
-        ag.attrs['Multiple Face Mann n'] = np.uint8(0)
+        ag.attrs['Multiple Face Mann n'] = np.uint8((settings or {}).get('multi_face_n', False))
         ag.attrs['Laminar Depth'] = np.float32(0.2)
         ag.attrs['Min Face Length Ratio'] = np.float32(np.nan)
         ag.attrs['Property Tables Last Computed'] = np.bytes_(now_time)
@@ -831,6 +1061,8 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
                 face_props['face_ae_info'], gz)
         _add_ds(ag, 'Faces Area Elevation Values',
                 face_props['face_ae_values'], gz)
+        _add_ds(ag, 'Faces Profile Info', face_props['profile_info'], gz)
+        _add_ds(ag, 'Faces Profile Values', face_props['profile_values'], gz)
 
         # --- Infiltration subgroup ---
         # Only write when: the source HDF already has an Infiltration group
@@ -972,7 +1204,10 @@ def _add_ds(grp, name: str, data, gz: dict):
 
 
 def _percent_impervious(lc_data, n_cells, n_interior):
-    """Percent impervious per interior cell from its land-cover class."""
+    """Percent impervious per interior cell: its cell average under Composite
+    LC, otherwise its land-cover class's value."""
+    if lc_data.get("percent_impervious") is not None:
+        return lc_data["percent_impervious"][:n_interior].astype(np.float32)
     id_to_name = lc_data.get('id_to_name', {})
     name_to_imperv = lc_data.get('name_to_imperv', {})
     lc_class = lc_data.get('classifications', np.zeros(n_cells, dtype=np.int32))
@@ -1268,9 +1503,10 @@ def main():
     g01_path = project_dir / f"{name}.g01"
     p01_path = project_dir / f"{name}.p{plan}"
     terrain_tif = _find_terrain_tif(project_dir)
-    lc_hdf = project_dir / "Land Classification" / "LandCover.hdf"
-    lc_tif = _find_file_by_pattern(project_dir / "Land Classification", "*.tif")
-    inf_hdf = project_dir / "Land Classification" / "Infiltration.hdf"
+    geom_hdf = project_dir / f"{name}.g{plan}.hdf"
+    lc_hdf = _find_layer(project_dir, geom_hdf, "Land Cover Filename", "LandCover.hdf")
+    lc_tif = lc_hdf.with_suffix(".tif")
+    inf_hdf = _find_layer(project_dir, geom_hdf, "Infiltration Filename", "Infiltration.hdf")
 
     # Check required files
     for f, desc in [(g01_path, ".g01"), (p01_path, f".p{plan}"), (terrain_tif, "Terrain TIF")]:
@@ -1344,21 +1580,37 @@ def main():
     if not projection_wkt:
         projection_wkt = meta.get("projection_wkt", "")
 
+    settings = table_settings(src_g01_hdf, meta["area_name"])
+    calibration = read_calibration(src_g01_hdf)
+    if calibration["regions"] and settings["composite_lc"]:
+        logger.error("Manning's n calibration regions with Composite LC aren't supported yet. "
+                     "Use Workflow A.")
+        sys.exit(1)
+
     # Step A2: Sample land cover
     lc_data = _default_land_cover(mesh, default_mannings)
     if lc_hdf.exists() and lc_tif and lc_tif.exists():
-        lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings)
+        lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings,
+                                    composite=settings["composite_lc"],
+                                    calibration=calibration)
+    n_profiles = None
+    if settings["multi_face_n"]:
+        n_profiles = [(np.zeros(1, np.float32), np.zeros(1, np.float32))] * mesh.n_faces
+        if lc_hdf.exists() and lc_tif and lc_tif.exists():
+            n_profiles = face_n_profiles(mesh, lc_hdf, lc_tif, lc_data, default_mannings,
+                                         calibration)
 
     # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
     terrain_path = _find_terrain_layer(project_dir, src_g01_hdf) or terrain_tif
     logger.info("Terrain: %s", terrain_path)
     terrain = property_tables.TerrainLayer(str(terrain_path))
-    settings = table_settings(src_g01_hdf, meta["area_name"])
-    face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
+    face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings,
+                                         n_profiles, default_mannings)
     cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
 
     # Step A5: Infiltration
-    inf_data = sample_infiltration(mesh, str(inf_hdf) if inf_hdf.exists() else "")
+    inf_data = sample_infiltration(mesh, str(inf_hdf) if inf_hdf.exists() else "",
+                                   composite=settings["composite_lc"])
 
     # Step A6: Compute BC External Faces
     bc_ext_faces = compute_bc_external_faces(src_g01_hdf, mesh, meta.get("dx", 500.0))
@@ -1366,7 +1618,7 @@ def main():
     # Step A7: Copy source HDF to output_dir and add tables
     update_geometry_hdf_with_tables(src_g01_hdf, out_g01_hdf, mesh,
                                      cell_props, face_props, lc_data,
-                                     inf_data, bc_ext_faces, projection_wkt)
+                                     inf_data, bc_ext_faces, projection_wkt, settings)
 
     # Step 7: Assemble p01.tmp.hdf
     assemble_p01_tmp_hdf(out_g01_hdf, p01_path, p01_tmp_path, projection_wkt,
@@ -1704,6 +1956,23 @@ def _find_terrain_layer(project_dir: Path, g01_hdf: Path = None):
     return _find_terrain_tif(project_dir)
 
 
+def _find_layer(project_dir: Path, g01_hdf: Path, attr: str, default: str) -> Path:
+    """A land classification layer the geometry names (its HDF): at the
+    geometry's path, else anywhere in the project under the same file name,
+    else Land Classification/<default>."""
+    if g01_hdf.exists():
+        with h5py.File(str(g01_hdf), "r") as hf:
+            name = hf["Geometry"].attrs.get(attr, b"").decode("utf-8", "replace").replace("\\", "/")
+        if name:
+            path = (project_dir / name).resolve()
+            if path.exists():
+                return path
+            found = sorted(project_dir.rglob(Path(name).name))
+            if found:
+                return found[0]
+    return project_dir / "Land Classification" / default
+
+
 def _find_terrain_tif(project_dir):
     """Find terrain GeoTIFF in project directory."""
     terrain_dir = project_dir / "Terrain"
@@ -1714,14 +1983,6 @@ def _find_terrain_tif(project_dir):
     # Try project dir directly
     tifs = list(project_dir.glob("Terrain*.tif"))
     return tifs[0] if tifs else None
-
-
-def _find_file_by_pattern(directory, pattern):
-    """Find first file matching pattern in directory."""
-    if directory.exists():
-        matches = list(directory.glob(pattern))
-        return matches[0] if matches else None
-    return None
 
 
 if __name__ == "__main__":

@@ -25,6 +25,7 @@ AREA_TABLES = [
     "Cells Volume Elevation Info", "Cells Volume Elevation Values",
     "Faces Area Elevation Info", "Faces Area Elevation Values",
     "Faces Low Elevation Centroid", "Faces Minimum Elevation",
+    "Faces Profile Info", "Faces Profile Values",
     "Infiltration", "Percent Impervious",
 ]
 GEOMETRY_TABLES = [

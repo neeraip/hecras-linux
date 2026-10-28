@@ -130,7 +130,12 @@ floats:
 - **Land cover and infiltration:** Manning's *n* and classes at each cell
   centre and face midpoint, off-raster points taking the NoData class.
   Infiltration classes combine the land cover and soils classes, and select a
-  row of the infiltration layer's variables.
+  row of the infiltration layer's variables. With *Composite LC*, a cell's
+  *n* is the average over its raster instead. With *Multiple Face Mann n*,
+  each face's *n* follows the land cover along it: the face is split where
+  *n* changes, and each table row's *n* combines the wetted parts. Manning's
+  *n* calibration regions override *n* by land cover class inside their
+  polygons, at points and along faces.
 
 Workflow B is tested by stripping the GUI's tables from each example
 (`tools/make_workflow_input.py`) and rebuilding them.
@@ -148,15 +153,28 @@ Engine results under Workflow B, 6.6 engine, GUI results as reference:
 AFTER_RUN, VA and Muncie have not been re-run through the engine since the port.
 
 Not ported yet (RASMapper's code for each is in RasMapperLib or its companion
-libraries): *Multiple Face Mann n* and cell-averaged land cover (*Composite
-LC*), both refused with an error; calibration and override regions; terrain
-modifications; 2D structures and connections. One 2D flow area and US
+libraries): calibration regions together with *Composite LC*, and regions
+with several parts (both refused with an error); other override regions;
+per-face variable averages under *Composite LC*; terrain modifications other
+than polygons with one elevation, and faces crossing any modification (both
+refused with an error); 2D structures and connections. One 2D flow area and US
 customary units only. Terrains with several rasters are read in RASMapper's
-priority order, with its stitch TIN across their seams; HEC's
-BaldEagleCrkMulti2D example, which has two, is the check still to run.
+priority order, with its stitch TIN across their seams, and a terrain
+modification polygon with one elevation (set, add, take higher or take lower)
+is applied to the cells under it.
 
-Beyond the shipped examples, every table of HEC's Weise_2D example (HEC-RAS
-7.0.2 examples, 2D Sediment Transport) also comes out bit-exact.
+Beyond the shipped examples, every table of HEC's Weise_2D example and of
+BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
+comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
+and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2). On a
+production model (Multiple Face Mann n, a calibration region and a terrain
+modification), every table compared is identical: all 112,246 face profiles,
+area-elevation tables, minimum elevations and low-elevation centroids, all
+47,103 cell volume tables and Manning's *n* at all 48,006 cell centres.
+
+[`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
+against RASMapper itself: every method its table computation can reach, read
+from the IL of HEC's DLLs, with its status and our counterpart.
 
 ### Limitations of Workflow B
 
@@ -183,7 +201,7 @@ the mesh, computes the property tables with RASMapper's algorithm
 (`property_tables.py`, settings from the 2D area's attributes), assigns
 Manning's *n*, percent impervious and infiltration from the land cover and
 soils layers, assigns perimeter faces to BC lines, and assembles
-`p01.tmp.hdf` from the `.p01` text. *Multiple Face Mann n* is not supported.
+`p01.tmp.hdf` from the `.p01` text.
 
 ## Repository layout
 
@@ -198,6 +216,8 @@ pyproject.toml             the hecras-linux package
 run_simulation.sh          zip in → preprocess → simulate → zip out
 tools/
   make_workflow_input.py   derive a Workflow B input from a GUI project
+  rasmapper_callgraph/     every RASMapper method the table computation reaches (IL)
+  rasmapper_coverage.py    classify them: ported, not ported, ... → docs/rasmapper-coverage.md
   compare_results.py       compare max WSE between two plan HDFs
 tests/test_pipeline.py     pytest: all workflows, all examples, all engines
 Examples/                  six HEC-RAS 6.6 projects (see Examples/README.md)
