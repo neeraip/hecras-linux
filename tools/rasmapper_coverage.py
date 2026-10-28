@@ -21,6 +21,7 @@ from collections import defaultdict
 EXAMPLES = "5 examples, Weise_2D, BaldEagle g09"
 CELLS_ALSO = EXAMPLES + ", Chippewa_2D (cells)"
 MULTI_N = "Chippewa_2D (Multiple Face Mann n)"
+PRODUCTION = "production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)"
 
 PORTED, PARTIAL, MISSING, SUBST, PRIM, NA = (
     "ported", "partly ported", "not ported", "substituted", "primitive", "not applicable")
@@ -91,11 +92,11 @@ RULES = [
      PORTED, "property_tables.face_n_profiles", MULTI_N),
     (r"RASGeometry$", r"^ExtractLCVariableSubsampleTile$", NA, "", "only with sub-sampling, which no table caller turns on"),
     (r"RASGeometry$", r"^(ExtractLCVariablePolylinesRegionsVectorExtraction|ExtractLCVariablePolylineRegionsCombine)$",
-     MISSING, "", "calibration regions (Manning's n polygons)"),
+     PARTIAL, "property_tables._n_from_regions, _combine_n", "7 of the production model's 112,246 faces differ"),
     (r"RASGeometry$", r"^ExtractLCVariablePolylines$", MISSING, "", "face variable averages (Composite LC)"),
     (r"RasMapperLib\.FinalNValueLayer$", r".", PORTED, "preprocess.sample_land_cover", EXAMPLES),
     (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r"^MD5", NA, "", "change detection"),
-    (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r".", MISSING, "", "calibration regions (Manning's n polygons)"),
+    (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r".", PORTED, "preprocess.read_calibration", PRODUCTION),
     (r"RasMapperLib\.LandCoverLayer(/.*)?$", r"^(OverridePolygonFiltered|GetPolysAsMappedTuples|get_OverridePolygonLayer)$", MISSING, "", "override regions"),
     (r"RasMapperLib\.LandCoverLayer(/.*)?$", r"^(get_Resampler|Rasterize|GetTileValues|get_Classification|GetVirtualClassification|EvaluateVirtualDependencies|get_VirtualDependencyMode|get_Parameters|get_LCType|GetClassificationName)$",
      PORTED, "preprocess._classify_points, sample_infiltration", "BEC, Muncie, AFTER_RUN"),
@@ -103,13 +104,15 @@ RULES = [
     (r"RasMapperLib\.LandCoverLayerHelper$", r".", PORTED, "preprocess.sample_infiltration (Variables table)", "BEC, Muncie, AFTER_RUN"),
     (r"RasMapperLib\.LandCoverCategor(ies|y)$", r".", NA, "", "default class lists for new layers"),
     (r"Classifications\.ParameterResampler(/.*)?$", r"^(Resample|<Resample>)", PORTED, "preprocess._composite_cells", "Chippewa_2D (Manning's n)"),
-    (r"Classifications\.ParameterResampler(/.*)?$", r"(PolygonVariableMap|Polygons(Highest|Lowest))", MISSING, "", "override regions"),
+    (r"Classifications\.ParameterResampler(/.*)?$", r"(PolygonVariableMap|Polygons(Highest|Lowest))", PORTED,
+     "preprocess.sample_land_cover (regions at points)", PRODUCTION),
     (r"Classifications\.ParameterResampler(/.*)?$", r".", PORTED, "preprocess.sample_land_cover, sample_infiltration", "BEC, Muncie, AFTER_RUN"),
     (r"Classifications\.(ClassificationResampler|MergedClassificationResampler)(/.*)?$", r"^(Resample|<Resample>)", PORTED,
      "preprocess._ClassRaster.classes_at", "Chippewa_2D (Manning's n)"),
     (r"Classifications\.", r".", PORTED, "preprocess._classify_points (virtual layers)", "BEC, Muncie, AFTER_RUN"),
     (r"^Geospatial\.Vectors\.Rasterizers\.", r".", MISSING, "", "override regions (rasterized onto a cell's raster)"),
-    (r"^Geospatial\.Vectors\.(DelaunayTinFactory|Tin|TinFactory|Triangle.*|EdgeDefinition|TriangulationParameters|Circle)(/.*)?$", r".", MISSING, "", "override regions (polygon containment TINs)"),
+    (r"^Geospatial\.Vectors\.(DelaunayTinFactory|Tin|TinFactory|Triangle.*|EdgeDefinition|TriangulationParameters|Circle)(/.*)?$", r".", PORTED,
+     "tin.PolygonTin", PRODUCTION),
     (r"^Geospatial\.Rasters\.", r".", PORTED, "preprocess._ClassRaster (nearest pixel, pyramid level)", "Chippewa_2D (Manning's n)"),
     (r"^Geospatial\.IO\.", r".", NA, "", "TIFF reading (GDAL instead)"),
     # -- shared building blocks ----------------------------------------------------------
@@ -131,7 +134,7 @@ def classify(cls: str, method: str, il: int):
                     if num and num.group(1) == "665":
                         return MISSING, "", "face variable averages (Composite LC)"
                     if num:
-                        return MISSING, "", "calibration regions (Manning's n polygons)"
+                        return PARTIAL, "property_tables._n_from_regions, _combine_n", "7 of the production model's 112,246 faces differ"
                     continue
                 if il > 2000:   # ProfileHydraulicPropertiesTable constructors
                     return PORTED, "property_tables.face_table_n_profile", MULTI_N

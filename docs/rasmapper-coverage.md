@@ -8,26 +8,25 @@ How much of RASMapper's own code for *Compute Property Tables* (HEC-RAS 7.0.2, `
 
 | Status | Methods | IL bytes | Meaning |
 |---|---|---|---|
-| ported | 684 | 71,666 | reproduced; tables match RASMapper's bit for bit on the models named |
-| partly ported | 2 | 10,694 | the paths the models use are reproduced; named branches are not |
-| not ported | 184 | 18,055 | not reproduced; the feature it serves is refused or absent |
-| primitive, used by ported code | 279 | 15,614 | geometry and math building blocks the ported code uses; reproduced inline |
-| primitive, only for unported features | 351 | 16,811 | building blocks reached only from unported features |
+| ported | 828 | 82,932 | reproduced; tables match RASMapper's bit for bit on the models named |
+| partly ported | 14 | 14,278 | the paths the models use are reproduced; named branches are not |
+| not ported | 28 | 3,205 | not reproduced; the feature it serves is refused or absent |
+| primitive, used by ported code | 414 | 21,637 | geometry and math building blocks the ported code uses; reproduced inline |
+| primitive, only for unported features | 216 | 10,788 | building blocks reached only from unported features |
 | not applicable | 273 | 19,822 | can't change table values (caches, names, debug text, setup) |
 
-Of the computational code (ported, partly ported, not ported and substituted: 100,415 IL bytes), **71 %** is fully ported, 11 % partly, 0 % substituted and 18 % not ported.
+Of the computational code (ported, partly ported, not ported and substituted: 100,415 IL bytes), **83 %** is fully ported, 14 % partly, 0 % substituted and 3 % not ported.
 
 ## What is missing, by feature
 
 | Feature | Methods | IL bytes |
 |---|---|---|
-| override regions (polygon containment TINs) | 129 | 10,430 |
 | 2D bridge profiles not ported | 1 | 9,889 |
-| calibration regions (Manning's n polygons) | 22 | 4,157 |
+| 7 of the production model's 112,246 faces differ | 12 | 3,584 |
 | override regions (rasterized onto a cell's raster) | 18 | 1,789 |
 | face variable averages (Composite LC) | 7 | 1,041 |
 | terrain modifications (ObstructProfiles) not ported | 1 | 805 |
-| override regions | 8 | 638 |
+| override regions | 3 | 375 |
 
 ## Cut off from the call graph
 

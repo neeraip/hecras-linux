@@ -26,7 +26,7 @@ import h5py
 import numpy as np
 from osgeo import gdal
 
-from . import property_tables
+from . import property_tables, tin
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -110,11 +110,6 @@ def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
               "laminar_depth": "Laminar Depth"}
     with h5py.File(str(g01_hdf_path), "r") as hf:
         rows = hf["Geometry/2D Flow Areas/Attributes"][()]
-        regions = hf.get("Geometry/Land Cover (Manning's n)/Polygon Info")
-        if regions is not None and len(regions):
-            raise SystemExit("ras_preprocess.py: the geometry has Manning's n calibration "
-                             "regions; property tables for them aren't supported yet. "
-                             "Use Workflow A.")
     for row in rows:
         if row["Name"].decode("utf-8", errors="replace").strip("\x00").strip() != area_name:
             continue
@@ -255,7 +250,7 @@ def _default_land_cover(mesh: MeshData, default_mannings: float) -> dict:
 
 def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
                       default_mannings: float = 0.06, composite: bool = False,
-                      calibrated: dict = None) -> dict:
+                      calibration: dict = None) -> dict:
     """Sample Manning's n and land cover properties per cell.
 
     LandCover.hdf structure (File Type = 'HEC Land Cover'):
@@ -297,7 +292,8 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         name_to_imperv = {}
         for i in range(len(var_names)):
             n_str = var_names[i].decode('utf-8', errors='replace').strip() if isinstance(var_names[i], bytes) else str(var_names[i]).strip()
-            name_to_mann[n_str] = float((calibrated or {}).get(n_str.lower(), mann_vals[i]))
+            name_to_mann[n_str] = float((calibration or {}).get("base", {}).get(n_str.lower(),
+                                                                         mann_vals[i]))
             name_to_imperv[n_str] = float(imperv_vals[i])
 
         # Build ID -> Manning's n + calibration table from /Raster Map
@@ -349,13 +345,28 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         lc_ids = np.full(len(points), nodata_id, dtype=np.int64)
         lc_ids[inside] = lc_raster[rows[inside], cols[inside]]
         lc_ids[~np.isin(lc_ids, list(id_to_mann))] = nodata_id
-        return lc_ids, np.array([id_to_mann.get(int(i), nodata_mann) for i in lc_ids],
-                                dtype=np.float32)
+        n = np.array([id_to_mann.get(int(i), nodata_mann) for i in lc_ids], dtype=np.float32)
+        # ParameterResampler.SamplePoints: per point, the first region that
+        # sets an n for its land cover and whose TIN holds the point.
+        if region_tins:
+            for k, i in enumerate(lc_ids):
+                name = id_to_name.get(int(i), "").lower()
+                for (_, mapping), region in zip(regions, region_tins):
+                    v = mapping.get(name)
+                    if v is not None and region.contains(points[k]):
+                        n[k] = v
+                        break
+        n[(n == np.float32(-9999)) | np.isnan(n) | (n == np.finfo(np.float32).max)] = default_mannings
+        return lc_ids, n
 
-    cell_ids, mannings = lookup(mesh.cell_centers)
-    classifications[~mesh.cell_is_boundary] = cell_ids[~mesh.cell_is_boundary]
+    regions = (calibration or {}).get("regions", [])
+    region_tins = [tin.PolygonTin(ring[:-1]) for ring, mapping in regions]
+    # Face midpoints first, then cells: a region's TIN search starts where the
+    # last one ended, which decides points on the region's edge.
     mid = (mesh.face_points[mesh.faces_fp_idx[:, 0]] + mesh.face_points[mesh.faces_fp_idx[:, 1]]) / 2
     face_ids, face_mannings = lookup(mid)
+    cell_ids, mannings = lookup(mesh.cell_centers)
+    classifications[~mesh.cell_is_boundary] = cell_ids[~mesh.cell_is_boundary]
 
     percent_impervious = None
     if composite and ids is not None:
@@ -390,7 +401,7 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
 
 
 def face_n_profiles(mesh: MeshData, lc_hdf: Path, lc_tif: Path, lc_data: dict,
-                    default_mannings: float) -> list:
+                    default_mannings: float, calibration: dict = None) -> list:
     """Each face's Manning's n profile from the land cover raster
     (RASGeometry.ExtractManningsNPolylines): (stations, n) where n changes."""
     layer = _ClassRaster(lc_hdf)
@@ -407,25 +418,64 @@ def face_n_profiles(mesh: MeshData, lc_hdf: Path, lc_tif: Path, lc_data: dict,
         x, y = np.meshgrid(min_x + centres, max_y - centres)
         return layer.classes_at(np.column_stack([x.ravel(), y.ravel()]), cs).reshape(256, 256)
 
+    regions = (calibration or {}).get("regions", [])
+    names = [n.lower() for n in layer.names]
+
+    def n_in_region(c, r):
+        """FinalNValueLayer.GetManningsFromTable: the region's n for the class,
+        else the class's own."""
+        v = regions[r][1].get(names[c], np.nan) if 0 <= c < len(names) else np.nan
+        return v if not np.isnan(v) else n_of_class[c]
+
     tiles = property_tables.ClassTiles.from_tif(lc_tif, classes)
     polylines = [_face_polyline(mesh, fi) for fi in range(mesh.n_faces)]
-    return property_tables.face_n_profiles(polylines, tiles, n_of_class, default_mannings)
+    return property_tables.face_n_profiles(polylines, tiles, n_of_class, default_mannings,
+                                           regions=[r for r, _ in regions],
+                                           n_in_region=n_in_region)
 
 
-def _calibrated_n(g01_hdf: Path) -> dict:
-    """The geometry's base Manning's n overrides by land cover name (lower
-    case): the Calibration Table's values that are set (positive)."""
+def _valid_n(v) -> bool:
+    return v > 0 and v != float(np.finfo(np.float32).max) and not np.isnan(v)
+
+
+def read_calibration(g01_hdf: Path) -> dict:
+    """The geometry's Manning's n calibration (RasLandCoverRegions): base n
+    overrides by land cover name, and the region polygons in feature order,
+    each with its n by land cover name. Names are lower case; only values
+    that are set (positive) are kept."""
+    out = {"base": {}, "regions": []}
+    grp_path = "Geometry/Land Cover (Manning's n)"
     with h5py.File(str(g01_hdf), "r") as hf:
-        table = hf.get("Geometry/Land Cover (Manning's n)/Calibration Table")
-        if table is None or len(table.dtype.names or ()) < 2:
-            return {}
-        rows = table[()]
-    name, base = rows.dtype.names[:2]
-    out = {}
-    for r in rows:
-        v = float(r[base])
-        if v > 0 and v != float(np.finfo(np.float32).max) and not np.isnan(v):
-            out[r[name].decode("utf-8", "replace").strip().lower()] = v
+        grp = hf.get(grp_path)
+        if grp is None:
+            return out
+        table = grp["Calibration Table"][()] if "Calibration Table" in grp else None
+        names = []
+        if "Polygon Info" in grp and len(grp["Polygon Info"]):
+            info, pts = grp["Polygon Info"][()], grp["Polygon Points"][()]
+            attrs = grp["Attributes"][()]
+            for k, (start, count, _, parts) in enumerate(info):
+                if parts != 1:
+                    raise SystemExit("ras_preprocess.py: a Manning's n calibration region has "
+                                     "several parts; that isn't supported yet. Use Workflow A.")
+                names.append(attrs["Name"][k].decode("utf-8", "replace").strip())
+                ring = pts[start:start + count].astype(np.float64)
+                if not np.array_equal(ring[0], ring[-1]):
+                    ring = np.vstack([ring, ring[:1]])
+                if property_tables.polygon_area(ring, signed=True) < 0:   # EnsurePositivePolygonOrientations
+                    ring = ring[::-1].copy()
+                out["regions"].append([ring, {}])
+    if table is None or not table.dtype.names or len(table.dtype.names) < 2:
+        return out
+    fields = {f.lower(): f for f in table.dtype.names}
+    lc = [r.decode("utf-8", "replace").strip().lower() for r in table[fields["land cover name"]]]
+    base = fields.get("base manning's n value")
+    if base:
+        out["base"] = {n: float(v) for n, v in zip(lc, table[base]) if _valid_n(float(v))}
+    for (ring, mapping), name in zip(out["regions"], names):
+        col = fields.get(name.lower())
+        if col:
+            mapping.update({n: float(v) for n, v in zip(lc, table[col]) if _valid_n(float(v))})
     return out
 
 
@@ -1531,18 +1581,24 @@ def main():
         projection_wkt = meta.get("projection_wkt", "")
 
     settings = table_settings(src_g01_hdf, meta["area_name"])
+    calibration = read_calibration(src_g01_hdf)
+    if calibration["regions"] and settings["composite_lc"]:
+        logger.error("Manning's n calibration regions with Composite LC aren't supported yet. "
+                     "Use Workflow A.")
+        sys.exit(1)
 
     # Step A2: Sample land cover
     lc_data = _default_land_cover(mesh, default_mannings)
     if lc_hdf.exists() and lc_tif and lc_tif.exists():
         lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings,
                                     composite=settings["composite_lc"],
-                                    calibrated=_calibrated_n(src_g01_hdf))
+                                    calibration=calibration)
     n_profiles = None
     if settings["multi_face_n"]:
         n_profiles = [(np.zeros(1, np.float32), np.zeros(1, np.float32))] * mesh.n_faces
         if lc_hdf.exists() and lc_tif and lc_tif.exists():
-            n_profiles = face_n_profiles(mesh, lc_hdf, lc_tif, lc_data, default_mannings)
+            n_profiles = face_n_profiles(mesh, lc_hdf, lc_tif, lc_data, default_mannings,
+                                         calibration)
 
     # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
     terrain_path = _find_terrain_layer(project_dir, src_g01_hdf) or terrain_tif

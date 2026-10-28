@@ -272,65 +272,6 @@ Utility.Core	Utility.Parallel	GetReasonableParallelOptions	14	not applicable		in
 Utility.Core	Utility.Parallel	SmartFor	87	not applicable		infrastructure (caches, threading, paths, HDF writing)
 Utility.Core	Utility.Parallel/<>c__DisplayClass1_0	.ctor	7	not applicable		infrastructure (caches, threading, paths, HDF writing)
 Utility.Core	Utility.Parallel/<>c__DisplayClass1_0	<SmartFor>b__0	52	not applicable		infrastructure (caches, threading, paths, HDF writing)
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	GetPolygonVariableMap	69	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	MakePolygonVariableMap	151	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsHighestToLowest	7	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsLowestToHighest	12	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass41_0	<MakePolygonVariableMap>b__0	24	not ported		override regions
-Geospatial.Core	Geospatial.Vectors.Circle	.ctor	15	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	ComputeCenter	167	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	Contains	25	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	Equals	18	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	ToString	44	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	get_Extent	30	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	get_MaxX	19	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	get_MaxY	19	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	get_MinX	19	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Circle	get_MinY	19	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	.ctor	44	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	AddOctagonPointsAndTriangles	520	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeDevelopmentTin	17	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeMaximalExtent	212	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeOffset	34	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeTIN	705	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	27	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	27	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	21	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	79	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	79	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	60	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoints	229	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayRetriangulateInternal	173	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceBreakLineEdges	64	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceEdgeSegment	760	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceEdgeSegments	36	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceMaxLengthConstraintForInternalEdges	344	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforcePerimeterEdges	28	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ExecuteAfterAllInsertions	1	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	GetRoughInsertionCount	3	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertBreaklinePoints	138	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertItems	1	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertMassPoints	23	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertPerimeterPoints	109	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsSuperPoint	5	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsSuperTriangle	48	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsTriangleInsideInsertionHole	627	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MakeInsertionHoleFromDeletedTrianglesAndFill	942	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MarkBadTrianglesAsDeleted	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MarkBadTrianglesAsDeleted_SinglePart	333	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	SpinFindTriangleToBisect	233	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_EnforceFakePerimeterIfNoneProvided	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_KeepDeletedTriangles	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_MarkSuperTrianglesDeletedIfNoPerimeter	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	.cctor	11	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	.ctor	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	<ComputeTIN>b__30_0	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	<ComputeTIN>b__30_1	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/InsertionHoleEdge	.ctor	30	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.EdgeDefinition	.ctor	46	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.EdgeDefinition	Equals	30	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.EdgeDefinition	GetHashCode	17	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.EdgeDefinition	op_Equality	118	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	.ctor	41	not ported		override regions (rasterized onto a cell's raster)
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	BuildSegmentIntersectionList	728	not ported		override regions (rasterized onto a cell's raster)
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Initialize	168	not ported		override regions (rasterized onto a cell's raster)
@@ -349,114 +290,29 @@ Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayCla
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	.ctor	7	not ported		override regions (rasterized onto a cell's raster)
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__0	14	not ported		override regions (rasterized onto a cell's raster)
 Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__1	28	not ported		override regions (rasterized onto a cell's raster)
-Geospatial.Core	Geospatial.Vectors.Tin	.cctor	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	.ctor	63	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	ClosestPoint	83	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Contains	26	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Contains	6	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	ContainsPoint	57	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Edge	55	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Edge3D	122	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Edge4D	102	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	EstablishPerimeterFlags	220	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleAndNearestPointIndex	59	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleCheckNearbyCorners	145	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleContainingPoint	284	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	GetEdgeDefinition	32	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	GetEdgeDefinition	83	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	GetRemappedPoints	66	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	GetUsedPointArray	90	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	Initialize	49	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	PointDataModified	33	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	RemoveDeletedTriangles	467	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	20	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	41	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	80	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	SqueezePoints	218	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZ	14	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZ	22	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZM	20	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZM	43	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	get_Extent	32	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	get_TriangleCount	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	get_TriangleDefinition	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	set_IsCleaned	8	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle	8	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle3D	8	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle4D	8	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	.ctor	35	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	AddTriangle	93	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	IsXColinear	31	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	IsYColinear	31	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	MarkDeleted	44	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	SetEdgeType	64	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	get_HasM	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	get_HasZ	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	get_TriangulationParameters	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TinFactory	set_TriangulationParameters	8	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Triangle	.cctor	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Triangle	.ctor	22	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Triangle	ComputeCircumCircle	26	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Triangle3D	.ctor	22	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Triangle4D	.ctor	22	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	.ctor	53	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	.ctor	53	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	AdjacentTriangleIdx	43	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	ChangeAdjacentTriangle	79	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePointA	28	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePointB	28	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePoints	19	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	GetEdge012	24	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	GetEdge012	78	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	MarkDeleted	16	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	SetEdgeIsBreakline	119	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	SetEdgeIsPerimeter	121	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_Flags	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsDeleted	13	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge0Breakline	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge0Perimeter	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge1Breakline	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge1Perimeter	13	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge2Breakline	12	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge2Perimeter	13	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangulationParameters	.ctor	22	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_EnforcedMBR	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_NormalizedOffset	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_Tolerance	7	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.TriangulationParameters	set_Tolerance	8	not ported		override regions (polygon containment TINs)
 RasMapperLib	RasMapperLib.LandCoverLayer	GetPolysAsMappedTuples	220	not ported		override regions
 RasMapperLib	RasMapperLib.LandCoverLayer	OverridePolygonFiltered	148	not ported		override regions
 RasMapperLib	RasMapperLib.LandCoverLayer	get_OverridePolygonLayer	7	not ported		override regions
 RasMapperLib	RasMapperLib.Profile	Average	184	not ported		face variable averages (Composite LC)
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineRegionsCombine	1427	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylines	549	not ported		face variable averages (Composite LC)
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsVectorExtraction	1304	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__665-0	31	not ported		face variable averages (Composite LC)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-2	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-3	27	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-4	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-0	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-1	45	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-2	7	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	.ctor	34	not ported		face variable averages (Composite LC)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__1	51	not ported		face variable averages (Composite LC)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__2	165	not ported		face variable averages (Composite LC)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__3	27	not ported		face variable averages (Composite LC)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	.ctor	181	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__0	143	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__1	422	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__R1	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	EnsureBaseNamesAndValues	46	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLCNames	76	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLandCoverMapping	52	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLandCoverMapping_StripNoData	61	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	get_Geometry	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions	set_BaseNames	248	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.cctor	11	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.ctor	7	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__45-0	8	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__57-0	57	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	2D bridge profiles not ported
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineRegionsCombine	1427	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsVectorExtraction	1304	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-2	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-3	27	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-4	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-0	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-1	45	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-2	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	.ctor	181	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__0	143	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__1	422	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__R1	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
 RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	terrain modifications (ObstructProfiles) not ported
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	25	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	24	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -540,6 +396,8 @@ Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler/<>c__DisplayClass21_0	<ConvertValues>b__0	53	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Parameter	get_Values	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Parameter	get_VariableName	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	GetPolygonVariableMap	69	ported	preprocess.sample_land_cover (regions at points)	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	MakePolygonVariableMap	151	ported	preprocess.sample_land_cover (regions at points)	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	Resample	366	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoints	46	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoints	10	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
@@ -548,6 +406,8 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoin
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_BaseVariables	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_Classifier	12	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_NoDataValue	11	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsHighestToLowest	7	ported	preprocess.sample_land_cover (regions at points)	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsLowestToHighest	12	ported	preprocess.sample_land_cover (regions at points)	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_ProfileCount	12	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_ProfileNames	48	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c	.cctor	11	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
@@ -559,6 +419,7 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__Displ
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_2	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_2	<Resample>b__1	70	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass41_0	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass41_0	<MakePolygonVariableMap>b__0	24	ported	preprocess.sample_land_cover (regions at points)	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Count	12	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Item	13	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Parameters	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -789,6 +650,135 @@ Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	.ctor	7	p
 Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__0	40	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__1	38	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__2	39	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Vectors.Circle	.ctor	15	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	ComputeCenter	167	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	Contains	25	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	Equals	18	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	ToString	44	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	get_Extent	30	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	get_MaxX	19	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	get_MaxY	19	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	get_MinX	19	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Circle	get_MinY	19	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	.ctor	44	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	AddOctagonPointsAndTriangles	520	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeDevelopmentTin	17	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeMaximalExtent	212	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeOffset	34	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ComputeTIN	705	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	27	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	27	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsert	21	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	79	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	79	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoint	60	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayInsertPoints	229	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	DelaunayRetriangulateInternal	173	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceBreakLineEdges	64	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceEdgeSegment	760	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceEdgeSegments	36	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforceMaxLengthConstraintForInternalEdges	344	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	EnforcePerimeterEdges	28	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	ExecuteAfterAllInsertions	1	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	GetRoughInsertionCount	3	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertBreaklinePoints	138	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertItems	1	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertMassPoints	23	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	InsertPerimeterPoints	109	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsSuperPoint	5	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsSuperTriangle	48	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	IsTriangleInsideInsertionHole	627	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MakeInsertionHoleFromDeletedTrianglesAndFill	942	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MarkBadTrianglesAsDeleted	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	MarkBadTrianglesAsDeleted_SinglePart	333	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	SpinFindTriangleToBisect	233	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_EnforceFakePerimeterIfNoneProvided	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_KeepDeletedTriangles	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory	get_MarkSuperTrianglesDeletedIfNoPerimeter	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	.cctor	11	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	.ctor	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	<ComputeTIN>b__30_0	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/<>c	<ComputeTIN>b__30_1	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.DelaunayTinFactory/InsertionHoleEdge	.ctor	30	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.EdgeDefinition	.ctor	46	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.EdgeDefinition	Equals	30	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.EdgeDefinition	GetHashCode	17	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.EdgeDefinition	op_Equality	118	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	.cctor	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	.ctor	63	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	ClosestPoint	83	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Contains	26	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Contains	6	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	ContainsPoint	57	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Edge	55	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Edge3D	122	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Edge4D	102	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	EstablishPerimeterFlags	220	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleAndNearestPointIndex	59	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleCheckNearbyCorners	145	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	FindTriangleContainingPoint	284	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	GetEdgeDefinition	32	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	GetEdgeDefinition	83	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	GetRemappedPoints	66	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	GetUsedPointArray	90	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	Initialize	49	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	PointDataModified	33	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	RemoveDeletedTriangles	467	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	20	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	41	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	SetEdgeFlags	80	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	SqueezePoints	218	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZ	14	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZ	22	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZM	20	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	UpdatePointZM	43	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	get_Extent	32	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	get_TriangleCount	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	get_TriangleDefinition	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	set_IsCleaned	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle3D	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Tin	set_Triangle4D	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	.ctor	35	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	AddTriangle	93	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	IsXColinear	31	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	IsYColinear	31	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	MarkDeleted	44	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	SetEdgeType	64	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	get_HasM	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	get_HasZ	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	get_TriangulationParameters	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TinFactory	set_TriangulationParameters	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Triangle	.cctor	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Triangle	.ctor	22	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Triangle	ComputeCircumCircle	26	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Triangle3D	.ctor	22	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.Triangle4D	.ctor	22	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	.ctor	53	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	.ctor	53	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	AdjacentTriangleIdx	43	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	ChangeAdjacentTriangle	79	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePointA	28	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePointB	28	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	EdgePoints	19	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	GetEdge012	24	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	GetEdge012	78	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	MarkDeleted	16	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	SetEdgeIsBreakline	119	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	SetEdgeIsPerimeter	121	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_Flags	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsDeleted	13	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge0Breakline	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge0Perimeter	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge1Breakline	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge1Perimeter	13	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge2Breakline	12	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangleDefinition	get_IsEdge2Perimeter	13	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangulationParameters	.ctor	22	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_EnforcedMBR	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_NormalizedOffset	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangulationParameters	get_Tolerance	7	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+Geospatial.Core	Geospatial.Vectors.TriangulationParameters	set_Tolerance	8	ported	tin.PolygonTin	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
 RasMapperLib	RasMapperLib.CircleM	Compute	46	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.CircleM	ComputeCenter	163	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.CircleM	ContainsPoint	26	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
@@ -953,6 +943,16 @@ RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-0	.ctor	34	ported	property_
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-1	.ctor	34	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	.ctor	22	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	_Lambda$__0	143	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	EnsureBaseNamesAndValues	46	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLCNames	76	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLandCoverMapping	52	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLandCoverMapping_StripNoData	61	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	get_Geometry	7	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions	set_BaseNames	248	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.cctor	11	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.ctor	7	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__45-0	8	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
+RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__57-0	57	ported	preprocess.read_calibration	production model (Manning's n only: 48,006 cell-centre n and, from its stored face profiles, 112,239 of 112,246 face tables)
 RasMapperLib	RasMapperLib.RasterM	.ctor	22	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	51	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	107	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
@@ -1147,29 +1147,13 @@ Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.ctor	7	primitive, on
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.cctor	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Geospatial.Rasters.IRasterDefinition.get_RasterDefinition	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	.cctor	139	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	Clone	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDXDYRatio	73	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDimensions	172	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinHeight	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinWidth	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Equals	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Geospatial.Vectors.IExtent.get_Extent	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	GetHashCode	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Overlaps_EdgePedantic	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	ToString	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	Translate	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_Bot	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_Center	52	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_LeftMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerLeft	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_LowerRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_RightMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent/<>c	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent/<>c	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1178,55 +1162,22 @@ Geospatial.Core	Geospatial.Vectors.LineIntersection	.cctor	36	primitive, only fo
 Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	21	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.LineIntersection	.ctor	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	.cctor	57	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	CloseToXY	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	Distance	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	DistanceTo	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	Equals	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	Equals	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	GetHashCode	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	To	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	32	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point3D	AsPoint2D	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point3D	DebuggerDisplay	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point3D	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point3D	Translate	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	.cctor	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point4D	AsPoint2D	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	DebuggerDisplay	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point4D	Translate	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point3D>b__48_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point4D>b__52_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	AddInternal	63	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	Contains	6	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	GetEnumerator	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	PointDataModified	40	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAt	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAtInternal	53	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	System.Collections.IEnumerable.GetEnumerator	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	TrackM	60	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	TrackZ	60	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	64	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasM	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasZ	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_M	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point3D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point4D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_PointCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_Z	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_Item	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.cctor	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Compare	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1246,15 +1197,12 @@ Geospatial.Core	Geospatial.Vectors.Polygon	PointDataModified	22	primitive, only 
 Geospatial.Core	Geospatial.Vectors.Polygon	PreviousPointIndex	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	get_SegmentCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segment4D>b__13_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	GetAllIntersections	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	GetFirstIntersection	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	Intersects	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	PointDataModified	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IEnumerable<Geospatial.Vectors.Segment>.GetEnumerator	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	System.Collections.Generic.IReadOnlyList<Geospatial.Vectors.Segment>.get_Item	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polyline	get_Segment4D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	.ctor	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	MoveNext	306	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.Generic.IEnumerable<Geospatial.Vectors.LineIntersection>.GetEnumerator	67	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1263,55 +1211,22 @@ Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Co
 Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline/<GetAllIntersections>d__33	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	.cctor	21	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	ClipToExtent_EdgePedantic	301	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	Clip_Parametric	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	Densify	62	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	Equals	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	GetExtent	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	GetHashCode	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	InterpolatedY	117	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	Intersects	499	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	MBROverlaps	78	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	Midpoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	PointAtFraction	46	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	Rasterize	846	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	ToString	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_Length	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_MaxX	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_MaxY	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_MinX	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment	get_MinY	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment	op_Equality	39	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Segment/<>c__DisplayClass109_0	<Rasterize>b__0	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	PointAtFraction	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaX	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaZ	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_Length2D	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment3D	get_MidPoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	AsSegment2D	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	PointAtFraction	86	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	Translate	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaM	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaX	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaY	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaZ	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_Length2D	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Segment4D	get_MidPoint	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Vector	.cctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Vector	.ctor	15	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Vector	CrossProduct	56	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Vector	Equals	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Vector	GetHashCode	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Vector	Negate	20	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1323,7 +1238,6 @@ Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Inter
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point3D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection/<GetEnumerator_Internal>d__11	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1334,7 +1248,6 @@ Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Inter
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Point4D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	.ctor	49	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1355,7 +1268,6 @@ Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Inter
 Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Segment>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection/<GetEnumerator_Internal>d__9	System.IDisposable.Dispose	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1366,7 +1278,6 @@ Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_In
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle3D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1377,7 +1288,6 @@ Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_In
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.Generic.IEnumerator<Geospatial.Vectors.Triangle4D>.get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.Collections.IEnumerator.get_Current	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection/<GetEnumerator_Internal>d__8	System.IDisposable.Dispose	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	.ctor	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	GetEnumerator_Internal	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	System.Collections.IEnumerable.GetEnumerator	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1401,10 +1311,7 @@ RasMapperLib	RasMapperLib.Feature	MBROverlaps	76	primitive, only for unported fe
 RasMapperLib	RasMapperLib.Feature	PointLabel	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint	.cctor	58	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint	CopyPoints	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.MultiPoint	CopyTo	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.MultiPoint	FirstPointM	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint	GetEnumerator	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.MultiPoint	LastPointM	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	Dispose	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1413,11 +1320,6 @@ RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	MoveNext	1
 RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Point2D	ConvertToCSV	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Point2D	ToString	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	get_ASegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	get_BFraction	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	get_BPointOnPolyline	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	get_BSegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	get_Point	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointM	.cctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointM	Equal	64	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointM	EqualXYZMWithNaN	116	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1437,14 +1339,9 @@ RasMapperLib	RasMapperLib.PointMs	Segment	40	primitive, only for unported featur
 RasMapperLib	RasMapperLib.PointMs	SegmentCount	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointMs	ToString	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointMs	ToString	81	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointOnPolyline	.ctor	28	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointOnPolyline	ToString	104	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointOnPolyline	get_Fraction	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointOnPolyline	get_PointM	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointOnPolyline	get_SegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	.cctor	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	ClipPolyline	526	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	Contains	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	Contains	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	FilterXY	133	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1455,44 +1352,12 @@ RasMapperLib	RasMapperLib.Polygon	ToString	29	primitive, only for unported featu
 RasMapperLib	RasMapperLib.Polygon	get_UsingQuadTree	2	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon/_Closure$__	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon/_Closure$__	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-1	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	.cctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	.ctor	95	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	Clone	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	CopyPointsAsPointOnPolyline	101	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	CumulativeSegmentLengths	69	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	DistanceAlongFast	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	FirstPointOnPolyline	41	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	GenerateSegmentSpatialIndex	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMulti	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMultiInternal	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	LastPointOnPolyline	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolyline	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolylineInternal	137	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	PointDataChanged	20	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	ResetLength	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	Segments	88	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	ToString	29	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	get_UsingQuadTree	2	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SegmentM	NearestPoint	181	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SegmentM	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex	ReasonableSegmentBinCount	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	Add	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetBinRange	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	100	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	_Lambda$__0	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	_Lambda$__0	54	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	_Lambda$__0	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Utility.Core	Utility.Math	GetInRange	14	primitive, only for unported features	numpy	only reached from unported features
-Utility.Core	Utility.Math	Min3Index	44	primitive, only for unported features	numpy	only reached from unported features
-Utility.Core	Utility.Math	OverlappingRange	45	primitive, only for unported features	numpy	only reached from unported features
-Utility.Core	Utility.Math	RangeOverlaps	14	primitive, only for unported features	numpy	only reached from unported features
-Utility.Core	Utility.Math	SubtractRange	143	primitive, only for unported features	numpy	only reached from unported features
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex	FromPolygons	104	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex	ReasonableBinCount	30	primitive, used by ported code	numpy / inline arithmetic	
@@ -1509,45 +1374,94 @@ Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_MaxResizedBinCount	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_Raster	8	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	.ctor	30	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	.ctor	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Clone	30	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Contains	19	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Contains	42	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Contains	66	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDXDYRatio	73	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDimensions	172	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinHeight	17	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinWidth	17	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Extend	38	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsFinite	79	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsNull	53	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsValid	39	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Translate	19	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Translate	38	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Union	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Union	74	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Union	171	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Bot	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Bottom	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Center	52	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaX	50	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaY	50	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Height	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Left	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_LeftMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerLeft	18	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_LowerRight	18	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Right	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_RightMidside	35	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Top	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_UpperLeft	18	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperMidside	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperRight	18	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Width	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent/<>c	<Union>b__67_0	25	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	<Union>b__65_0	28	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	CloseToXY	45	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	Distance	19	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	DistanceTo	39	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	To	22	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	Translate	19	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	32	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	22	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point3D	AsPoint2D	18	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point3D	Translate	38	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point4D	.ctor	30	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point4D	AsPoint2D	18	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point4D	Translate	44	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	55	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	92	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	10	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_0	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_1	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_2	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_3	12	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point3D>b__48_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point4D>b__52_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	AddInternal	63	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	ComputeExtent	153	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	Initialize	239	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	PointDataModified	40	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	TrackM	60	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	TrackZ	60	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	19	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	64	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Count	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasM	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasZ	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Item	13	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_M	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_MFillValue	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point3D	25	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point4D	25	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_PointCount	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Points	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_Z	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_ZFillValue	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasM	8	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasZ	8	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_Item	14	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	ComputeArea	116	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	ComputeTin	29	primitive, used by ported code	numpy / inline arithmetic	
@@ -1560,11 +1474,52 @@ Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	.ctor	7	primiti
 Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__0	17	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__1	17	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	34	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	35	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segment4D>b__13_0	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segments>b__7_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	get_Segment4D	25	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	get_SegmentCount	14	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	get_Segments	25	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	Densify	62	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	Intersects	499	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	MBROverlaps	78	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	Midpoint	16	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	PointAtFraction	46	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaX	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_DeltaY	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_Length	18	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_MaxX	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_MaxY	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_MinX	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment	get_MinY	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	PointAtFraction	66	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaX	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaY	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_DeltaZ	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_Length2D	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment3D	get_MidPoint	16	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	AsSegment2D	28	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	PointAtFraction	86	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	Translate	30	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaM	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaX	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaY	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_DeltaZ	24	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_Length2D	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Segment4D	get_MidPoint	16	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Vector	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Vector	CrossProduct	56	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Vector	Negate	20	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualPoint3DCollection	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualPoint4DCollection	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualSegment4DCollection	.ctor	49	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.VirtualSegmentCollection	.ctor	49	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle3DCollection	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualTriangle4DCollection	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.VirtualTriangleCollection	.ctor	29	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.DistinctSpatialIndex	.ctor	64	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.DistinctSpatialIndex	_Lambda$__3-0	12	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Extent	.ctor	48	primitive, used by ported code	numpy / inline arithmetic	
@@ -1616,10 +1571,13 @@ RasMapperLib	RasMapperLib.Feature	MBROverlaps	113	primitive, used by ported code
 RasMapperLib	RasMapperLib.Feature	set_OverrideSymbology	8	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	.ctor	125	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	ComputeExtent	63	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	CopyTo	13	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	FirstPointM	12	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	GetExtentXY	30	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYM	60	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZ	42	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	GetExtentXYZM	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.MultiPoint	LastPointM	12	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	PointDataChanged	75	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	PointM	13	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.MultiPoint	PointMCount	7	primitive, used by ported code	numpy / inline arithmetic	
@@ -1644,6 +1602,11 @@ RasMapperLib	RasMapperLib.Point2D	Equal	26	primitive, used by ported code	numpy 
 RasMapperLib	RasMapperLib.Point2D	Equal	36	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Point2D	IsUndefined	34	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointIntersect	.ctor	51	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	get_ASegmentIndex	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	get_BFraction	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	get_BPointOnPolyline	24	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	get_BSegmentIndex	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	get_Point	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	52	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	19	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	37	primitive, used by ported code	numpy / inline arithmetic	
@@ -1676,8 +1639,13 @@ RasMapperLib	RasMapperLib.PointMs	MaxMinIndexes	236	primitive, used by ported co
 RasMapperLib	RasMapperLib.PointMs	MaxMinValue	103	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointMs	RemoveRange	16	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointMs	Reverse	74	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointOnPolyline	.ctor	28	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointOnPolyline	get_Fraction	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointOnPolyline	get_PointM	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointOnPolyline	get_SegmentIndex	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	.ctor	9	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	ClipPolyline	526	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Contains	19	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Contains	30	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Contains	500	primitive, used by ported code	numpy / inline arithmetic	
@@ -1690,16 +1658,30 @@ RasMapperLib	RasMapperLib.Polygon	IsValid	74	primitive, used by ported code	nump
 RasMapperLib	RasMapperLib.Polygon	IsVertexVerticallyBetweenNeighbors	188	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Rasterize	60	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	get_Area	247	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-0	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon/_Closure$__	_Lambda$__53-1	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	_Lambda$__0	17	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	.ctor	72	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	.ctor	79	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	.ctor	95	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	Clone	26	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	CopyPointsAsPointOnPolyline	101	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	CumulativeSegmentLengths	69	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	DistanceAlongFast	82	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	FirstPointOnPolyline	41	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	GenerateSegmentSpatialIndex	61	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	GetLineIntersection	119	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMulti	61	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMultiInternal	147	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	InitializePartStarts	66	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	InitializeSegmentFirstIndexes	235	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	Intersects	11	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	IsValid	17	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	IsValidPolyline	16	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	LastPointOnPolyline	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolyline	10	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolylineInternal	137	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	PartEndIndex	65	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	PartSegment	77	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	PartSegmentCount	31	primitive, used by ported code	numpy / inline arithmetic	
@@ -1708,6 +1690,7 @@ RasMapperLib	RasMapperLib.Polyline	PartsCount	26	primitive, used by ported code	
 RasMapperLib	RasMapperLib.Polyline	PointCountInPart	85	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	Segment	71	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	SegmentCount	46	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	Segments	88	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	get_Length	83	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	.ctor	57	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	.ctor	22	primitive, used by ported code	numpy / inline arithmetic	
@@ -1732,6 +1715,7 @@ RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	76	primitive, used by ported code
 RasMapperLib	RasMapperLib.SegmentM	MBROverlaps	57	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	MidPoint	194	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	MidPointXY	104	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SegmentM	NearestPoint	181	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	PointAtFraction	162	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	Translate	40	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	ZAtFraction	21	primitive, used by ported code	numpy / inline arithmetic	
@@ -1745,17 +1729,28 @@ RasMapperLib	RasMapperLib.SegmentM	get_MinX	28	primitive, used by ported code	nu
 RasMapperLib	RasMapperLib.SegmentM	get_MinY	28	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SegmentM	get_MinZ	28	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex	ReasonableBinCount	35	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex	ReasonableSegmentBinCount	9	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	75	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	14	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	Add	312	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	Add	157	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	Add	45	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	DefaultSpatialIndex	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetBinRange	147	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	92	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	19	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	100	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	Initialize	131	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	get_Bins	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	get_Raster	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	_Lambda$__0	25	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	_Lambda$__0	54	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	.ctor	22	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	_Lambda$__0	13	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Utilities.Math	GetMaxValue	109	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Utilities.Math	GetMinValue	109	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Utilities.Math	Max3	28	primitive, used by ported code	numpy / inline arithmetic	
@@ -1772,3 +1767,8 @@ Utility.Core	Utility.Math	ArraySetAll	46	primitive, used by ported code	numpy
 Utility.Core	Utility.Math	ArraySetAllInternal_P4	206	primitive, used by ported code	numpy	
 Utility.Core	Utility.Math	EnsureArraySize	20	primitive, used by ported code	numpy	
 Utility.Core	Utility.Math	EnsureArraySize	36	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	GetInRange	14	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	Min3Index	44	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	OverlappingRange	45	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	RangeOverlaps	14	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	SubtractRange	143	primitive, used by ported code	numpy	

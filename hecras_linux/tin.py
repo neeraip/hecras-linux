@@ -660,3 +660,271 @@ def _sort3_by_y(a, b, c):
         else:
             a, c = c, a
     return a, b, c
+
+
+class PolygonTin:
+    """Geospatial.Vectors DelaunayTinFactory.ComputeDevelopmentTin of one
+    polygon (perimeter only, deleted triangles kept) and Tin.ContainsPoint,
+    which ParameterResampler uses for a calibration region. A point on the
+    region's edge is inside when the walk reaches an inside triangle first,
+    and the walk starts where the last query ended, so queries must come in
+    RASMapper's order."""
+
+    def __init__(self, ring):
+        pts = [(float(x), float(y)) for x, y in ring]       # open ring
+        area = 0.0                                           # Polygon.ComputeArea
+        for i in range(len(pts)):
+            (ax, ay), (bx, by) = pts[i], pts[(i + 1) % len(pts)]
+            area += (ay + by) * (bx - ax)
+        self.tol = math.sqrt(abs(area * 0.5)) / 1000000.0
+        self.points = []
+        self.tris = []
+        self.free = []
+        self.last_t = 0                                      # _previousSearchTriangle
+        self._ring_count = len(pts)
+        self._build(pts)
+        xs = [q[0] for q in self.points]
+        ys = [q[1] for q in self.points]
+        self.extent = (min(xs), max(xs), min(ys), max(ys))   # Tin.Extent, cached
+
+    # -- Tin --------------------------------------------------------------------
+    def add_triangle(self, p0, p1, p2, at0, at1, at2):
+        t = Tri(p0, p1, p2, at0, at1, at2)
+        if self.free:
+            n = self.free.pop()
+            self.tris[n] = t
+        else:
+            n = len(self.tris)
+            self.tris.append(t)
+        return n
+
+    def find_triangle(self, pt):
+        """Tin.FindTriangleContainingPoint."""
+        t = self.last_t
+        if t < 0 or t > len(self.tris) - 1:
+            t = 0
+        count, prev = 0, -1
+        P = self.points
+        while t != -1 and count != len(self.tris):
+            tr = self.tris[t]
+            c0 = _cross(P[tr.p0], P[tr.p1], pt)
+            c1 = _cross(P[tr.p1], P[tr.p2], pt)
+            c2 = _cross(P[tr.p2], P[tr.p0], pt)
+            k = (0 if c0 < c2 else 2) if c0 < c1 else (1 if c1 < c2 else 2)   # Math.Min3Index
+            if (c0, c1, c2)[k] >= 0.0:
+                self.last_t = t
+                return t
+            nxt = (tr.at0, tr.at1, tr.at2)[k]
+            if prev == nxt:
+                return min(nxt, t)
+            prev, t = t, nxt
+            count += 1
+        return -1
+
+    def _closest(self, pt, p0, p1, p2):
+        P = self.points
+        d0, d1, d2 = (_hypot(P[q], pt) for q in (p0, p1, p2))
+        if d0 < d1:
+            return p0 if d0 < d2 else p2
+        return p1 if d1 < d2 else p2
+
+    def _near(self, a, b):
+        """Point.CloseToXY."""
+        return abs(a[0] - b[0]) < self.tol and abs(a[1] - b[1]) < self.tol
+
+    def contains(self, pt) -> bool:
+        """Tin.ContainsPoint (the extent check, then the walk)."""
+        min_x, max_x, min_y, max_y = self.extent
+        if not (min_x <= pt[0] < max_x and min_y < pt[1] <= max_y):
+            return False
+        t = self.find_triangle(pt)
+        return t != -1 and not self.tris[t].deleted()
+
+    def _set_edge_type(self, t, a, b, perimeter):
+        """Tin.SetEdgeFlags(GetEdgeDefinition(t, a, b)): GetEdge012 answers
+        edge 2 for an edge the triangle doesn't have."""
+        tr = self.tris[t]
+        e = 0 if {a, b} == {tr.p0, tr.p1} else (1 if {a, b} == {tr.p1, tr.p2} else 2)
+        tr.set_edge(e, perimeter)
+        nb = (tr.at0, tr.at1, tr.at2)[e]
+        if nb != -1:
+            o = self.tris[nb]
+            o.set_edge(0 if o.at0 == t else (1 if o.at1 == t else 2), perimeter)
+
+    # -- DelaunayTinFactory ---------------------------------------------------------
+    def _build(self, ring):
+        min_x, max_x = min(p[0] for p in ring), max(p[0] for p in ring)
+        min_y, max_y = min(p[1] for p in ring), max(p[1] for p in ring)
+        ext = _enforce_min_dims([min_x, max_x, min_y, max_y], self.tol * 10.0, self.tol * 10.0)
+        dx, dy = ext[1] - ext[0], ext[3] - ext[2]
+        if dx > dy:
+            if dy < dx * 0.125:
+                ext = _enforce_min_dims(ext, 0.0, dx * 0.125)
+        elif dx < dy * 0.125:
+            ext = _enforce_min_dims(ext, dy * 0.125, 0.0)
+        ox, oy = 0.0 - ext[0], 0.0 - ext[2]
+        lo_x, hi_x, lo_y, hi_y = ext[0] + ox, ext[1] + ox, ext[2] + oy, ext[3] + oy
+        n = max(hi_x - lo_x, hi_y - lo_y) * 0.05
+        mid_x, mid_y = (hi_x + lo_x) * 0.5, (hi_y + lo_y) * 0.5
+        for x, y in ((mid_x, hi_y + n * 2.0), (hi_x + n, hi_y + n), (hi_x + n * 2.0, mid_y),
+                     (hi_x + n, lo_y - n), (mid_x, lo_y + (-n) * 2.0), (lo_x - n, lo_y - n),
+                     (lo_x + (-n) * 2.0, mid_y), (lo_x - n, hi_y + n)):
+            self.points.append((x, y))
+        if (ext[1] - ext[0]) > (ext[3] - ext[2]):
+            spec = [(0, 7, 6, -1, -1, 4), (6, 5, 4, -1, -1, 4), (4, 3, 2, -1, -1, 5),
+                    (2, 1, 0, -1, -1, 5), (0, 6, 4, 0, 1, 5), (0, 4, 2, 4, 2, 3)]
+        else:
+            spec = [(0, 7, 6, -1, -1, 4), (6, 5, 4, -1, -1, 5), (4, 3, 2, -1, -1, 5),
+                    (2, 1, 0, -1, -1, 4), (0, 6, 2, 0, 5, 3), (6, 4, 2, 1, 2, 4)]
+        for s in spec:
+            self.add_triangle(*s)
+        moved = [(x + ox, y + oy) for x, y in ring]
+        for pt in moved:                                     # InsertPerimeterPoints
+            self._insert(pt)
+        for i in range(len(moved)):                          # EnforcePerimeterEdges
+            self._enforce(moved[i], moved[(i + 1) % len(moved)])
+        self._mark_bad()
+        self.points = [(x + -ox, y + -oy) for x, y in self.points]
+
+    def _insert(self, pt):
+        """DelaunayInsertPoint (FindTriangleCheckNearbyCorners, then the hole)."""
+        t = self.find_triangle(pt)
+        if t != -1:
+            tr = self.tris[t]
+            P = self.points
+            if any(self._near(pt, P[q]) for q in (tr.p0, tr.p1, tr.p2)):
+                return False
+        p = len(self.points)
+        self.points.append(pt)
+        stack = [t]
+        while stack:
+            t = stack.pop()
+            self.free.append(t)
+            tr = self.tris[t]
+            tr.mark_deleted()
+            for at in (tr.at0, tr.at1, tr.at2):
+                if self._inside_hole(at, pt):
+                    stack.append(at)
+        self._fill_hole(p)
+        return True
+
+    def _inside_hole(self, at, pt):
+        if at == -1:
+            return False
+        tr = self.tris[at]
+        if tr.deleted():
+            return False
+        P = self.points
+        a, b, c = P[tr.p0], P[tr.p1], P[tr.p2]
+        x, y, _ = _circumcircle(a, b, c)
+        if not (_hypot(pt, (x, y)) <= _hypot(a, (x, y))):   # Circle.Contains
+            return False
+        for u, v in ((a, b), (a, c), (b, c)):
+            if u[0] == v[0] == pt[0] and ((pt[1] > u[1] and pt[1] > v[1]) or (pt[1] < u[1] and pt[1] < v[1])):
+                return False
+        for u, v in ((a, b), (a, c), (b, c)):
+            if u[1] == v[1] == pt[1] and ((pt[0] > u[0] and pt[0] > v[0]) or (pt[0] < u[0] and pt[0] < v[0])):
+                return False
+        return True
+
+    _fill_hole = StitchTin._fill_hole
+
+    def _enforce(self, a, b):
+        """EnforceEdgeSegment for a perimeter segment (already translated)."""
+        P = self.points
+        t = self.find_triangle(b)
+        tr = self.tris[t]
+        p = self._closest(b, tr.p0, tr.p1, tr.p2)
+        b = P[p]
+        while True:
+            t2 = self.find_triangle(a)
+            tr = self.tris[t2]
+            p2 = self._closest(a, tr.p0, tr.p1, tr.p2)
+            a = self.points[p2]
+            while True:                                      # SpinFindTriangleToBisect
+                tr = self.tris[t2]
+                if p2 == tr.p0:
+                    e, n_cw, n_ccw = 1, tr.at0, tr.at2
+                elif p2 == tr.p1:
+                    e, n_cw, n_ccw = 2, tr.at1, tr.at0
+                else:
+                    e, n_cw, n_ccw = 0, tr.at2, tr.at1
+                sa, sb = ((self.points[tr.p0], self.points[tr.p1]), (self.points[tr.p1], self.points[tr.p2]),
+                          (self.points[tr.p2], self.points[tr.p0]))[e]
+                if _cross(self.points[p2], sa, b) < 0.0:
+                    t2 = n_cw
+                    continue
+                if _cross(self.points[p2], sb, b) > 0.0:
+                    t2 = n_ccw
+                    continue
+                break
+            if p in (tr.p0, tr.p1, tr.p2):
+                break
+            t = _geo_intersect_t(a, b, sa, sb)
+            pm = (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]))
+            first, last = (tr.p0, tr.p1, tr.p2)[e], (tr.p1, tr.p2, tr.p0)[e]
+            if self._near(pm, sa):
+                self._set_edge_type(t2, p2, first, True)
+                p2 = first
+                a = self.points[p2]
+                continue
+            if self._near(pm, sb):
+                self._set_edge_type(t2, p2, last, True)
+                p2 = last
+                a = self.points[p2]
+                continue
+            count = len(self.points)
+            self.points.append(pm)
+            adj = (tr.at0, tr.at1, tr.at2)[e]
+            bl = tr.flags & (E0_BREAK, E1_BREAK, E2_BREAK)[e] != 0
+            perim = tr.flags & (E0_PERIM, E1_PERIM, E2_PERIM)[e] != 0
+            self.free.append(t2)
+            self.free.append(adj)
+            self.tris[t2].mark_deleted()
+            self.tris[adj].mark_deleted()
+            edges = self._fill_hole(count)
+            if bl or perim:
+                for edge in edges:
+                    self._set_edge_type(edge[3], count, first, perim)
+                    self._set_edge_type(edge[3], count, last, perim)
+            self._set_edge_type(len(self.tris) - 1, p2, count, True)
+            a = pm
+        self._set_edge_type(t2, p2, p, True)
+
+    def _mark_bad(self):
+        """MarkBadTrianglesAsDeleted_SinglePart: flood from the super
+        triangles, stopping at perimeter edges."""
+        stack = []
+        for i, tr in enumerate(self.tris):
+            if tr.p0 < SUPER_POINT_COUNT or tr.p1 < SUPER_POINT_COUNT or tr.p2 < SUPER_POINT_COUNT:
+                tr.mark_deleted()
+                stack.append(i)
+        if self._ring_count <= 3:
+            return
+        while stack:
+            t = stack.pop()
+            tr = self.tris[t]
+            tr.mark_deleted()
+            for at, flag in ((tr.at0, E0_PERIM), (tr.at1, E1_PERIM), (tr.at2, E2_PERIM)):
+                if at != -1 and not self.tris[at].deleted() and not tr.flags & flag:
+                    stack.append(at)
+
+
+def _hypot(a, b):
+    """Point.DistanceTo."""
+    dx, dy = a[0] - b[0], a[1] - b[1]
+    return math.sqrt(dx * dx + dy * dy)
+
+
+def _geo_intersect_t(a, b, c, d):
+    """Geospatial Segment.Intersects(seg, ..., epsilon 0): t along a-b, NaN
+    when the segments' boxes don't meet or they are parallel."""
+    if (max(a[0], b[0]) < min(c[0], d[0]) or min(a[0], b[0]) > max(c[0], d[0])
+            or max(a[1], b[1]) < min(c[1], d[1]) or min(a[1], b[1]) > max(c[1], d[1])):
+        return math.nan
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    ex, ey = d[0] - c[0], d[1] - c[1]
+    den = ey * dx - ex * dy
+    if den == 0.0:
+        return math.nan
+    return (ex * (a[1] - c[1]) - ey * (a[0] - c[0])) / den

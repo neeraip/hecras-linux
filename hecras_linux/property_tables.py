@@ -1084,18 +1084,26 @@ class ClassTiles:
 
 
 def face_n_profiles(polylines: list, tiles: ClassTiles, n_of_class, replace_nodata: float,
-                    decimal_places: int = 1) -> list:
-    """RASGeometry.ExtractManningsNPolylines, from the land cover raster (no
-    regions): for each face polyline, (stations, n) where n changes, float32.
-    n_of_class[c] is class c's n, -9999 where it has none; -9999 in the result
-    becomes replace_nodata."""
+                    decimal_places: int = 1, regions: list = (), n_in_region=None) -> list:
+    """RASGeometry.ExtractManningsNPolylines: for each face polyline, (stations,
+    n) where n changes, float32. n_of_class[c] is class c's n, -9999 where it
+    has none; -9999 in the result becomes replace_nodata. regions are the
+    calibration region rings, in feature order; n_in_region(c, r) is class
+    c's n inside region r."""
     lengths = [[_seg_length(*p[j], *p[j + 1]) for j in range(len(p) - 1)] for p in polylines]
     raster = _n_from_raster(polylines, lengths, tiles, n_of_class)
-    out = []
-    for i, p in enumerate(polylines):
+    totals = []
+    for i in range(len(polylines)):
         total = 0.0
         for length in lengths[i]:
             total += length
+        totals.append(total)
+    if len(regions):
+        vector = _n_from_regions(polylines, lengths, totals, regions)
+        raster = _combine_n(raster, vector, totals, n_in_region)
+    out = []
+    for i, p in enumerate(polylines):
+        total = totals[i]
         values = raster.get(i) or [(0.0, total, -1, -1, N_NODATA)]
         values = _fill_n_gaps(values, total, 1.0 / math.pow(10.0, decimal_places))
         out.append(_n_breaks(values, F32(replace_nodata)))
@@ -1171,6 +1179,220 @@ def _n_from_raster(polylines, lengths, tiles, n_of_class) -> dict:
                 merged[idx] = value
         runs[i] = [tuple(v) for v in merged]
     return runs
+
+
+def _n_tolerance(total):
+    return max(total / 10000.0, 1e-05)
+
+
+def _overlapping_range(amin, amax, bmin, bmax):
+    """Utility.Math.OverlappingRange: (overlaps, left, right)."""
+    if not (amax < bmin) and not (amin > bmax):
+        return True, min(max(amin, bmin), bmax), min(max(amax, bmin), bmax)
+    return False, amin, amax
+
+
+def _subtract_range(amin, amax, bmin, bmax) -> list:
+    """Utility.Math.SubtractRange: what is left of a after removing b."""
+    hit, left, right = _overlapping_range(amin, amax, bmin, bmax)
+    if not hit:
+        return [(amin, amax)]
+    if amin < left and amax == right:
+        return [(amin, left)]
+    if left == amin and right < amax:
+        return [(right, amax)]
+    if left == amin and right == amax:
+        return []
+    if left > amin and right < amax:
+        return [(amin, left), (right, amax)]
+    return [(amin, amax)]
+
+
+def points_in_ring(ring: np.ndarray, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """RasMapperLib Polygon.Contains for many points: the edges below each
+    point, counted over half-open x ranges (ring closed, first point last)."""
+    xa, ya, xb, yb = ring[:-1, 0], ring[:-1, 1], ring[1:, 0], ring[1:, 1]
+    lo, hi = ring.min(axis=0), ring.max(axis=0)
+    out = np.zeros(len(x), dtype=bool)
+    for k in range(0, len(x), 2000):
+        px, py = x[k:k + 2000, None], y[k:k + 2000, None]
+        span = ((xa <= px) & (xb > px)) | ((xb <= px) & (xa > px))
+        with np.errstate(divide="ignore", invalid="ignore"):
+            f = (xb - px) / (xb - xa)
+            below = py > ya * f + yb * (1.0 - f)
+        odd = ((span & below).sum(axis=1) % 2) == 1
+        box = ((px >= lo[0]) & (px <= hi[0]) & (py >= lo[1]) & (py <= hi[1]))[:, 0]
+        out[k:k + 2000] = odd & box
+    return out
+
+
+def _station_of(p, lengths, cum, x, y) -> float:
+    """Polyline.NearestPointOnPolyline then DistanceAlongFast: the station of
+    the face point nearest (x, y)."""
+    best, seg = math.inf, 0
+    for i in range(len(p) - 1):
+        (ax, ay), (bx, by) = p[i], p[i + 1]
+        length = lengths[i]
+        if length == 0.0:
+            d = _seg_length(ax, ay, x, y)
+        else:
+            along = ((bx - ax) * (x - ax) + (by - ay) * (y - ay)) / length
+            if along < 0.0:
+                d = _seg_length(ax, ay, x, y)
+            elif along > length:
+                d = _seg_length(bx, by, x, y)
+            else:
+                d0 = _seg_length(ax, ay, x, y)
+                r = d0 * d0 - along * along
+                d = math.sqrt(r) if r > 0.0 else 0.0
+        if d < best:
+            best, seg = d, i
+    (ax, ay), (bx, by) = p[seg], p[seg + 1]
+    length = lengths[seg]
+    if length == 0.0:
+        t = 0.0
+    else:
+        along = ((bx - ax) * (x - ax) + (by - ay) * (y - ay)) / length
+        t = 0.0 if along < 0.0 else (1.0 if along > length else along / length)
+    return (cum[seg - 1] if seg > 0 else 0.0) + length * t
+
+
+def _region_pieces(p, lengths, total, ring) -> list:
+    """Polygon.ClipPolyline: the station ranges of a face inside a region,
+    each end projected back onto the face as RASMapper does."""
+    starts, cum, acc = [0.0], [], 0.0
+    for length in lengths:
+        acc += length
+        cum.append(acc)
+    for length in lengths[:-1]:
+        starts.append(starts[-1] + length)
+    nxt = np.roll(ring, -1, axis=0)
+    edges = list(zip(ring, nxt))
+    e_lo, e_hi = np.minimum(ring, nxt), np.maximum(ring, nxt)
+    hits = []      # (face segment, fraction, station, polygon edge, x, y)
+    for b in range(len(p) - 1):
+        fa, fb = p[b], p[b + 1]
+        near = np.nonzero(((e_lo <= np.maximum(fa, fb) + 1e-6) & (e_hi >= np.minimum(fa, fb) - 1e-6)).all(axis=1))[0]
+        for a in near:
+            ea, eb = edges[a]
+            hit, x, y, _, t2 = tin._seg_intersect(ea, eb, fa, fb)
+            if not hit:
+                continue
+            if hits and hits[-1][4] == x and hits[-1][5] == y:
+                continue
+            hits.append((b, t2, starts[b] + lengths[b] * t2, a, x, y))
+    inside = lambda pt: bool(points_in_ring(ring, np.array([pt[0]]), np.array([pt[1]]))[0])
+    if not hits:
+        return [(0.0, total)] if inside(p[0]) else []
+    hits.sort(key=lambda h: (h[0], h[1]))
+    ea, eb = edges[hits[0][3]]
+    if tin._dist_to_segment(ea, eb, p[0]) < 0.0001:
+        skip = len(hits) != 1 or inside(p[-1])
+    else:
+        skip = not inside(p[0])
+    pieces, start = [], tuple(p[0])
+    for k in range(len(hits) + 1):
+        end = (hits[k][4], hits[k][5]) if k < len(hits) else tuple(p[-1])
+        if skip:
+            start, skip = end, False
+            continue
+        pieces.append((_station_of(p, lengths, cum, *start), _station_of(p, lengths, cum, *end)))
+        skip = True
+    return pieces
+
+
+def _n_from_regions(polylines, lengths, totals, regions) -> dict:
+    """ExtractLCVariablePolylinesRegionsVectorExtraction: per face, the
+    region ranges as (start, end, region, region, NaN), a higher region
+    index taking precedence where they overlap."""
+    out = {}
+    for i, p in enumerate(polylines):
+        items = []
+        lo, hi = p.min(axis=0), p.max(axis=0)
+        for r, ring in enumerate(regions):
+            rlo, rhi = ring.min(axis=0), ring.max(axis=0)
+            if (hi < rlo).any() or (lo > rhi).any():
+                continue
+            for a, b in _region_pieces(p, lengths[i], totals[i], ring):
+                items.append([min(a, b), max(a, b), r, r, F32(np.nan)])
+        if not items:
+            continue
+        lst = sorted(items, key=lambda v: -v[3])
+        tol = _n_tolerance(totals[i])
+        k = 0
+        while k < len(lst):
+            hi_item = lst[k]
+            if hi_item is None:
+                k += 1
+                continue
+            m = k + 1
+            while m < len(lst):
+                lo_item = lst[m]
+                if lo_item is not None and lo_item[3] < hi_item[3]:
+                    left = [r for r in _subtract_range(lo_item[0], lo_item[1], hi_item[0], hi_item[1])
+                            if not abs(r[0] - r[1]) < tol]
+                    if not left:
+                        lst[m] = None
+                    else:
+                        lst[m] = [left[0][0], left[0][1], *lo_item[2:]]
+                        if len(left) == 2:
+                            lst.insert(m + 1, [left[1][0], left[1][1], *lo_item[2:]])
+                m += 1
+            k += 1
+        out[i] = sorted((tuple(v) for v in lst if v is not None), key=lambda v: v[0])
+    return out
+
+
+def _combine_n(raster, vector, totals, n_in_region) -> dict:
+    """ExtractLCVariablePolylineRegionsCombine: region ranges take the n of
+    the land cover under them for that region; raster runs keep the rest."""
+    out = {}
+    for i in range(len(totals)):
+        if i in vector and i in raster:
+            tol = _n_tolerance(totals[i])
+            vec = [list(v) for v in vector[i]]
+            ras = [list(v) for v in sorted(raster[i], key=lambda v: v[0])]
+            k = 0
+            while k < len(vec):
+                v = vec[k]
+                if abs(v[1] - v[0]) < tol:
+                    k += 1
+                    continue
+                m = 0
+                while m < len(ras):
+                    rv = ras[m]
+                    if rv is None or abs(rv[1] - rv[0]) < tol:
+                        m += 1
+                        continue
+                    if rv[0] > v[1]:
+                        break
+                    hit, left, right = _overlapping_range(rv[0], rv[1], v[0], v[1])
+                    if not hit or left == right:
+                        m += 1
+                        continue
+                    rest = _subtract_range(v[0], v[1], rv[0], rv[1])
+                    merged = [left, right, v[2], v[3], F32(n_in_region(rv[2], v[3]))]
+                    vec[k] = merged
+                    for a, b in rest:
+                        if a >= right:
+                            vec.insert(k + 1, [a, b, v[2], v[3], v[4]])
+                    rem = _subtract_range(rv[0], rv[1], v[0], v[1])
+                    if not rem:
+                        ras[m] = None
+                    else:
+                        ras[m] = [rem[0][0], rem[0][1], *rv[2:]]
+                        if len(rem) == 2:
+                            ras.insert(m + 1, [rem[1][0], rem[1][1], *rv[2:]])
+                    v = merged
+                    m += 1
+                k += 1
+            both = [tuple(v) for v in vec] + [tuple(v) for v in ras if v is not None]
+            out[i] = sorted((v for v in both if v[0] != v[1]), key=lambda v: v[0])
+        elif i in vector:
+            out[i] = vector[i]
+        elif i in raster:
+            out[i] = raster[i]
+    return out
 
 
 def _fill_n_gaps(values, total, tol) -> list:

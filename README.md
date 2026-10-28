@@ -133,7 +133,9 @@ floats:
   row of the infiltration layer's variables. With *Composite LC*, a cell's
   *n* is the average over its raster instead. With *Multiple Face Mann n*,
   each face's *n* follows the land cover along it: the face is split where
-  *n* changes, and each table row's *n* combines the wetted parts.
+  *n* changes, and each table row's *n* combines the wetted parts. Manning's
+  *n* calibration regions override *n* by land cover class inside their
+  polygons, at points and along faces.
 
 Workflow B is tested by stripping the GUI's tables from each example
 (`tools/make_workflow_input.py`) and rebuilding them.
@@ -151,16 +153,21 @@ Engine results under Workflow B, 6.6 engine, GUI results as reference:
 AFTER_RUN, VA and Muncie have not been re-run through the engine since the port.
 
 Not ported yet (RASMapper's code for each is in RasMapperLib or its companion
-libraries): Manning's *n* calibration regions (refused with an error) and
-other override regions; per-face variable averages under *Composite LC*;
-terrain modifications; 2D structures and connections. One 2D flow area and US
+libraries): calibration regions together with *Composite LC*, and regions
+with several parts (both refused with an error); other override regions;
+per-face variable averages under *Composite LC*; terrain modifications; 2D
+structures and connections. One 2D flow area and US
 customary units only. Terrains with several rasters are read in RASMapper's
 priority order, with its stitch TIN across their seams.
 
 Beyond the shipped examples, every table of HEC's Weise_2D example and of
 BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
 comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
-and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2).
+and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2). On a
+production model (Multiple Face Mann n with a calibration region), Manning's *n*
+at all 48,006 cell centres matches, and built from RASMapper's own stored face
+profiles, 112,239 of its 112,246 face tables are identical; its terrain hasn't
+been checked.
 
 [`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
 against RASMapper itself: every method its table computation can reach, read
@@ -191,8 +198,7 @@ the mesh, computes the property tables with RASMapper's algorithm
 (`property_tables.py`, settings from the 2D area's attributes), assigns
 Manning's *n*, percent impervious and infiltration from the land cover and
 soils layers, assigns perimeter faces to BC lines, and assembles
-`p01.tmp.hdf` from the `.p01` text. Geometries with Manning's *n* calibration
-regions are refused.
+`p01.tmp.hdf` from the `.p01` text.
 
 ## Repository layout
 
