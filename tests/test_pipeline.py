@@ -5,9 +5,10 @@ What is checked, by workflow
      must reproduce the Windows GUI results: max WSE within 0.005 ft
      (0.01 ft for Muncie) and volume error under 0.5 %.
   B  Each example with its geometry tables stripped (tools/make_workflow_input.py),
-     plus BEFORE_RUN as shipped. Python computes the tables. Tests check the
-     tables are written and the plan runs; accuracy against the GUI is an
-     expected failure until the property tables match RASMapper (README).
+     plus BEFORE_RUN as shipped. property_tables.py computes the tables, which
+     must equal RASMapper's dataset for dataset; the plan must run. Accuracy
+     against the GUI is marked as an expected failure until it is measured on
+     every example.
   C  Each example without its g01.hdf. Python builds the mesh from the .g01
      seed points and perimeter. Tests check the mesh against RASMapper's and
      that the plan runs; accuracy is an expected failure, as for B.
@@ -54,9 +55,11 @@ VOLUME_ERR_TOL_PCT = 0.5
 # The examples finish in about a minute; an unstable B/C model can spin for hours.
 ENGINE_TIMEOUT_S = 900
 
+# B's tables now match RASMapper's (test_workflow_b_tables_match_rasmapper), but
+# only BEC has been re-run through the engine since; C's mesh still differs.
 ACCURACY_XFAIL = pytest.mark.xfail(
-    reason="Python hydraulic property tables do not yet match RASMapper's; see README "
-           "'Workflow B accuracy'", strict=False)
+    reason="engine accuracy not yet re-measured on every example (B) / mesh differs "
+           "from RASMapper's (C); see README 'Workflow B and C accuracy'", strict=False)
 
 
 # ---------------------------------------------------------------------------
@@ -180,6 +183,22 @@ class TestPreprocess:
             assert len(ag["Cells Volume Elevation Info"]) == n_cells
             assert len(ag["Faces Area Elevation Info"]) == n_faces
             assert len(f["Geometry/Boundary Condition Lines/External Faces"]) > 0
+
+    @pytest.mark.parametrize("example", GUI_EXAMPLES)
+    def test_workflow_b_tables_match_rasmapper(self, tmp_path, example):
+        """On RASMapper's mesh, every dataset RASMapper writes for the 2D area
+        must come out identical, byte for byte."""
+        project = GUI_EXAMPLES[example]
+        make_input(EXAMPLES / example, tmp_path / "in", "B")
+        preprocess(tmp_path / "in", tmp_path / "out", project)
+        with h5py.File(tmp_path / "out" / f"{project}.g01.hdf", "r") as ours, \
+             h5py.File(EXAMPLES / example / f"{project}.g01.hdf", "r") as gui:
+            a, g = area_group(ours), area_group(gui)
+            names = []
+            g.visititems(lambda n, o: names.append(n) if isinstance(o, h5py.Dataset) else None)
+            for name in names:
+                assert name in a, f"{name} missing"
+                assert a[name][()].tobytes() == g[name][()].tobytes(), f"{name} differs"
 
     @pytest.mark.parametrize("example", GUI_EXAMPLES)
     def test_workflow_c_mesh_matches_rasmapper(self, tmp_path, example):

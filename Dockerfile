@@ -17,7 +17,7 @@ RUN apt-get update && \
 ARG HECRAS_VERSION=6.6
 COPY bin/${HECRAS_VERSION}/ /opt/hecras/bin/
 COPY libs/ /opt/hecras/libs/
-COPY ras_preprocess.py hecras_run.py run_simulation.sh /opt/hecras/
+COPY ras_preprocess.py property_tables.py hecras_run.py run_simulation.sh /opt/hecras/
 COPY tools/ /opt/hecras/tools/
 RUN chmod +x /opt/hecras/bin/* /opt/hecras/run_simulation.sh && \
     test "$(stat -c %s /opt/hecras/bin/RasUnsteady)" -gt 1000000 || \

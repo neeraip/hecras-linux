@@ -21,9 +21,10 @@ from pathlib import Path
 
 import h5py
 import numpy as np
-from matplotlib.path import Path as MplPath
 from osgeo import gdal
 from scipy.spatial import Voronoi
+
+import property_tables
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -477,247 +478,90 @@ def _signed_area(ring: np.ndarray) -> float:
     return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
 
 
+def _face_polyline(mesh: MeshData, fi: int) -> np.ndarray:
+    """A face's points: its two face points with any perimeter vertices between."""
+    mid = mesh.faces_perimeter_pts[fi] if mesh.faces_perimeter_pts else []
+    return np.vstack([mesh.face_points[mesh.faces_fp_idx[fi, 0]],
+                      np.asarray(mid, dtype=np.float64).reshape(-1, 2),
+                      mesh.face_points[mesh.faces_fp_idx[fi, 1]]])
 
-def compute_cell_properties(mesh: MeshData, terrain_path: str,
-                            vol_tol: float = 0.01) -> dict:
-    """Compute per-cell terrain properties: min_elev, area, volume-elevation curves."""
-    logger.info("Computing cell properties from terrain: %s", terrain_path)
 
-    ds = gdal.Open(terrain_path)
-    band = ds.GetRasterBand(1)
-    terrain = band.ReadAsArray().astype(np.float32)
-    gt = ds.GetGeoTransform()
-    nodata = band.GetNoDataValue()
-    pixel_area = abs(gt[1] * gt[5])
-    ds = None
+def _cell_polygon(mesh: MeshData, ci: int, face_of_pair: dict) -> np.ndarray:
+    """A cell's outline, including the perimeter vertices of its bent faces."""
+    fps = mesh.cells_fp_idx[ci]
+    fps = fps[fps >= 0]
+    ring = []
+    for a, b in zip(fps, np.roll(fps, -1)):
+        ring.append(mesh.face_points[a])
+        fi = face_of_pair.get((int(a), int(b)))
+        if fi is not None and mesh.faces_perimeter_pts and len(mesh.faces_perimeter_pts[fi]):
+            mid = np.asarray(mesh.faces_perimeter_pts[fi], dtype=np.float64).reshape(-1, 2)
+            if mesh.faces_fp_idx[fi, 0] != a:
+                mid = mid[::-1]
+            ring.extend(mid)
+    return np.array(ring)
 
-    n_cells = mesh.n_cells
-    min_elevs = np.full(n_cells, np.nan, dtype=np.float32)
-    surface_areas = np.zeros(n_cells, dtype=np.float32)
 
-    vol_elev_info = np.zeros((n_cells, 2), dtype=np.int32)
-    vol_elev_values = []
-
-    for ci in range(n_cells):
-        if mesh.cell_is_boundary[ci]:
-            # Ghost cell: no terrain data
-            vol_elev_info[ci] = [len(vol_elev_values), 0]
+def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
+    """The 2D area's property-table settings from the Attributes table of its
+    g01.hdf, which RASMapper writes with the mesh; defaults otherwise."""
+    settings = dict(property_tables.DEFAULTS)
+    if g01_hdf_path is None:
+        return settings
+    fields = {"cell_volume_tolerance": "Cell Vol Tol",
+              "cell_min_area_fraction": "Cell Min Area Fraction",
+              "face_profile_tolerance": "Face Profile Tol",
+              "face_area_elevation_tolerance": "Face Area Tol",
+              "face_conveyance_ratio": "Face Conv Ratio",
+              "laminar_depth": "Laminar Depth"}
+    with h5py.File(str(g01_hdf_path), "r") as hf:
+        rows = hf["Geometry/2D Flow Areas/Attributes"][()]
+    for row in rows:
+        if row["Name"].decode("utf-8", errors="replace").strip("\x00").strip() != area_name:
             continue
-
-        # Get cell polygon vertices
-        fp_indices = mesh.cells_fp_idx[ci]
-        fp_indices = fp_indices[fp_indices >= 0]
-        if len(fp_indices) < 3:
-            vol_elev_info[ci] = [len(vol_elev_values), 0]
-            continue
-
-        polygon = mesh.face_points[fp_indices]
-
-        # Sample terrain within polygon
-        elevations = _sample_terrain_in_polygon(polygon, terrain, gt, nodata)
-
-        if len(elevations) == 0:
-            vol_elev_info[ci] = [len(vol_elev_values), 0]
-            continue
-
-        # Cell properties
-        min_elevs[ci] = elevations.min()
-        surface_areas[ci] = len(elevations) * pixel_area
-
-        # Volume-elevation curve
-        curve = _compute_volume_curve(elevations, pixel_area, vol_tol)
-
-        vol_elev_info[ci] = [len(vol_elev_values), len(curve)]
-        vol_elev_values.extend(curve)
-
-        if ci % 500 == 0:
-            logger.info("  Cell %d/%d processed", ci, n_cells)
-
-    logger.info("  Computed %d cells, %d volume-elevation points total",
-                n_cells, len(vol_elev_values))
-
-    return {
-        "min_elevations": min_elevs,
-        "surface_areas": surface_areas,
-        "vol_elev_info": vol_elev_info,
-        "vol_elev_values": np.array(vol_elev_values, dtype=np.float32).reshape(-1, 2)
-                           if vol_elev_values else np.empty((0, 2), dtype=np.float32),
-    }
+        for key, field in fields.items():
+            if field in rows.dtype.names and np.isfinite(row[field]):
+                settings[key] = float(row[field])
+        for flag in ("Multiple Face Mann n", "Composite LC"):
+            if flag in rows.dtype.names and row[flag]:
+                raise SystemExit(f"ras_preprocess.py: '{flag}' is on for '{area_name}'; "
+                                 "property tables for it aren't supported. "
+                                 "Turn it off in RASMapper, or use Workflow A.")
+    return settings
 
 
-def _sample_terrain_in_polygon(polygon, terrain, gt, nodata):
-    """Sample all terrain pixels inside a polygon using scanline rasterization."""
-    # Bounding box in pixel coords
-    min_x, max_x = polygon[:, 0].min(), polygon[:, 0].max()
-    min_y, max_y = polygon[:, 1].min(), polygon[:, 1].max()
-
-    c_min = int((min_x - gt[0]) / gt[1])
-    c_max = int((max_x - gt[0]) / gt[1]) + 1
-    r_min = int((max_y - gt[3]) / gt[5])  # Note: gt[5] is negative
-    r_max = int((min_y - gt[3]) / gt[5]) + 1
-
-    # Clip to raster bounds
-    r_min = max(0, r_min)
-    r_max = min(terrain.shape[0], r_max)
-    c_min = max(0, c_min)
-    c_max = min(terrain.shape[1], c_max)
-
-    if r_min >= r_max or c_min >= c_max:
-        return np.array([])
-
-    # Create pixel center coordinates
-    poly_path = MplPath(polygon)
-    elevations = []
-
-    for r in range(r_min, r_max):
-        for c in range(c_min, c_max):
-            px = gt[0] + (c + 0.5) * gt[1]
-            py = gt[3] + (r + 0.5) * gt[5]
-            if poly_path.contains_point((px, py)):
-                elev = terrain[r, c]
-                if nodata is None or elev != nodata:
-                    elevations.append(elev)
-
-    return np.array(elevations, dtype=np.float32)
-
-
-def _compute_volume_curve(elevations, pixel_area, vol_tol=0.01):
-    """Compute volume-elevation curve from sorted terrain elevations.
-
-    Uses LOCAL volume-increment tolerance: a point is kept if removing it
-    would cause the interpolated volume to deviate by more than
-    ``vol_tol × (local step volume)`` from the true value.
-    This produces ~20-50 points per cell, similar to HEC-RAS GUI output.
-    """
-    sorted_elev = np.sort(elevations)
-    unique_elevs = np.unique(sorted_elev)
-
-    # Compute volume at each unique elevation (cumulative from bottom)
-    curve = []
-    for h in unique_elevs:
-        submerged = sorted_elev[sorted_elev <= h]
-        vol = float(np.sum(h - submerged) * pixel_area)
-        curve.append([float(h), vol])
-
-    # Simplify using LOCAL tolerance (fraction of local volume increment)
-    if len(curve) > 3:
-        curve = _simplify_curve_local(curve, vol_tol)
-
-    return curve
-
-
-def _simplify_curve_local(curve, tol):
-    """Simplify elevation-volume curve keeping points where LOCAL interpolation
-    error exceeds ``tol × local_step_volume``.
-
-    Unlike a global-tolerance approach, this keeps many more intermediate
-    points in regions of rapid volume growth (flood plain), producing curve
-    densities similar to the HEC-RAS GUI (≈20-50 pts/cell).
-    """
-    if len(curve) <= 3:
-        return curve
-
-    result = [curve[0]]
-    for i in range(1, len(curve) - 1):
-        e_prev, v_prev = result[-1]
-        e_next, v_next = curve[i + 1]
-        e_curr, v_curr = curve[i]
-
-        local_dv = v_next - v_prev          # volume change of this local step
-        if local_dv <= 0 or (e_next - e_prev) <= 0:
-            result.append(curve[i])
-            continue
-
-        t = (e_curr - e_prev) / (e_next - e_prev)
-        v_interp = v_prev + t * local_dv
-        error = abs(v_curr - v_interp) / (local_dv + 1e-10)
-        if error > tol:
-            result.append(curve[i])
-
-    result.append(curve[-1])
-    return result
-
-
-# ============================================================================
-# STEP 4: FACE AREA-ELEVATION PROFILES
-# ============================================================================
-
-def compute_face_properties(mesh: MeshData, terrain_path: str,
-                            mannings_per_cell: np.ndarray = None,
-                            default_mannings: float = 0.06,
-                            area_tol: float = 0.01) -> dict:
-    """Compute per-face terrain profiles: min_elev, area-elevation curves."""
+def compute_face_properties(mesh: MeshData, terrain: "property_tables.Terrain",
+                            mannings_per_face: np.ndarray, settings: dict) -> dict:
+    """Per-face minimum elevation, low-elevation centroid and (elevation, area,
+    wetted perimeter, Manning's n) table, as RASMapper computes them."""
     logger.info("Computing face properties from terrain...")
-
-    ds = gdal.Open(terrain_path)
-    band = ds.GetRasterBand(1)
-    terrain = band.ReadAsArray().astype(np.float32)
-    gt = ds.GetGeoTransform()
-    nodata = band.GetNoDataValue()
-    pixel_size = abs(gt[1])
-    ds = None
-
     n_faces = mesh.n_faces
-    min_elevs = np.full(n_faces, np.nan, dtype=np.float32)
+    min_elevs = np.full(n_faces, property_tables.NAN, dtype=np.float32)
     low_elev_centroid = np.zeros(n_faces, dtype=np.float32)
-
     face_ae_info = np.zeros((n_faces, 2), dtype=np.int32)
     face_ae_values = []
 
     for fi in range(n_faces):
-        fp1 = mesh.face_points[mesh.faces_fp_idx[fi, 0]]
-        fp2 = mesh.face_points[mesh.faces_fp_idx[fi, 1]]
-        face_length = mesh.faces_normal_length[fi, 2]
-
-        if face_length < 1e-6:
+        stations, elevs = property_tables.face_profile(
+            terrain, _face_polyline(mesh, fi), settings["face_profile_tolerance"])
+        if len(stations) == 0:
             face_ae_info[fi] = [len(face_ae_values), 0]
             continue
+        n = np.float32(mannings_per_face[fi])
+        rows = property_tables.face_table(stations, elevs, n,
+                                          settings["face_area_elevation_tolerance"],
+                                          settings["face_conveyance_ratio"],
+                                          settings["laminar_depth"])
+        min_elevs[fi] = rows[0].elev
+        low_elev_centroid[fi] = property_tables.centroid_at_area(rows)
+        face_ae_info[fi] = [len(face_ae_values), len(rows)]
+        face_ae_values.extend([r.elev, r.area, r.wp, n] for r in rows)
 
-        # Get Manning's n for this face (from adjacent cell)
-        c1 = mesh.faces_cell_idx[fi, 0]
-        if mannings_per_cell is not None and c1 < len(mannings_per_cell):
-            mann_n = float(mannings_per_cell[c1])
-        else:
-            mann_n = default_mannings
-
-        # Sample terrain along face
-        n_samples = max(3, int(face_length / pixel_size) + 1)
-        t_vals = np.linspace(0, 1, n_samples)
-        sample_x = fp1[0] + t_vals * (fp2[0] - fp1[0])
-        sample_y = fp1[1] + t_vals * (fp2[1] - fp1[1])
-
-        elevs = []
-        for sx, sy in zip(sample_x, sample_y):
-            c = int((sx - gt[0]) / gt[1])
-            r = int((sy - gt[3]) / gt[5])
-            if 0 <= r < terrain.shape[0] and 0 <= c < terrain.shape[1]:
-                e = terrain[r, c]
-                if nodata is None or e != nodata:
-                    elevs.append(e)
-
-        if not elevs:
-            face_ae_info[fi] = [len(face_ae_values), 0]
-            continue
-
-        elevs = np.array(elevs, dtype=np.float32)
-        min_elevs[fi] = elevs.min()
-
-        # Low elevation centroid (distance to lowest point)
-        min_idx = np.argmin(elevs)
-        low_elev_centroid[fi] = t_vals[min_idx] * face_length
-
-        # Area-elevation curve
-        curve = _compute_face_area_curve(elevs, face_length, mann_n, area_tol)
-
-        face_ae_info[fi] = [len(face_ae_values), len(curve)]
-        face_ae_values.extend(curve)
-
-        if fi % 1000 == 0:
-            logger.info("  Face %d/%d processed", fi, n_faces)
-
+    missing = int((face_ae_info[:, 1] == 0).sum())
+    if missing:
+        logger.warning("  %d face(s) have no terrain under them", missing)
     logger.info("  Computed %d faces, %d area-elevation points total",
                 n_faces, len(face_ae_values))
-
     return {
         "min_elevations": min_elevs,
         "low_elev_centroid": low_elev_centroid,
@@ -727,61 +571,77 @@ def compute_face_properties(mesh: MeshData, terrain_path: str,
     }
 
 
-def _compute_face_area_curve(elevs, face_length, mann_n, tol=0.01):
-    """Compute face area-elevation curve: (elev, area, wet_perim, mann_n)."""
-    sorted_e = np.sort(elevs)
-    unique_e = np.unique(sorted_e)
-    n = len(elevs)
-    segment_length = face_length / (n - 1) if n > 1 else face_length
+# ============================================================================
+# STEP 4: CELL VOLUME-ELEVATION TABLES
+# ============================================================================
 
-    curve = []
-    for h in unique_e:
-        # Cross-sectional area: trapezoidal integration of depth along face
-        depths = np.maximum(0, h - elevs)
-        area = float(np.trapz(depths, dx=segment_length))
+def compute_cell_properties(mesh: MeshData, terrain: "property_tables.Terrain",
+                            face_min_elevs: np.ndarray, settings: dict) -> dict:
+    """Per-cell minimum elevation, surface area and volume-elevation table, as
+    RASMapper computes them. Needs the faces' minimum elevations: a cell's
+    minimum is never above its lowest face."""
+    logger.info("Computing cell properties from terrain...")
+    n_cells = mesh.n_cells
+    min_elevs = np.full(n_cells, property_tables.NAN, dtype=np.float32)
+    surface_areas = np.zeros(n_cells, dtype=np.float32)
+    vol_elev_info = np.zeros((n_cells, 2), dtype=np.int32)
+    vol_elev_values = []
 
-        # Wetted perimeter: sum of lengths where depth > 0
-        wet_perim = float(np.sum(depths > 0) * segment_length)
+    face_of_pair = {}
+    lowest_face = np.full(n_cells, np.inf, dtype=np.float32)
+    for fi, (a, b) in enumerate(mesh.faces_fp_idx):
+        face_of_pair[(int(a), int(b))] = face_of_pair[(int(b), int(a))] = fi
+        for ci in mesh.faces_cell_idx[fi]:
+            if 0 <= ci < n_cells and np.isfinite(face_min_elevs[fi]):
+                lowest_face[ci] = min(lowest_face[ci], face_min_elevs[fi])
 
-        curve.append([float(h), area, wet_perim, mann_n])
+    for ci in range(n_cells):
+        vol_elev_info[ci] = [len(vol_elev_values), 0]
+        if mesh.cell_is_boundary[ci]:
+            # RASMapper's outline of a ghost cell runs out along its one face
+            # and back, so its area is zero up to rounding.
+            fi = int(np.where((mesh.faces_cell_idx == ci).any(axis=1))[0][0])
+            line = _face_polyline(mesh, fi)
+            ring = np.vstack([line, line[1:-1][::-1]])
+            surface_areas[ci] = property_tables.polygon_area(ring, signed=True)
+            continue
+        polygon = _cell_polygon(mesh, ci, face_of_pair)
+        area = property_tables.polygon_area(polygon)
+        surface_areas[ci] = area
+        table = property_tables.cell_table(terrain, polygon, area, lowest_face[ci],
+                                           settings["cell_volume_tolerance"],
+                                           settings["cell_min_area_fraction"])
+        if not table:
+            continue
+        min_elevs[ci] = table[0][0]
+        vol_elev_info[ci] = [len(vol_elev_values), len(table)]
+        vol_elev_values.extend(table)
 
-    # Simplify
-    if len(curve) > 3:
-        curve = _simplify_face_curve(curve, tol)
+    logger.info("  Computed %d cells, %d volume-elevation points total",
+                n_cells, len(vol_elev_values))
+    return {
+        "min_elevations": min_elevs,
+        "surface_areas": surface_areas,
+        "vol_elev_info": vol_elev_info,
+        "vol_elev_values": np.array(vol_elev_values, dtype=np.float32).reshape(-1, 2)
+                           if vol_elev_values else np.empty((0, 2), dtype=np.float32),
+    }
 
-    return curve
-
-
-def _simplify_face_curve(curve, tol):
-    """Simplify face area-elevation curve."""
-    if len(curve) <= 3:
-        return curve
-    result = [curve[0]]
-    total_area = max(c[1] for c in curve) - curve[0][1]
-    if total_area <= 0:
-        return [curve[0], curve[-1]]
-
-    for i in range(1, len(curve) - 1):
-        e_prev, a_prev = result[-1][0], result[-1][1]
-        e_next, a_next = curve[i + 1][0], curve[i + 1][1]
-        e_curr, a_curr = curve[i][0], curve[i][1]
-
-        if e_next - e_prev > 0:
-            t = (e_curr - e_prev) / (e_next - e_prev)
-            a_interp = a_prev + t * (a_next - a_prev)
-            error = abs(a_curr - a_interp) / (total_area + 1e-10)
-            if error > tol:
-                result.append(curve[i])
-        else:
-            result.append(curve[i])
-
-    result.append(curve[-1])
-    return result
 
 
 # ============================================================================
 # STEP 5: LAND COVER SAMPLING
 # ============================================================================
+
+def _default_land_cover(mesh: MeshData, default_mannings: float) -> dict:
+    """Land cover data when the project has none: one Manning's n everywhere."""
+    return {"mannings_n": np.full(mesh.n_cells, default_mannings, dtype=np.float32),
+            "face_mannings_n": np.full(mesh.n_faces, default_mannings, dtype=np.float32),
+            "classifications": np.zeros(mesh.n_cells, dtype=np.int32),
+            "face_classifications": np.zeros(mesh.n_faces, dtype=np.int32),
+            "calibration_table": [("Default", default_mannings)],
+            "id_to_name": {}, "name_to_imperv": {}, "id_to_mann": {}}
+
 
 def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
                       default_mannings: float = 0.06) -> dict:
@@ -856,12 +716,7 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         ds = None
     except Exception as e:
         logger.warning("Could not read land cover TIF: %s. Using defaults.", e)
-        n = mesh.n_cells
-        return {
-            "mannings_n": np.full(n, default_mannings, dtype=np.float32),
-            "classifications": np.zeros(n, dtype=np.int32),
-            "calibration_table": cal_table,
-        }
+        return {**_default_land_cover(mesh, default_mannings), "calibration_table": cal_table}
 
     # Sample per cell center (interior cells only; boundary cells get default)
     n = mesh.n_cells
@@ -872,24 +727,35 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
     px_h = abs(lc_gt[5])
     raster_rows, raster_cols = lc_raster.shape
 
-    for ci in range(n):
-        if mesh.cell_is_boundary[ci]:
-            continue
-        cx, cy = mesh.cell_centers[ci]
-        col = int((cx - lc_gt[0]) / lc_gt[1])
-        row = int((cy - lc_gt[3]) / lc_gt[5])
-        if 0 <= row < raster_rows and 0 <= col < raster_cols:
-            lc_id = int(lc_raster[row, col])
-            classifications[ci] = lc_id
-            if lc_id in id_to_mann:
-                mannings[ci] = id_to_mann[lc_id]
+    # Every cell takes the land cover at its centre and every face at its
+    # midpoint, as RASMapper does. Off the raster, or on a value the raster map
+    # doesn't list, it is RASMapper's NoData class: the raster map's first row.
+    nodata_id = int(ids[0]) if ids is not None and len(ids) else 0
+    nodata_mann = id_to_mann.get(nodata_id, default_mannings)
+
+    def lookup(points):
+        cols = np.floor((points[:, 0] - lc_gt[0]) / lc_gt[1]).astype(int)
+        rows = np.floor((points[:, 1] - lc_gt[3]) / lc_gt[5]).astype(int)
+        inside = (rows >= 0) & (rows < raster_rows) & (cols >= 0) & (cols < raster_cols)
+        lc_ids = np.full(len(points), nodata_id, dtype=np.int64)
+        lc_ids[inside] = lc_raster[rows[inside], cols[inside]]
+        lc_ids[~np.isin(lc_ids, list(id_to_mann))] = nodata_id
+        return lc_ids, np.array([id_to_mann.get(int(i), nodata_mann) for i in lc_ids],
+                                dtype=np.float32)
+
+    cell_ids, mannings = lookup(mesh.cell_centers)
+    classifications[~mesh.cell_is_boundary] = cell_ids[~mesh.cell_is_boundary]
+    mid = (mesh.face_points[mesh.faces_fp_idx[:, 0]] + mesh.face_points[mesh.faces_fp_idx[:, 1]]) / 2
+    face_ids, face_mannings = lookup(mid)
 
     n_assigned = int(np.sum(mannings != default_mannings))
     logger.info("  Manning's n range: %.4f – %.4f  (%d/%d cells from land cover)",
                 float(mannings.min()), float(mannings.max()), n_assigned, n)
     return {
         "mannings_n": mannings,
+        "face_mannings_n": face_mannings,
         "classifications": classifications,
+        "face_classifications": face_ids.astype(np.int32),
         "calibration_table": cal_table,
         "id_to_name": id_to_name,
         "name_to_imperv": name_to_imperv if 'name_to_imperv' in dir() else {},
@@ -897,74 +763,71 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
     }
 
 
-def sample_infiltration(mesh: MeshData, inf_hdf_path: str,
-                         lc_tif_path: str = None) -> dict:
-    """Sample infiltration properties per cell.
+def _classify_points(layer_hdf: Path, points: np.ndarray) -> tuple:
+    """A RASMapper classification layer's class at each point: the index of the
+    pixel's ID in the layer's Raster Map, 0 (its NoData class) off the raster
+    or on an unlisted value. Returns (class indexes, number of classes)."""
+    with h5py.File(str(layer_hdf), "r") as hf:
+        ids = hf["Raster Map"]["ID"][()].astype(np.int64)
+    ds = gdal.Open(str(layer_hdf.with_suffix(".tif")))
+    raster = ds.GetRasterBand(1).ReadAsArray()
+    gt = ds.GetGeoTransform()
+    ds = None
+    cols = np.floor((points[:, 0] - gt[0]) / gt[1]).astype(int)
+    rows = np.floor((points[:, 1] - gt[3]) / gt[5]).astype(int)
+    inside = (rows >= 0) & (rows < raster.shape[0]) & (cols >= 0) & (cols < raster.shape[1])
+    index_of = {int(v): i for i, v in enumerate(ids)}
+    classes = np.zeros(len(points), dtype=np.int64)
+    classes[inside] = [index_of.get(int(v), 0) for v in raster[rows[inside], cols[inside]]]
+    return classes, len(ids)
 
-    Supports two HEC-RAS infiltration model types:
-      - InfiltrationSCSCurveNumber:    fields = Curve Number, Abstraction Ratio, Minimum Infiltration Rate
-      - InfiltrationDeficitConstantLoss: fields = Maximum Deficit, Initial Deficit, Potential Percolation Rate
+
+def sample_infiltration(mesh: MeshData, inf_hdf_path: str,
+                        lc_tif_path: str = None) -> dict:
+    """Infiltration parameters per interior cell and class per face, as
+    RASMapper assigns them: the infiltration class at a cell's centre (a face's
+    midpoint) selects a row of the layer's Variables table.
+
+    An infiltration layer is either its own raster or "virtual": a combination
+    of other layers (land cover and soils), whose class is the dependencies'
+    class indexes combined in order, each scaled by the class counts after it.
     """
     logger.info("Sampling infiltration properties...")
+    result = {"available": False, "model_type": "", "variables": {},
+              "cell_classifications": np.zeros(mesh.n_interior, dtype=np.int32),
+              "face_classifications": np.zeros(mesh.n_faces, dtype=np.int32),
+              "properties": None}
+    if not inf_hdf_path:
+        return result
+    inf_hdf = Path(inf_hdf_path)
+    with h5py.File(str(inf_hdf), "r") as hf:
+        result["model_type"] = hf.attrs.get("LC Type", b"").decode("utf-8", errors="replace").strip()
+        deps = [d.decode("utf-8", errors="replace") for d in hf.attrs.get("Virtual Dependencies", [])]
+        variables = hf["Variables"][()]
+        if "Properties" in hf:
+            result["properties"] = hf["Properties"][()]
+    logger.info("  Infiltration model type: %s (%d classes)", result["model_type"], len(variables))
 
-    n_interior = mesh.n_interior
-    n_faces = mesh.n_faces
+    cell_points = mesh.cell_centers[~mesh.cell_is_boundary]
+    face_points = (mesh.face_points[mesh.faces_fp_idx[:, 0]]
+                   + mesh.face_points[mesh.faces_fp_idx[:, 1]]) / 2
+    layers = [inf_hdf.parent / d.replace("\\", "/").lstrip("./") for d in deps] or [inf_hdf]
+    cell_cls = np.zeros(len(cell_points), dtype=np.int64)
+    face_cls = np.zeros(len(face_points), dtype=np.int64)
+    for layer in layers:
+        c, count = _classify_points(layer, cell_points)
+        f, _ = _classify_points(layer, face_points)
+        cell_cls = cell_cls * count + c
+        face_cls = face_cls * count + f
+    if cell_cls.max(initial=0) >= len(variables) or face_cls.max(initial=0) >= len(variables):
+        raise ValueError(f"{inf_hdf}: classes from {', '.join(map(str, layers))} "
+                         f"don't fit its {len(variables)} Variables rows")
 
-    # Defaults for SCS Curve Number model
-    # "available" is set True only when an Infiltration.hdf is successfully read.
-    # When False the Infiltration subgroup is NOT written to the output g01.hdf
-    # so projects that have no infiltration model are not affected.
-    result = {
-        "available": False,
-        "model_type": "InfiltrationSCSCurveNumber",
-        "curve_number": np.full(n_interior, 77.0, dtype=np.float32),
-        "abstraction_ratio": np.full(n_interior, 0.2, dtype=np.float32),
-        "min_infiltration_rate": np.full(n_interior, 0.12, dtype=np.float32),
-        # Green-Ampt / DeficitConstantLoss defaults
-        "max_deficit": np.full(n_interior, 3.0, dtype=np.float32),
-        "initial_deficit": np.full(n_interior, 1.5, dtype=np.float32),
-        "potential_percolation_rate": np.full(n_interior, 0.04, dtype=np.float32),
-        # Common
-        "cell_classifications": np.zeros(n_interior, dtype=np.int32),
-        "face_classifications": np.zeros(n_faces, dtype=np.int32),
-        "properties": None,
-    }
-
-    try:
-        with h5py.File(inf_hdf_path, 'r') as hf:
-            lc_type = hf.attrs.get('LC Type', b'').decode('utf-8', errors='replace').strip()
-            result["model_type"] = lc_type
-            logger.info("  Infiltration model type: %s", lc_type)
-
-            if 'Properties' in hf:
-                result["properties"] = hf['Properties'][()]
-
-            if 'Variables' in hf:
-                vdata = hf['Variables'][()]   # structured numpy array
-                logger.info("  Loaded %d infiltration variable rows", len(vdata))
-
-                field_names = [n for n in vdata.dtype.names if n != 'Name']
-
-                if 'Curve Number' in field_names and len(vdata) > 0:
-                    result["curve_number"][:] = float(np.nanmedian(vdata['Curve Number']))
-                    if 'Abstraction Ratio' in field_names:
-                        result["abstraction_ratio"][:] = float(np.nanmedian(vdata['Abstraction Ratio']))
-                    if 'Minimum Infiltration Rate' in field_names:
-                        result["min_infiltration_rate"][:] = float(np.nanmedian(vdata['Minimum Infiltration Rate']))
-
-                if 'Maximum Deficit' in field_names and len(vdata) > 0:
-                    result["max_deficit"][:] = float(np.nanmedian(vdata['Maximum Deficit']))
-                    if 'Initial Deficit' in field_names:
-                        result["initial_deficit"][:] = float(np.nanmedian(vdata['Initial Deficit']))
-                    if 'Potential Percolation Rate' in field_names:
-                        result["potential_percolation_rate"][:] = float(np.nanmedian(vdata['Potential Percolation Rate']))
-
-        # Infiltration.hdf read successfully → mark as available
-        result["available"] = True
-
-    except Exception as e:
-        logger.warning("Could not read infiltration HDF: %s. Using defaults.", e)
-
+    result["cell_classifications"] = cell_cls.astype(np.int32)
+    result["face_classifications"] = face_cls.astype(np.int32)
+    result["variables"] = {name: variables[name][cell_cls].astype(np.float32)
+                           for name in variables.dtype.names if name != "Name"}
+    result["available"] = True
     return result
 
 
@@ -1017,6 +880,12 @@ def read_mesh_from_g01hdf(g01_hdf_path: Path) -> tuple:
         # ---------- face points ----------
         fp_coords = hf[f'{area_path}/FacePoints Coordinate'][()]            # (n_fp, 2)
         fp_is_perim_raw = hf[f'{area_path}/FacePoints Is Perimeter'][()]    # (n_fp,) -1=perim, 0=interior
+        if f'{area_path}/Faces Perimeter Info' in hf:
+            perim_info = hf[f'{area_path}/Faces Perimeter Info'][()]
+            perim_values = hf[f'{area_path}/Faces Perimeter Values'][()]
+            faces_perimeter_pts = [perim_values[s:s + n] for s, n in perim_info]
+        else:
+            faces_perimeter_pts = [np.empty((0, 2))] * len(faces_ci)
 
     n_interior = len(cell_pts_input)
     n_cells = len(cell_centers)
@@ -1053,6 +922,7 @@ def read_mesh_from_g01hdf(g01_hdf_path: Path) -> tuple:
     mesh.faces_normal_length = faces_normal.astype(np.float32)
     mesh.fp_is_perimeter = fp_is_perimeter.astype(np.int32)   # 1=perimeter, 0=interior
     mesh.cell_is_boundary = cell_is_boundary
+    mesh.faces_perimeter_pts = faces_perimeter_pts
 
     meta = {
         "area_name": area_name,
@@ -1293,41 +1163,15 @@ def compute_bc_external_faces(g01_hdf_path: Path, mesh: MeshData,
 
 def _write_infiltration_datasets(grp, inf_data: dict, n_interior: int,
                                   n_faces: int, gz: dict):
-    """Write infiltration datasets into group grp; model type is auto-detected.
-    Uses _add_ds() so it is safe to call on already-computed HDF files
-    (existing datasets are preserved unchanged)."""
-    prop_dt = np.dtype([("Name", "S27"), ("Value", "<f4")])
-    model = inf_data.get("model_type", "InfiltrationSCSCurveNumber")
-
-    _add_ds(grp, "Cell Center Classifications",
-            inf_data["cell_classifications"], gz)
-    _add_ds(grp, "Face Center Classifications",
-            inf_data["face_classifications"], gz)
-
-    if "Deficit" in model or "GreenAmpt" in model or "Constant" in model:
-        # Green-Ampt / DeficitConstantLoss
-        _add_ds(grp, "Maximum Deficit",
-                inf_data["max_deficit"], gz)
-        _add_ds(grp, "Initial Deficit",
-                inf_data["initial_deficit"], gz)
-        _add_ds(grp, "Potential Percolation Rate",
-                inf_data["potential_percolation_rate"], gz)
-        props_val = np.array([(b"SCS Initial Loss Reset Time", np.nan)], dtype=prop_dt)
-    else:
-        # SCS Curve Number (default)
-        _add_ds(grp, "Curve Number",
-                inf_data["curve_number"], gz)
-        _add_ds(grp, "Abstraction Ratio",
-                inf_data["abstraction_ratio"], gz)
-        _add_ds(grp, "Minimum Infiltration Rate",
-                inf_data["min_infiltration_rate"], gz)
-        props_val = np.array([(b"SCS Initial Loss Reset Time", 1.0)], dtype=prop_dt)
-
-    # Preserve original Properties if available
+    """Write the infiltration datasets RASMapper writes: the cell and face
+    classes, one dataset per variable of the layer, and its Properties.
+    Uses _add_ds() so datasets already in the file are kept."""
+    _add_ds(grp, "Cell Center Classifications", inf_data["cell_classifications"], gz)
+    _add_ds(grp, "Face Center Classifications", inf_data["face_classifications"], gz)
+    for name, values in inf_data["variables"].items():
+        _add_ds(grp, name, values, gz)
     if inf_data.get("properties") is not None:
         _add_ds(grp, "Properties", inf_data["properties"], gz)
-    else:
-        _add_ds(grp, "Properties", props_val, gz)
 
 
 def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
@@ -1461,7 +1305,7 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
         _add_ds(pi_grp, 'Cell Center Classifications',
                 lc_data['classifications'][:n_interior].astype(np.int32), gz)
         _add_ds(pi_grp, 'Face Center Classifications',
-                np.zeros(n_faces, dtype=np.int32), gz)
+                lc_data['face_classifications'].astype(np.int32), gz)
 
         # --- BC Lines External Faces ---
         bc_grp = hf['Geometry/Boundary Condition Lines']
@@ -1837,7 +1681,7 @@ def _write_2d_flow_areas(areas_grp, mesh, cell_props, face_props, lc_data, inf_d
     pi_grp.create_dataset("Cell Center Classifications",
                           data=lc_data["classifications"][:n_interior].astype(np.int32), **gz)
     pi_grp.create_dataset("Face Center Classifications",
-                          data=np.zeros(n_faces, dtype=np.int32), **gz)
+                          data=lc_data["face_classifications"].astype(np.int32), **gz)
 
 
 def _write_infiltration_group(ag, inf_data, n_interior, n_faces, now_date, gz):
@@ -2277,20 +2121,16 @@ def main():
         if not projection_wkt:
             projection_wkt = meta.get("projection_wkt", "")
 
-        # Step A2: Compute cell properties from terrain
-        cell_props = compute_cell_properties(mesh, str(terrain_tif))
-
-        # Step A3: Sample land cover
-        lc_data = {"mannings_n": np.full(mesh.n_cells, default_mannings, dtype=np.float32),
-                   "classifications": np.zeros(mesh.n_cells, dtype=np.int32),
-                   "calibration_table": [("Default", default_mannings)],
-                   "id_to_name": {}, "name_to_imperv": {}, "id_to_mann": {}}
+        # Step A2: Sample land cover
+        lc_data = _default_land_cover(mesh, default_mannings)
         if lc_hdf.exists() and lc_tif and lc_tif.exists():
             lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings)
 
-        # Step A4: Compute face properties
-        face_props = compute_face_properties(mesh, str(terrain_tif),
-                                              lc_data["mannings_n"], default_mannings)
+        # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
+        terrain = property_tables.Terrain(str(terrain_tif))
+        settings = table_settings(src_g01_hdf, meta["area_name"])
+        face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
+        cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
 
         # Step A5: Infiltration
         inf_data = sample_infiltration(mesh, str(inf_hdf) if inf_hdf.exists() else "")
@@ -2312,19 +2152,16 @@ def main():
         # Step B2: Build mesh
         mesh = build_voronoi_mesh(g01.cell_points, g01.perimeter, g01.dx, g01.dy)
 
-        # Step B3: Cell properties
-        cell_props = compute_cell_properties(mesh, str(terrain_tif))
-
-        # Step B4: Face properties
-        lc_data = {"mannings_n": np.full(mesh.n_cells, g01.default_mannings, dtype=np.float32),
-                   "classifications": np.zeros(mesh.n_cells, dtype=np.int32),
-                   "calibration_table": [("Default", g01.default_mannings)],
-                   "id_to_name": {}, "name_to_imperv": {}, "id_to_mann": {}}
+        # Step B3: Sample land cover
+        lc_data = _default_land_cover(mesh, g01.default_mannings)
         if lc_hdf.exists() and lc_tif and lc_tif.exists():
             lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), g01.default_mannings)
 
-        face_props = compute_face_properties(mesh, str(terrain_tif),
-                                              lc_data["mannings_n"], g01.default_mannings)
+        # Step B4: Face tables, then cell tables (a cell's minimum depends on its faces)
+        terrain = property_tables.Terrain(str(terrain_tif))
+        settings = table_settings()
+        face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
+        cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
 
         # Step B5: Infiltration
         inf_data = sample_infiltration(mesh, str(inf_hdf) if inf_hdf.exists() else "")
