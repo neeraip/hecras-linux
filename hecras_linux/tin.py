@@ -972,3 +972,80 @@ def paint_bary(tris, values, rows, cols, min_x, max_x, min_y, max_y, cs):
                 w2 += sx[2]
             for k in range(3):
                 b[k][0] += sy[k]
+
+
+class DelaunayTin(StitchTin):
+    """DelaunayTINFactory.ComputeTIN with a perimeter and/or mass points (the
+    path RASMapper takes for a 2D area's perimeter TIN and for the TIN of its
+    cell centres), deleted triangles kept: a DevelopmentTin. Points include
+    the eight super points; tris include deleted ones, with adjacency."""
+
+    def __init__(self, tolerance, perimeter=None, points=None, mbr=None):
+        super().__init__([], tolerance)
+        # perimeter: a closed ring (first point repeated last), as RASMapper's Polygon
+        self.perimeter = [(float(x), float(y), math.nan, math.nan) for x, y in perimeter] if perimeter is not None else None
+        self.mass = [(float(x), float(y), math.nan, math.nan) for x, y in points] if points is not None else None
+        self.mbr = mbr                             # (min_x, max_x, min_y, max_y) or None
+        self.duplicates = []                       # mass point indexes already in the TIN
+
+    def compute(self):
+        xs, ys = [], []
+        for pts in (self.perimeter, self.mass):
+            if pts:
+                xs += [p[0] for p in pts]
+                ys += [p[1] for p in pts]
+        ext = _enforce_min_dims([min(xs), max(xs), min(ys), max(ys)], self.tol * 10.0, self.tol * 10.0)
+        dx, dy = ext[1] - ext[0], ext[3] - ext[2]
+        if dx > dy:
+            if dy < dx * 0.125:
+                ext = _enforce_min_dims(ext, 0.0, dx * 0.125)
+        elif dx < dy * 0.125:
+            ext = _enforce_min_dims(ext, dy * 0.125, 0.0)
+        if self.mbr is not None:                   # Extent.UnionXY
+            ext = [min(ext[0], self.mbr[0]), max(ext[1], self.mbr[1]),
+                   min(ext[2], self.mbr[2]), max(ext[3], self.mbr[3])]
+        self.extent = ext
+        self.offset = (-ext[0], -ext[2])
+        self._add_octagon(ext)
+        for p in self.perimeter or ():             # InsertPerimeterPoints
+            self.insert_point(self._translate(p))
+        self.mass_start = len(self.points)         # MassPointInsertionsStartHere
+        for i, p in enumerate(self.mass or ()):    # InsertMassPoints
+            if not self.insert_point(self._translate(p)):
+                self.duplicates.append(i)
+        if self.perimeter:                         # EnforcePerimeterEdges
+            for a, b in zip(self.perimeter[:-1], self.perimeter[1:]):
+                self.enforce_edge(self._translate(a), self._translate(b), perimeter=True)
+        self._mark_bad()
+        ox, oy = self.offset
+        self.points = [(x + -ox, y + -oy, z, m) for x, y, z, m in self.points]
+        self.last_t = 0                            # the DevelopmentTin's own search starts afresh
+        return self
+
+    def _mark_bad(self):
+        """MarkBadTrianglesAsDeleted_SinglePart without stitches: the super
+        triangles, then, with a perimeter, everything reached from them
+        without crossing a perimeter edge."""
+        stack = []
+        for i, tr in enumerate(self.tris):
+            if tr.p0 < SUPER_POINT_COUNT or tr.p1 < SUPER_POINT_COUNT or tr.p2 < SUPER_POINT_COUNT:
+                tr.mark_deleted()
+                stack.append(i)
+        if not self.perimeter or len(self.perimeter) <= 3:
+            return
+        while stack:
+            tr = self.tris[stack.pop()]
+            tr.mark_deleted()
+            for at, flag in ((tr.at0, E0_PERIM), (tr.at1, E1_PERIM), (tr.at2, E2_PERIM)):
+                if at != -1 and not self.tris[at].deleted() and not tr.flags & flag:
+                    stack.append(at)
+
+    def contains(self, pt) -> bool:
+        """DevelopmentTin.ContainsPoint: inside the TIN's extent, then in a
+        triangle that isn't deleted."""
+        x, y = float(pt[0]), float(pt[1])
+        min_x, max_x, min_y, max_y = self.extent
+        if x < min_x or x > max_x or y < min_y or y > max_y:
+            return False
+        t = self.find_triangle((x, y))
+        return t != -1 and not self.tris[t].deleted()
