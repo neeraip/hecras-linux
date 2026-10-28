@@ -928,3 +928,47 @@ def _geo_intersect_t(a, b, c, d):
     if den == 0.0:
         return math.nan
     return (ex * (a[1] - c[1]) - ey * (a[0] - c[0])) / den
+
+
+def paint_bary(tris, values, rows, cols, min_x, max_x, min_y, max_y, cs):
+    """Tin.Rasterize → RasterizeTriangle.ComputeCellsZNew: each triangle's
+    plane onto the cells whose centre it covers, edges included, stepping
+    barycentric weights across the raster as RASMapper does."""
+    def _col(x):
+        return int(math.floor((x - min_x) / cs))
+
+    def _row(y):
+        return int(math.floor((max_y - y) / cs))
+
+    for p0, p1, p2 in tris:
+        if (p0[1] == p1[1] == p2[1]) or (p0[0] == p1[0] == p2[0]):
+            continue
+        lo_x, hi_x = min(p0[0], p1[0], p2[0]), max(p0[0], p1[0], p2[0])
+        lo_y, hi_y = min(p0[1], p1[1], p2[1]), max(p0[1], p1[1], p2[1])
+        if lo_x > max_x or hi_x < min_x or lo_y > max_y or hi_y < min_y:
+            continue
+        c0 = 0 if lo_x < min_x else _col(lo_x)
+        r0 = rows - 1 if lo_y < min_y else _row(lo_y)
+        c1 = cols - 1 if hi_x > max_x else _col(hi_x)
+        r1 = 0 if hi_y > max_y else _row(hi_y)
+        ox, oy = min_x + cs * (c0 + 0.5), max_y - cs * (r0 + 0.5)
+        q = [(p[0] - ox, p[1] - oy) for p in (p0, p1, p2)]
+
+        def bary(v0, v1):                                   # GetBary at the origin
+            dx, dy = v0[1] - v1[1], v1[0] - v0[0]
+            return [dx * 0.0 + dy * 0.0 + (v0[0] * v1[1] - v0[1] * v1[0]), dx, dy]
+
+        b = [bary(q[1], q[2]), bary(q[2], q[0]), bary(q[0], q[1])]
+        sx = [w[1] * cs for w in b]
+        sy = [w[2] * cs for w in b]
+        total = b[0][0] + b[1][0] + b[2][0]
+        for r in range(r0, r1 - 1, -1):
+            w0, w1, w2 = b[0][0], b[1][0], b[2][0]
+            for c in range(c0, c1 + 1):
+                if w0 >= 0.0 and w1 >= 0.0 and w2 >= 0.0:
+                    values[r * cols + c] = (w0 * p0[2] + w1 * p1[2] + w2 * p2[2]) / total
+                w0 += sx[0]
+                w1 += sx[1]
+                w2 += sx[2]
+            for k in range(3):
+                b[k][0] += sy[k]

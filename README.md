@@ -155,19 +155,22 @@ AFTER_RUN, VA and Muncie have not been re-run through the engine since the port.
 Not ported yet (RASMapper's code for each is in RasMapperLib or its companion
 libraries): calibration regions together with *Composite LC*, and regions
 with several parts (both refused with an error); other override regions;
-per-face variable averages under *Composite LC*; terrain modifications; 2D
-structures and connections. One 2D flow area and US
+per-face variable averages under *Composite LC*; terrain modifications other
+than polygons with one elevation, and faces crossing any modification (both
+refused with an error); 2D structures and connections. One 2D flow area and US
 customary units only. Terrains with several rasters are read in RASMapper's
-priority order, with its stitch TIN across their seams.
+priority order, with its stitch TIN across their seams, and a terrain
+modification polygon with one elevation (set, add, take higher or take lower)
+is applied to the cells under it.
 
 Beyond the shipped examples, every table of HEC's Weise_2D example and of
 BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
 comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
 and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2). On a
-production model (Multiple Face Mann n with a calibration region), Manning's *n*
-at all 48,006 cell centres matches, and built from RASMapper's own stored face
-profiles, 112,239 of its 112,246 face tables are identical; its terrain hasn't
-been checked.
+production model (Multiple Face Mann n, a calibration region and a terrain
+modification), all 112,246 face profiles and minimum elevations, all 47,103
+cell volume tables and Manning's *n* at all 48,006 cell centres are
+identical, as are 112,239 of the 112,246 face area-elevation tables.
 
 [`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
 against RASMapper itself: every method its table computation can reach, read

@@ -14,4 +14,5 @@ model	^RasMapperLib\.(RASResults[A-Za-z]*|ResultsTable|RasterCalculator|MapProce
 model	::(get_SourceFilename|set_SourceFilename|LoadFeatureTable|HDFLoadFeatureTable|EnsureCurrentData|AllSourceFilesExist|get_SourceFileExists|GetFeatureName|SetFeature)$
 model	^RasMapperLib\.(TerrainLayer|LandCoverLayer|InterpolatedLayer|MeshFV2D)::(\.ctor|Load|Initialize|Open|Read)
 feature	^RasMapperLib\.(StructureLayer|BridgeScour|RASXS[A-Za-z]*|RASPipe[A-Za-z]*|Mesh1DFV|GroundLineModificationLayer[0-9]*|RASStorageArea|SA2D[A-Za-z]*|Bridge[A-Za-z]*|Culvert[A-Za-z]*|Weir[A-Za-z]*)::
-feature	::(Intersecting2DBridgeProfileHash|ObstructRaster|ObstructProfiles|ObstructPerimeter|ForceLoadObstructions)$
+feature	::Intersecting2DBridgeProfileHash$
+terrainmod	::(ObstructRaster|ObstructProfiles|ObstructPerimeter|ForceLoadObstructions)$

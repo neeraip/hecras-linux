@@ -234,8 +234,11 @@ class TerrainLayer:
                 v = self.stitch_points[self.stitch_triangles][:, :, :2]
                 self.stitch_bounds = np.concatenate([v.min(axis=1), v.max(axis=1)], axis=1)
 
+        self.modifications = _read_modifications(path)
+
     stitch_points = None
     stitch_triangles = None
+    modifications = ()
 
     def stitch_profile(self, pts: np.ndarray) -> list:
         """Tin.ComputeProfiles on the stitch TIN for one polyline: segment ends
@@ -280,6 +283,94 @@ class TerrainLayer:
         _dotnet_sort(out, key=lambda q: q[0])
         keep = _dp_keep(np.array([q[0] for q in out], F32), np.array([q[1] for q in out], F32), 0.0)
         return [out[i] for i in keep]
+
+
+MOD_TYPES = ("SetValue", "AddValue", "TakeHigher", "TakeLower")
+
+
+def _read_modifications(path: Path) -> list:
+    """The terrain's elevation modifications that the port applies: polygons
+    with one elevation (no boundary elevations, Z values or stored profile),
+    as (ring, type, value, triangles). Anything else is refused."""
+    out = []
+    with h5py.File(str(path), "r") as hf:
+        grp = hf.get("Modifications")
+        if grp is None:
+            return out
+        for name, layer in grp.items():
+            info = layer.get("Polygon Info") if isinstance(layer, h5py.Group) else None
+            if info is None or not len(info):
+                if isinstance(layer, h5py.Group) and any(len(d) for d in layer.values()
+                                                         if isinstance(d, h5py.Dataset)):
+                    raise SystemExit(f"ras_preprocess.py: terrain modification layer '{name}' "
+                                     "isn't supported yet. Use Workflow A.")
+                continue
+            attrs, pts = layer["Attributes"][()], layer["Polygon Points"][()]
+            prof = layer.get("Profile Info")
+            for k, (start, count, _, parts) in enumerate(info[()]):
+                a = attrs[k]
+                kind = a["Elevation Type"].decode().strip()
+                flat = (parts == 1 and kind in MOD_TYPES
+                        and not a["Generate Boundary Elevations"] and not a["Use ShapeFile Z Elevations"]
+                        and (prof is None or prof[k][1] == 0))
+                if not flat:
+                    raise SystemExit(f"ras_preprocess.py: terrain modification '{a['Name'].decode()}' "
+                                     "isn't supported yet (only single-part polygons with one "
+                                     "elevation). Use Workflow A.")
+                value = float(a["Elevation Value"])
+                if np.isnan(value):
+                    continue
+                ring = pts[start:start + count].astype(np.float64)
+                if np.array_equal(ring[0], ring[-1]):
+                    ring = ring[:-1]
+                tri = tin.PolygonTin(ring)
+                P = tri.points
+                tris = [tuple((P[q][0], P[q][1], value) for q in (t.p0, t.p1, t.p2))
+                        for t in tri.tris if not t.deleted()]
+                out.append((np.vstack([ring, ring[:1]]), kind, F32(value), tris))
+    return out
+
+
+def _apply_modifications(mods, vals, rows, cols, min_x, max_x, min_y, max_y, cs):
+    """ElevationModificationGroup.ObstructRaster on a resampled raster: each
+    polygon's TIN painted onto it, then GetReplacementValue (no data, NaN
+    here, takes the modification's value)."""
+    for ring, kind, value, tris in mods:
+        lo, hi = ring.min(axis=0), ring.max(axis=0)
+        if lo[0] > max_x or hi[0] < min_x or lo[1] > max_y or hi[1] < min_y:
+            continue
+        mod = [None] * (rows * cols)
+        tin.paint_bary(tris, mod, rows, cols, min_x, max_x, min_y, max_y, cs)
+        for n, m in enumerate(mod):
+            if m is None:
+                continue
+            m = F32(m)
+            orig = vals[n]
+            if np.isnan(orig) or kind == "SetValue":
+                vals[n] = m
+            elif kind == "AddValue":
+                vals[n] = F32(orig + m)
+            elif kind == "TakeHigher" and m > orig:
+                vals[n] = m
+            elif kind == "TakeLower" and m < orig:
+                vals[n] = m
+
+
+def _crosses_modification(layer, pts) -> bool:
+    """Whether a face touches a modification polygon, whose profiles
+    (ObstructProfiles) aren't ported."""
+    lo, hi = pts.min(axis=0), pts.max(axis=0)
+    for ring, *_ in layer.modifications:
+        rlo, rhi = ring.min(axis=0), ring.max(axis=0)
+        if (hi < rlo).any() or (lo > rhi).any():
+            continue
+        if points_in_ring(ring, pts[:, 0], pts[:, 1]).any():
+            return True
+        for a, b in zip(pts[:-1], pts[1:]):
+            for c, d in zip(ring[:-1], ring[1:]):
+                if tin._seg_intersect(a, b, c, d)[0]:
+                    return True
+    return False
 
 
 def _as_layer(terrain) -> "TerrainLayer":
@@ -615,6 +706,10 @@ def face_profile(terrain, pts: np.ndarray, tol: float) -> tuple:
     as float32 arrays, thinned with the face profile tolerance. Each raster
     adds the points where it has data; the whole is then sorted and thinned."""
     layer = _as_layer(terrain)
+    if getattr(layer, "modifications", ()) and _crosses_modification(layer, pts):
+        raise SystemExit("ras_preprocess.py: a face crosses a terrain modification; "
+                         "face profiles through modifications aren't supported yet. "
+                         "Use Workflow A.")
     profile = []
     for raster in layer.rasters:
         profile.extend(_raster_profile(raster, pts, tol))
@@ -1534,6 +1629,9 @@ def cell_table(terrain: Terrain, poly: np.ndarray, area: float, lowest_face: flo
         vals = np.where(np.isfinite(vals), vals, F32(NODATA)).astype(F32)
         tin.paint(tin.StitchTin(segs).compute(), vals, rows, cols, rmin_x, rmax_y, cs, F32)
         vals = np.where(vals == F32(NODATA), np.nan, vals).astype(F32)
+    mods = getattr(_as_layer(terrain), "modifications", ())
+    if mods:
+        _apply_modifications(mods, vals, rows, cols, rmin_x, rmax_x, rmin_y, rmax_y, cs)
     inside = _rasterize(poly, rows, cols, rmin_x, rmax_y, rmax_x, cs).ravel()
     sel = inside & np.isfinite(vals)
     if not sel.any():

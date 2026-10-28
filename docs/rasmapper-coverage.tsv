@@ -313,7 +313,7 @@ RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	.ctor	181	partly ported	p
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__0	143	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__1	422	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__R1	7	partly ported	property_tables._n_from_regions, _combine_n	7 of the production model's 112,246 faces differ
-RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	terrain modifications (ObstructProfiles) not ported
+RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	faces crossing terrain modifications (ObstructProfiles) refused
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	25	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	24	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	Add	14	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN

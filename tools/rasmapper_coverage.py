@@ -43,7 +43,7 @@ RULES = [
     # -- terrain ----------------------------------------------------------------
     (r"TerrainLayer(/.*)?$", r"^(ComputeProfilesOnRaster|ComputeProfilesOnTile|ComputePointElevationOnTile)$", PORTED,
      "property_tables._raster_profile, _tile_profile", EXAMPLES),
-    (r"TerrainLayer$", r"^ComputeProfiles$", PARTIAL, "property_tables.face_profile", "terrain modifications (ObstructProfiles) not ported"),
+    (r"TerrainLayer$", r"^ComputeProfiles$", PARTIAL, "property_tables.face_profile", "faces crossing terrain modifications (ObstructProfiles) refused"),
     (r"TerrainLayer$", r"^(ResampleInternal|Resample|BufferRenderBlockData)$", PORTED, "property_tables.cell_table, Terrain.sample", CELLS_ALSO),
     (r"TerrainLayer$", r"^Level0StitchTIN$", PORTED, "property_tables.TerrainLayer.stitch_profile", "BaldEagle g09"),
     (r"TerrainLayer$", r"^ClearLRUTilesConcurrent$", NA, "", "tile cache"),
@@ -239,12 +239,19 @@ def main(reach, stopped, md_out, tsv_out):
     L.append("")
     L.append("## Cut off from the call graph\n")
     L.append("Reached from the table computation but not followed (`tools/rasmapper_callgraph/stop.tsv`):\n")
-    labels = {"feature": "Other features (not ported)", "model": "Project and layer loading (read from the HDF instead)",
+    labels = {"terrainmod": "Terrain modifications (polygons with one elevation are applied to cell "
+                            "rasters, in property_tables._apply_modifications; other types, and faces "
+                            "crossing any modification, are refused)",
+              "feature": "Other features (not ported)", "model": "Project and layer loading (read from the HDF instead)",
               "io": "File I/O (h5py and GDAL instead)", "ui": "User interface", "progress": "Progress reporting"}
-    for cat in ["feature", "model", "io", "ui", "progress"]:
+    # A call graph from before terrain modifications had their own category files them as features.
+    obstruct = [n for n in st.get("feature", []) if "Obstruct" in n]
+    st["feature"] = [n for n in st.get("feature", []) if "Obstruct" not in n]
+    st["terrainmod"] = st.get("terrainmod", []) + obstruct
+    for cat in ["terrainmod", "feature", "model", "io", "ui", "progress"]:
         names = sorted(set(st.get(cat, [])))
         L.append(f"- **{labels[cat]}:** {len(names)} entry points" +
-                 (": " + ", ".join(f"`{n}`" for n in names) if cat == "feature" else ""))
+                 (": " + ", ".join(f"`{n}`" for n in names) if cat in ("feature", "terrainmod") else ""))
     L.append("")
     L.append(f"Every method, with its status and counterpart: [`rasmapper-coverage.tsv`]({tsv_out.split('/')[-1]}).\n")
     open(md_out, "w").write("\n".join(L))

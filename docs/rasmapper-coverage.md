@@ -25,14 +25,15 @@ Of the computational code (ported, partly ported, not ported and substituted: 10
 | 7 of the production model's 112,246 faces differ | 12 | 3,584 |
 | override regions (rasterized onto a cell's raster) | 18 | 1,789 |
 | face variable averages (Composite LC) | 7 | 1,041 |
-| terrain modifications (ObstructProfiles) not ported | 1 | 805 |
+| faces crossing terrain modifications (ObstructProfiles) refused | 1 | 805 |
 | override regions | 3 | 375 |
 
 ## Cut off from the call graph
 
 Reached from the table computation but not followed (`tools/rasmapper_callgraph/stop.tsv`):
 
-- **Other features (not ported):** 4 entry points: `RasMapperLib.RASD2FlowArea::Intersecting2DBridgeProfileHash`, `RasMapperLib.TerrainLayer::ForceLoadObstructions`, `RasMapperLib.TerrainLayer::ObstructProfiles`, `RasMapperLib.TerrainLayer::ObstructRaster`
+- **Terrain modifications (polygons with one elevation are applied to cell rasters, in property_tables._apply_modifications; other types, and faces crossing any modification, are refused):** 3 entry points: `RasMapperLib.TerrainLayer::ForceLoadObstructions`, `RasMapperLib.TerrainLayer::ObstructProfiles`, `RasMapperLib.TerrainLayer::ObstructRaster`
+- **Other features (not ported):** 1 entry points: `RasMapperLib.RASD2FlowArea::Intersecting2DBridgeProfileHash`
 - **Project and layer loading (read from the HDF instead):** 61 entry points
 - **File I/O (h5py and GDAL instead):** 60 entry points
 - **User interface:** 7 entry points
