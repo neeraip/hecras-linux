@@ -1395,9 +1395,10 @@ def main():
     g01_path = project_dir / f"{name}.g01"
     p01_path = project_dir / f"{name}.p{plan}"
     terrain_tif = _find_terrain_tif(project_dir)
-    lc_hdf = project_dir / "Land Classification" / "LandCover.hdf"
-    lc_tif = _find_file_by_pattern(project_dir / "Land Classification", "*.tif")
-    inf_hdf = project_dir / "Land Classification" / "Infiltration.hdf"
+    geom_hdf = project_dir / f"{name}.g{plan}.hdf"
+    lc_hdf = _find_layer(project_dir, geom_hdf, "Land Cover Filename", "LandCover.hdf")
+    lc_tif = lc_hdf.with_suffix(".tif")
+    inf_hdf = _find_layer(project_dir, geom_hdf, "Infiltration Filename", "Infiltration.hdf")
 
     # Check required files
     for f, desc in [(g01_path, ".g01"), (p01_path, f".p{plan}"), (terrain_tif, "Terrain TIF")]:
@@ -1834,6 +1835,23 @@ def _find_terrain_layer(project_dir: Path, g01_hdf: Path = None):
     return _find_terrain_tif(project_dir)
 
 
+def _find_layer(project_dir: Path, g01_hdf: Path, attr: str, default: str) -> Path:
+    """A land classification layer the geometry names (its HDF): at the
+    geometry's path, else anywhere in the project under the same file name,
+    else Land Classification/<default>."""
+    if g01_hdf.exists():
+        with h5py.File(str(g01_hdf), "r") as hf:
+            name = hf["Geometry"].attrs.get(attr, b"").decode("utf-8", "replace").replace("\\", "/")
+        if name:
+            path = (project_dir / name).resolve()
+            if path.exists():
+                return path
+            found = sorted(project_dir.rglob(Path(name).name))
+            if found:
+                return found[0]
+    return project_dir / "Land Classification" / default
+
+
 def _find_terrain_tif(project_dir):
     """Find terrain GeoTIFF in project directory."""
     terrain_dir = project_dir / "Terrain"
@@ -1844,14 +1862,6 @@ def _find_terrain_tif(project_dir):
     # Try project dir directly
     tifs = list(project_dir.glob("Terrain*.tif"))
     return tifs[0] if tifs else None
-
-
-def _find_file_by_pattern(directory, pattern):
-    """Find first file matching pattern in directory."""
-    if directory.exists():
-        matches = list(directory.glob(pattern))
-        return matches[0] if matches else None
-    return None
 
 
 if __name__ == "__main__":
