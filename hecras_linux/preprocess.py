@@ -284,6 +284,12 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
                 mann_vals = vdata['ManningsN']       # float32: Manning's n per class
                 imperv_vals = vdata['Percent Impervious']  # float32: impervious fraction
 
+            # The format before Raster Map/Variables (RASMapper 5.x): parallel arrays.
+            if ids is None and {'IDs', 'Names', 'ManningsN'} <= set(hf):
+                ids = hf['IDs'][()]
+                names_rmap = var_names = hf['Names'][()]
+                mann_vals = hf['ManningsN'][()]
+
         if ids is None or names_rmap is None or mann_vals is None:
             raise ValueError("Missing expected datasets in LandCover HDF")
 
@@ -294,7 +300,7 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
             n_str = var_names[i].decode('utf-8', errors='replace').strip() if isinstance(var_names[i], bytes) else str(var_names[i]).strip()
             name_to_mann[n_str] = float((calibration or {}).get("base", {}).get(n_str.lower(),
                                                                          mann_vals[i]))
-            name_to_imperv[n_str] = float(imperv_vals[i])
+            name_to_imperv[n_str] = float(imperv_vals[i]) if imperv_vals is not None else np.nan
 
         # Build ID -> Manning's n + calibration table from /Raster Map
         id_to_mann = {}
@@ -485,9 +491,13 @@ class _ClassRaster:
 
     def __init__(self, layer_hdf: Path):
         with h5py.File(str(layer_hdf), "r") as hf:
-            rmap = hf["Raster Map"][()]
-        self.ids = rmap["ID"].astype(np.int64)
-        self.names = [n.decode("utf-8", "replace").strip() for n in rmap["Name"]]
+            if "Raster Map" in hf:
+                rmap = hf["Raster Map"][()]
+                ids, names = rmap["ID"], rmap["Name"]
+            else:                                   # the RASMapper 5.x format
+                ids, names = hf["IDs"][()], hf["Names"][()]
+        self.ids = ids.astype(np.int64)
+        self.names = [n.decode("utf-8", "replace").strip() for n in names]
         self.tif = layer_hdf.with_suffix(".tif")
         ds = gdal.Open(str(self.tif))
         self.raster = ds.GetRasterBand(1).ReadAsArray()

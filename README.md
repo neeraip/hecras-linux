@@ -163,7 +163,8 @@ priority order, with its stitch TIN across their seams, and a terrain
 modification polygon with one elevation (set, add, take higher or take lower)
 is applied to the cells under it.
 
-Beyond the shipped examples, every table of HEC's Weise_2D example and of
+Beyond the shipped examples, every table of HEC's Weise_2D example (two
+calibration regions, a 5.x land cover file) and of
 BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
 comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
 and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2). On a
