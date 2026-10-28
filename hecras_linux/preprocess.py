@@ -966,8 +966,7 @@ def compute_bc_external_faces(g01_hdf_path: Path, mesh: MeshData,
 def _write_infiltration_datasets(grp, inf_data: dict, n_interior: int,
                                   n_faces: int, gz: dict):
     """Write the infiltration datasets RASMapper writes: the cell and face
-    classes, one dataset per variable of the layer, and its Properties.
-    Uses _add_ds() so datasets already in the file are kept."""
+    classes, one dataset per variable of the layer, and its Properties."""
     _add_ds(grp, "Cell Center Classifications", inf_data["cell_classifications"], gz)
     _add_ds(grp, "Face Center Classifications", inf_data["face_classifications"], gz)
     for name, values in inf_data["variables"].items():
@@ -1207,10 +1206,11 @@ def _bfs_path(start_fi, end_fi, adj):
     return None
 
 def _add_ds(grp, name: str, data, gz: dict):
-    """Add dataset to group only if it does not already exist."""
-    if name not in grp:
-        grp.create_dataset(name, data=data, **gz)
-    # If it exists, leave it (already computed by GUI or previous run)
+    """Write a computed dataset, replacing one already there: keeping the
+    GUI's would mix its tables with ours without notice."""
+    if name in grp:
+        del grp[name]
+    grp.create_dataset(name, data=data, **gz)
 
 
 def _percent_impervious(lc_data, n_cells, n_interior):
@@ -1509,17 +1509,18 @@ def main():
     plan = args.plan.zfill(2)
     logger.info("Project: %s, Plan: %s", name, plan)
 
-    # Find files
-    g01_path = project_dir / f"{name}.g01"
+    # Find files: the geometry is the one the plan names (Geom File=gNN)
     p01_path = project_dir / f"{name}.p{plan}"
+    geom = _plan_geometry(p01_path) or f"g{plan}"
+    g01_path = project_dir / f"{name}.{geom}"
     terrain_tif = _find_terrain_tif(project_dir)
-    geom_hdf = project_dir / f"{name}.g{plan}.hdf"
+    geom_hdf = project_dir / f"{name}.{geom}.hdf"
     lc_hdf = _find_layer(project_dir, geom_hdf, "Land Cover Filename", "LandCover.hdf")
     lc_tif = lc_hdf.with_suffix(".tif")
     inf_hdf = _find_layer(project_dir, geom_hdf, "Infiltration Filename", "Infiltration.hdf")
 
     # Check required files
-    for f, desc in [(g01_path, ".g01"), (p01_path, f".p{plan}"), (terrain_tif, "Terrain TIF")]:
+    for f, desc in [(g01_path, f".{geom}"), (p01_path, f".p{plan}"), (terrain_tif, "Terrain TIF")]:
         if not f or not f.exists():
             logger.error("Required file not found: %s (%s)", f, desc)
             sys.exit(1)
@@ -1536,8 +1537,8 @@ def main():
     #   B) g01.hdf exists but no hydraulic tables (RASMapper created the mesh)
     #      → read mesh from HDF, compute hydraulic tables, update HDF in-place
     # -----------------------------------------------------------------------
-    src_g01_hdf = project_dir / f"{name}.g{plan}.hdf"
-    out_g01_hdf = output_dir / f"{name}.g{plan}.hdf"
+    src_g01_hdf = geom_hdf
+    out_g01_hdf = output_dir / f"{name}.{geom}.hdf"
 
     src_p01_hdf = project_dir / f"{name}.p{plan}.hdf"
     src_p01_tmp = project_dir / f"{name}.p{plan}.tmp.hdf"
@@ -1964,6 +1965,17 @@ def _find_terrain_layer(project_dir: Path, g01_hdf: Path = None):
             if "Terrain" in hf:
                 return hdf
     return _find_terrain_tif(project_dir)
+
+
+def _plan_geometry(plan_path: Path):
+    """The geometry a plan file names ("Geom File=g08" gives "g08"), or None."""
+    if not plan_path.exists():
+        return None
+    for line in plan_path.read_text(errors="replace").splitlines():
+        if line.startswith("Geom File="):
+            value = line.split("=", 1)[1].strip()
+            return value or None
+    return None
 
 
 def _find_layer(project_dir: Path, g01_hdf: Path, attr: str, default: str) -> Path:
