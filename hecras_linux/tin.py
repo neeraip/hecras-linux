@@ -101,8 +101,8 @@ def _cross(a, b, c):
     return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 
 
-def _circumcircle(a, b, c):
-    """CircleM.Compute."""
+def circumcircle(a, b, c):
+    """CircleM.Compute: (centre x, centre y, radius)."""
     n1, n2 = b[0] - a[0], b[1] - a[1]
     n3 = n1 * n1 + n2 * n2
     n4, n5 = c[0] - a[0], c[1] - a[1]
@@ -360,7 +360,7 @@ class StitchTin:
             return False
         P = self.points
         a, b, c = P[tr.p0], P[tr.p1], P[tr.p2]
-        x, y, r = _circumcircle(a, b, c)
+        x, y, r = circumcircle(a, b, c)
         if not _close_to(pt, x, y, r):
             return False
         for u, v in ((a, b), (a, c), (b, c)):
@@ -816,7 +816,7 @@ class PolygonTin:
             return False
         P = self.points
         a, b, c = P[tr.p0], P[tr.p1], P[tr.p2]
-        x, y, _ = _circumcircle(a, b, c)
+        x, y, _ = circumcircle(a, b, c)
         if not (_hypot(pt, (x, y)) <= _hypot(a, (x, y))):   # Circle.Contains
             return False
         for u, v in ((a, b), (a, c), (b, c)):
