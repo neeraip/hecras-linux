@@ -8,20 +8,19 @@ How much of RASMapper's own code for *Compute Property Tables* (HEC-RAS 7.0.2, `
 
 | Status | Methods | IL bytes | Meaning |
 |---|---|---|---|
-| ported | 840 | 86,516 | reproduced; tables match RASMapper's bit for bit on the models named |
-| partly ported | 2 | 10,694 | the paths the models use are reproduced; named branches are not |
+| ported | 841 | 96,405 | reproduced; tables match RASMapper's bit for bit on the models named |
+| partly ported | 1 | 805 | the paths the models use are reproduced; named branches are not |
 | not ported | 28 | 3,205 | not reproduced; the feature it serves is refused or absent |
 | primitive, used by ported code | 414 | 21,637 | geometry and math building blocks the ported code uses; reproduced inline |
 | primitive, only for unported features | 216 | 10,788 | building blocks reached only from unported features |
 | not applicable | 273 | 19,822 | can't change table values (caches, names, debug text, setup) |
 
-Of the computational code (ported, partly ported, not ported and substituted: 100,415 IL bytes), **86 %** is fully ported, 11 % partly, 0 % substituted and 3 % not ported.
+Of the computational code (ported, partly ported, not ported and substituted: 100,415 IL bytes), **96 %** is fully ported, 1 % partly, 0 % substituted and 3 % not ported.
 
 ## What is missing, by feature
 
 | Feature | Methods | IL bytes |
 |---|---|---|
-| 2D bridge profiles not ported | 1 | 9,889 |
 | override regions (rasterized onto a cell's raster) | 18 | 1,789 |
 | face variable averages (Composite LC) | 7 | 1,041 |
 | faces crossing terrain modifications (ObstructProfiles) refused | 1 | 805 |
@@ -32,7 +31,8 @@ Of the computational code (ported, partly ported, not ported and substituted: 10
 Reached from the table computation but not followed (`tools/rasmapper_callgraph/stop.tsv`):
 
 - **Terrain modifications (polygons with one elevation are applied to cell rasters, in property_tables._apply_modifications; other types, and faces crossing any modification, are refused):** 3 entry points: `RasMapperLib.TerrainLayer::ForceLoadObstructions`, `RasMapperLib.TerrainLayer::ObstructProfiles`, `RasMapperLib.TerrainLayer::ObstructRaster`
-- **Other features (not ported):** 1 entry points: `RasMapperLib.RASD2FlowArea::Intersecting2DBridgeProfileHash`
+- **Change detection (a hash of the 2D bridges the area holds, written as the Connection Profile Hash attribute; no table depends on it):** 1 entry points: `RasMapperLib.RASD2FlowArea::Intersecting2DBridgeProfileHash`
+- **Other features (not ported):** 0 entry points: 
 - **Project and layer loading (read from the HDF instead):** 61 entry points
 - **File I/O (h5py and GDAL instead):** 60 entry points
 - **User interface:** 7 entry points
