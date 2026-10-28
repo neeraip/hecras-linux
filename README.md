@@ -152,11 +152,15 @@ libraries): *Multiple Face Mann n* and cell-averaged land cover (*Composite
 LC*), both refused with an error; calibration and override regions; terrain
 modifications; 2D structures and connections. One 2D flow area and US
 customary units only. Terrains with several rasters are read in RASMapper's
-priority order, with its stitch TIN across their seams; HEC's
-BaldEagleCrkMulti2D example, which has two, is the check still to run.
+priority order, with its stitch TIN across their seams.
 
-Beyond the shipped examples, every table of HEC's Weise_2D example (HEC-RAS
-7.0.2 examples, 2D Sediment Transport) also comes out bit-exact.
+Beyond the shipped examples, every table of HEC's Weise_2D example and of
+BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
+comes out bit-exact, and Chippewa_2D's cells do.
+
+[`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
+against RASMapper itself: every method its table computation can reach, read
+from the IL of HEC's DLLs, with its status and our counterpart.
 
 ### Limitations of Workflow B
 
@@ -198,6 +202,8 @@ pyproject.toml             the hecras-linux package
 run_simulation.sh          zip in → preprocess → simulate → zip out
 tools/
   make_workflow_input.py   derive a Workflow B input from a GUI project
+  rasmapper_callgraph/     every RASMapper method the table computation reaches (IL)
+  rasmapper_coverage.py    classify them: ported, not ported, ... → docs/rasmapper-coverage.md
   compare_results.py       compare max WSE between two plan HDFs
 tests/test_pipeline.py     pytest: all workflows, all examples, all engines
 Examples/                  six HEC-RAS 6.6 projects (see Examples/README.md)

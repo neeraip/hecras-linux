@@ -1,0 +1,17 @@
+# category<TAB>regex on "Namespace.Type::Method"
+ui	^RasMapperLib\.(EditLayers|Render|Mapping|Oxy|My)\b
+ui	(Form|Dialog|Editor|Window|Menu|Control|Panel|Plot|Chart|Viewer|Symbology)[A-Za-z0-9_]*(`\d+)?::
+ui	::(Show|Plot|Draw|Render|Replot|Refresh|Paint|Invalidate|OnPaint|ShowDialog|MessageBox)
+ui	^RasMapperLib\.SharedData::(RasMapper|RASMapperReplot|MainThreadInvoke|ReportMessage|ClearAllMeshCaches)
+progress	(Progress|Reporter|Stopwatch|Timer)[A-Za-z0-9_]*::
+progress	::(Report|ReportProgress|ReportMessage|ReportError|ReportFractionRateWaitTime|WithProgressModifier|WithMessageModifier)
+io	^(H5Assist|TiffAssist|TiffBinaryReader)\.
+io	^Geospatial\.GDALAssist\.
+io	^RasMapperLib\.(HDF|H5)[A-Za-z]*::
+io	::(Write|Save|Export|Stream|ToShapefile|WriteArray|WriteAttribute|DeleteAttribute)
+model	^RasMapperLib\.RASGeometry::(?!Extract)
+model	^RasMapperLib\.(RASResults[A-Za-z]*|ResultsTable|RasterCalculator|MapProcessingEngine|ColorScales|RASGeometryMapPoints|EditPoints|Layer|FeatureLayer|PolylineFeatureLayer|PolygonFeatureLayer|MultiPointFeatureLayer|PointFeatureLayer|GeometryAssociation[A-Za-z]*|InterpolationOverrideLayer|InterpretationOverrideLayer|InterpretationRasterizerLayer)::
+model	::(get_SourceFilename|set_SourceFilename|LoadFeatureTable|HDFLoadFeatureTable|EnsureCurrentData|AllSourceFilesExist|get_SourceFileExists|GetFeatureName|SetFeature)$
+model	^RasMapperLib\.(TerrainLayer|LandCoverLayer|InterpolatedLayer|MeshFV2D)::(\.ctor|Load|Initialize|Open|Read)
+feature	^RasMapperLib\.(StructureLayer|BridgeScour|RASXS[A-Za-z]*|RASPipe[A-Za-z]*|Mesh1DFV|GroundLineModificationLayer[0-9]*|RASStorageArea|SA2D[A-Za-z]*|Bridge[A-Za-z]*|Culvert[A-Za-z]*|Weir[A-Za-z]*)::
+feature	::(Intersecting2DBridgeProfileHash|ObstructRaster|ObstructProfiles|ObstructPerimeter|ForceLoadObstructions)$
