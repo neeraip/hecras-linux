@@ -220,6 +220,63 @@ class TerrainLayer:
             self.rasters.append(Terrain(str(path.parent / tif)))
         if not self.rasters:
             raise ValueError(f"{path}: no rasters listed under /Terrain")
+        # TerrainLayer.Level0StitchTIN: the triangles RASMapper stores to bridge
+        # the seams between rasters, sampled along faces after the rasters.
+        with h5py.File(str(path), "r") as hf:
+            pts = hf.get("Terrain/Stitch TIN Points")
+            tri = hf.get("Terrain/Stitch TIN Triangles")
+            if pts is not None and tri is not None and len(pts) and len(tri):
+                self.stitch_points = pts[()].astype(np.float64)
+                self.stitch_triangles = tri[()].astype(np.int64)
+                v = self.stitch_points[self.stitch_triangles][:, :, :2]
+                self.stitch_bounds = np.concatenate([v.min(axis=1), v.max(axis=1)], axis=1)
+
+    stitch_points = None
+    stitch_triangles = None
+
+    def stitch_profile(self, pts: np.ndarray) -> list:
+        """Tin.ComputeProfiles on the stitch TIN for one polyline: segment ends
+        inside a triangle and crossings of triangle edges, as (station, z),
+        sorted and filtered at zero tolerance."""
+        if self.stitch_triangles is None:
+            return []
+        P, T = self.stitch_points, self.stitch_triangles
+        out = []
+        start = 0.0
+        for (ax, ay), (bx, by) in zip(pts[:-1], pts[1:]):
+            length = float(np.hypot(bx - ax, by - ay))
+            lo_x, hi_x, lo_y, hi_y = min(ax, bx), max(ax, bx), min(ay, by), max(ay, by)
+            b = self.stitch_bounds
+            near = np.nonzero((b[:, 0] <= hi_x) & (b[:, 2] >= lo_x) & (b[:, 1] <= hi_y) & (b[:, 3] >= lo_y))[0]
+            for t in near:
+                p0, p1, p2 = P[T[t, 0]], P[T[t, 1]], P[T[t, 2]]
+                for (px, py, s) in ((ax, ay, start), (bx, by, start + length)):
+                    n1, n2, n3 = p1[1] - p2[1], p0[0] - p2[0], p2[0] - p1[0]
+                    n4 = p0[1] - p2[1]
+                    den = n1 * n2 + n3 * n4
+                    dx, dy = px - p2[0], py - p2[1]
+                    l0 = (n1 * dx + n3 * dy) / den
+                    l1 = (n2 * dy - n4 * dx) / den
+                    l2 = 1.0 - l0 - l1
+                    if 0 <= l0 <= 1 and 0 <= l1 <= 1 and 0 <= l2 <= 1:
+                        out.append((F32(s), F32(p0[2] * l0 + p1[2] * l1 + p2[2] * l2)))
+                for e0, e1 in ((p0, p1), (p1, p2), (p2, p0)):
+                    hit, t1, t2 = _segment_intersections(ax, ay, bx, by, np.array([e0[0]]), np.array([e0[1]]),
+                                                         np.array([e1[0]]), np.array([e1[1]]))
+                    if hit[0]:
+                        dx, dy = bx - ax, by - ay
+                        ex, ey = e1[0] - e0[0], e1[1] - e0[1]
+                        den = ey * dx - ex * dy
+                        u = (ex * (ay - e0[1]) - ey * (ax - e0[0])) / den   # unclamped t1
+                        x, y = ax + u * dx, ay + u * dy
+                        st = start + float(np.hypot(x - ax, y - ay))
+                        out.append((F32(st), F32(e0[2] + (e1[2] - e0[2]) * t2[0])))
+            start += length
+        if not out:
+            return []
+        _dotnet_sort(out, key=lambda q: q[0])
+        keep = _dp_keep(np.array([q[0] for q in out], F32), np.array([q[1] for q in out], F32), 0.0)
+        return [out[i] for i in keep]
 
 
 def _as_layer(terrain) -> "TerrainLayer":
@@ -227,6 +284,7 @@ def _as_layer(terrain) -> "TerrainLayer":
         return terrain
     layer = TerrainLayer.__new__(TerrainLayer)
     layer.rasters = [terrain]
+    layer.stitch_triangles = None
     return layer
 
 
@@ -277,6 +335,9 @@ def _stitch_triangles(segs: list, cell: float) -> list:
     if len(keys) < 3:
         return []
     xy = np.array(keys)
+    # Points all on one line make no triangles (and qhull refuses them).
+    if np.linalg.matrix_rank(xy[1:] - xy[0], tol=1e-9 * max(1.0, float(np.ptp(xy)))) < 2:
+        return []
     index = {k: i for i, k in enumerate(keys)}
     tri = Delaunay(xy)
     simp = tri.simplices.copy()
@@ -305,14 +366,18 @@ def _stitch_triangles(segs: list, cell: float) -> list:
         # delete triangles round point p from t0, both ways, until a stitch edge
         for direction in (1, 2):
             t = t0
+            seen = {t0}
             while True:
                 k = int(np.where(simp[t] == p)[0][0])
                 kk = (k + direction) % 3            # edge opposite kk contains p
                 if edge_of(t, kk) in edges:
                     break
                 t = nbr[t][kk]
-                if t == -1 or t == t0:
+                # A zero-area triangle (collinear grid points) has no orientation,
+                # so a walk round p can loop without returning to t0.
+                if t == -1 or t in seen:
                     break
+                seen.add(t)
                 deleted[t] = True
     for a, b in segs:
         ia, ib = index[a[:2]], index[b[:2]]
@@ -654,9 +719,14 @@ def face_profile(terrain, pts: np.ndarray, tol: float) -> tuple:
     """TerrainLayer.ComputeProfiles for one face polyline: (station, elevation)
     as float32 arrays, thinned with the face profile tolerance. Each raster
     adds the points where it has data; the whole is then sorted and thinned."""
+    layer = _as_layer(terrain)
     profile = []
-    for raster in _as_layer(terrain).rasters:
+    for raster in layer.rasters:
         profile.extend(_raster_profile(raster, pts, tol))
+    stitched = layer.stitch_profile(pts) if isinstance(layer, TerrainLayer) else []
+    if stitched:
+        profile.extend(stitched)
+        _dotnet_sort(profile, key=lambda p: p[0])
     if not profile:
         return np.empty(0, F32), np.empty(0, F32)
     total = float(np.sum(np.hypot(np.diff(pts[:, 0]), np.diff(pts[:, 1]))))
