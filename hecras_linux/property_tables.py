@@ -678,7 +678,6 @@ def _raster_profile(terrain: Terrain, pts: np.ndarray, tol: float) -> list:
     """TerrainLayer.ComputeProfilesOnRaster: one raster's points along a face
     polyline, each tile's thinned on its own."""
     lv = terrain.levels[0]
-    t = lv.tile
     tiles_max_x = lv.rb_x0 + lv.rb_cell * lv.ntw
     tiles_min_y = lv.rb_y0 - lv.rb_cell * lv.ntt
     # Which tiles each segment crosses, in the order RASMapper finds them.

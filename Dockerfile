@@ -11,13 +11,14 @@ FROM debian:bookworm-slim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 python3-numpy python3-scipy python3-h5py python3-gdal \
-        python3-matplotlib python3-shapely zip unzip && \
+        zip unzip && \
     rm -rf /var/lib/apt/lists/*
 
 ARG HECRAS_VERSION=6.6
 COPY bin/${HECRAS_VERSION}/ /opt/hecras/bin/
 COPY libs/ /opt/hecras/libs/
-COPY ras_preprocess.py property_tables.py hecras_run.py run_simulation.sh /opt/hecras/
+COPY ras_preprocess.py hecras_run.py run_simulation.sh /opt/hecras/
+COPY hecras_linux/ /opt/hecras/hecras_linux/
 COPY tools/ /opt/hecras/tools/
 RUN chmod +x /opt/hecras/bin/* /opt/hecras/run_simulation.sh && \
     test "$(stat -c %s /opt/hecras/bin/RasUnsteady)" -gt 1000000 || \

@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Derive a Workflow B or C input project from a GUI-computed one.
+"""Derive a Workflow B input project from a GUI-computed one.
 
     python3 tools/make_workflow_input.py Examples/BEC /tmp/BEC_B --workflow B
-    python3 tools/make_workflow_input.py Examples/BEC /tmp/BEC_C --workflow C
 
-  B  keeps the RASMapper mesh in <name>.g01.hdf but removes everything that
-     "Compute Geometry" adds (hydraulic property tables, BC external faces,
-     GeomPreprocess output), as if the mesh had just been drawn.
-  C  removes <name>.g01.hdf altogether, leaving the seed points and perimeter
-     in the <name>.g01 text file.
-
-Both remove the plan results (<name>.p01.hdf) so ras_preprocess.py cannot
+It keeps the RASMapper mesh in <name>.g01.hdf but removes everything that
+"Compute Geometry" adds (hydraulic property tables, BC external faces,
+GeomPreprocess output), as if the mesh had just been drawn, and removes the
+plan results (<name>.p01.hdf) so ras_preprocess.py cannot
 fall back to Workflow A. The GUI results are the reference to compare
 against, so keep the original project.
 """
@@ -60,8 +56,8 @@ def strip_geometry_tables(g01_hdf: Path) -> None:
 
 def make_input(src: Path, dst: Path, workflow: str, plan: str = "01") -> str:
     workflow = workflow.upper()
-    if workflow not in ("B", "C"):
-        raise ValueError("workflow must be B or C")
+    if workflow != "B":
+        raise ValueError("workflow must be B")
     if dst.exists():
         raise FileExistsError(dst)
     name = project_name(src)
@@ -69,10 +65,7 @@ def make_input(src: Path, dst: Path, workflow: str, plan: str = "01") -> str:
     for f in dst.glob(f"{name}.p{plan}*.hdf"):
         f.unlink()
     g01_hdf = dst / f"{name}.g{plan}.hdf"
-    if workflow == "B":
-        strip_geometry_tables(g01_hdf)
-    elif g01_hdf.exists():
-        g01_hdf.unlink()
+    strip_geometry_tables(g01_hdf)
     return name
 
 
@@ -80,7 +73,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("src", type=Path, help="GUI-computed HEC-RAS project folder")
     ap.add_argument("dst", type=Path, help="new folder to create")
-    ap.add_argument("--workflow", required=True, choices=["B", "C", "b", "c"])
+    ap.add_argument("--workflow", required=True, choices=["B", "b"])
     args = ap.parse_args(argv)
     name = make_input(args.src, args.dst, args.workflow)
     print(f"Workflow {args.workflow.upper()} input for {name}: {args.dst}")

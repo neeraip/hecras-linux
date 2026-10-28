@@ -9,11 +9,8 @@ What is checked, by workflow
      must equal RASMapper's dataset for dataset; the plan must run. Accuracy
      against the GUI is marked as an expected failure until it is measured on
      every example.
-  C  Each example without its g01.hdf. Python builds the mesh from the .g01
-     seed points and perimeter. Tests check the mesh against RASMapper's and
-     that the plan runs; accuracy is an expected failure, as for B.
 
-The B and C runs take their boundary conditions from the GUI plan with
+The B runs take their boundary conditions from the GUI plan with
 --event-conditions because the examples' DSS files are not in the repo.
 
     pytest -m "not engine"     # preprocessing only (~1 min)
@@ -28,7 +25,6 @@ import sys
 from pathlib import Path
 
 import h5py
-import numpy as np
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
@@ -52,14 +48,14 @@ GUI_EXAMPLES = {
 WSE_TOL_FT = {"Muncie": 0.01}       # README: Muncie differs by 0.001 ft
 DEFAULT_WSE_TOL_FT = 0.005
 VOLUME_ERR_TOL_PCT = 0.5
-# The examples finish in about a minute; an unstable B/C model can spin for hours.
+# The examples finish in about a minute; an unstable B model can spin for hours.
 ENGINE_TIMEOUT_S = 900
 
-# B's tables now match RASMapper's (test_workflow_b_tables_match_rasmapper), but
-# only BEC has been re-run through the engine since; C's mesh still differs.
+# B's tables match RASMapper's (test_workflow_b_tables_match_rasmapper), but
+# only BEC and BEC_WO_Infiltration have been run through the engine since.
 ACCURACY_XFAIL = pytest.mark.xfail(
-    reason="engine accuracy not yet re-measured on every example (B) / mesh differs "
-           "from RASMapper's (C); see README 'Workflow B and C accuracy'", strict=False)
+    reason="engine accuracy not yet re-measured on every example; see README "
+           "'Workflow B accuracy'", strict=False)
 
 
 # ---------------------------------------------------------------------------
@@ -200,37 +196,6 @@ class TestPreprocess:
                 assert name in a, f"{name} missing"
                 assert a[name][()].tobytes() == g[name][()].tobytes(), f"{name} differs"
 
-    @pytest.mark.parametrize("example", GUI_EXAMPLES)
-    def test_workflow_c_mesh_matches_rasmapper(self, tmp_path, example):
-        """The rebuilt mesh should be RASMapper's up to perimeter details."""
-        project = GUI_EXAMPLES[example]
-        make_input(EXAMPLES / example, tmp_path / "in", "C")
-        log = preprocess(tmp_path / "in", tmp_path / "out", project)
-        assert detected_workflow(log) == "C"
-        with h5py.File(tmp_path / "out" / f"{project}.g01.hdf", "r") as ours, \
-             h5py.File(EXAMPLES / example / f"{project}.g01.hdf", "r") as gui:
-            a, g = area_group(ours), area_group(gui)
-            n_int = int(f_attr(ours, "Cell Count"))
-            assert n_int == int(f_attr(gui, "Cell Count"))
-            # interior cells are the seed points, in the same order
-            assert np.allclose(a["Cells Center Coordinate"][:n_int],
-                               g["Cells Center Coordinate"][:n_int])
-            # face count within 1 % (RASMapper splits a few perimeter faces differently)
-            nf, gf = len(a["Faces Cell Indexes"]), len(g["Faces Cell Indexes"])
-            assert abs(nf - gf) <= max(5, 0.01 * gf)
-            # every face normal points from its first cell to its second
-            cc = a["Cells Center Coordinate"][()]
-            fci = a["Faces Cell Indexes"][()]
-            nl = a["Faces NormalUnitVector and Length"][()]
-            assert (np.einsum("ij,ij->i", nl[:, :2], cc[fci[:, 1]] - cc[fci[:, 0]]) > 0).all()
-            assert (nl[:, 2] > 0).all()
-            # HEC-RAS limit of 8 faces per cell
-            assert np.bincount(fci.ravel())[:n_int].max() <= 8
-            # every BC line has perimeter faces
-            ext = ours["Geometry/Boundary Condition Lines/External Faces"][()]
-            n_bc = len(ours["Geometry/Boundary Condition Lines/Attributes"])
-            assert set(np.unique(ext["BC Line ID"])) == set(range(n_bc))
-
 
 def f_attr(hdf: h5py.File, field: str):
     return hdf["Geometry/2D Flow Areas/Attributes"][()][field][0]
@@ -275,24 +240,6 @@ class TestWorkflowB:
     @pytest.mark.parametrize("example", GUI_EXAMPLES)
     def test_matches_gui(self, run_dir, example, engine):
         result, reference = run_case(run_dir, example, "B", engine)
-        cmp = compare_max_wse(result.plan_hdf, reference)
-        assert abs(result.volume_error_pct) < VOLUME_ERR_TOL_PCT
-        assert cmp.max_abs <= 0.1, f"max WSE diff {cmp.max_abs:.3f} ft"
-
-
-@pytest.mark.engine
-@pytest.mark.experimental
-class TestWorkflowC:
-
-    @pytest.mark.parametrize("example", GUI_EXAMPLES)
-    def test_runs(self, run_dir, example, engine):
-        result, _ = run_case(run_dir, example, "C", engine)
-        assert result.volume_error_pct is not None
-
-    @ACCURACY_XFAIL
-    @pytest.mark.parametrize("example", GUI_EXAMPLES)
-    def test_matches_gui(self, run_dir, example, engine):
-        result, reference = run_case(run_dir, example, "C", engine)
         cmp = compare_max_wse(result.plan_hdf, reference)
         assert abs(result.volume_error_pct) < VOLUME_ERR_TOL_PCT
         assert cmp.max_abs <= 0.1, f"max WSE diff {cmp.max_abs:.3f} ft"

@@ -27,7 +27,7 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "engine: needs the HEC-RAS Linux engines")
-    config.addinivalue_line("markers", "experimental: Workflow B/C, not yet validated")
+    config.addinivalue_line("markers", "experimental: Workflow B engine runs, accuracy not yet measured on every example")
 
 
 def _engine_params(config):

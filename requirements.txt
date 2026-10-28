@@ -3,7 +3,5 @@
 numpy
 scipy
 h5py
-matplotlib
 gdal
-shapely>=2.0   # Workflow C only
 pytest         # tests only

@@ -4,8 +4,8 @@
     python3 tools/compare_results.py result.p01.hdf reference.p01.hdf
 
 Cells are matched by index when both runs share a mesh, otherwise each
-reference cell is matched to the nearest result cell centre (for Workflow C,
-whose mesh is rebuilt). All active reference cells are compared, dry ones
+reference cell is matched to the nearest result cell centre (for a run on a
+different mesh). All active reference cells are compared, dry ones
 included, so a run that floods a cell the reference leaves dry still counts.
 """
 from __future__ import annotations

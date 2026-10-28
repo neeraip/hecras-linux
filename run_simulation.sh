@@ -8,15 +8,15 @@
 # Environment:
 #   HECRAS_VERSION   engine version under bin/ (default 6.6; also 7.0.1, 7.0.2)
 #   HECRAS_RUNNER    native | docker (default: native on Linux x86_64)
-#   EVENT_CONDITIONS path to an HDF whose boundary conditions Workflows B/C
+#   EVENT_CONDITIONS path to an HDF whose boundary conditions Workflow B
 #                    should use (see ras_preprocess.py --event-conditions)
 #
 # The input zip holds one HEC-RAS project folder:
 #
 #   MyProject.zip
 #   └── MyProject/
-#       ├── MyProject.g01          geometry text (seed points, perimeter, BC lines)
-#       ├── MyProject.g01.hdf      mesh (Workflows A and B; absent for C)
+#       ├── MyProject.g01          geometry text
+#       ├── MyProject.g01.hdf      mesh (required)
 #       ├── MyProject.p01          plan text
 #       ├── MyProject.p01.hdf      GUI results (Workflow A only)
 #       ├── MyProject.b01 / .x01   solver inputs (written if missing)

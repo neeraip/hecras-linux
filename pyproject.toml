@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hecras-linux"
+dynamic = ["version"]
+description = "HEC-RAS 2D on Linux: RASMapper's property tables, ported, and HEC's Linux engines run without Windows"
+readme = "README.md"
+requires-python = ">=3.9"
+# GDAL (the osgeo package) is needed too. It isn't listed because pip builds it
+# from source; install it from conda-forge or the OS (apt install python3-gdal).
+dependencies = ["numpy", "scipy", "h5py"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+hecras-preprocess = "hecras_linux.preprocess:main"
+hecras-run = "hecras_linux.run:main"
+
+[tool.setuptools]
+packages = ["hecras_linux"]
+
+[tool.setuptools.dynamic]
+version = {attr = "hecras_linux.__version__"}

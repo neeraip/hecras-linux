@@ -1,25 +1,32 @@
-# HEC-RAS 2D on Linux
+# hecras-linux
 
 Run HEC-RAS 2D unsteady simulations on Linux or in Docker, without Windows or
 the HEC-RAS GUI, using HEC's official Linux engines (`RasGeomPreprocess`,
 `RasUnsteady`). Engines for **HEC-RAS 6.6**, **7.0.1** and **7.0.2** are included.
 
-`ras_preprocess.py` prepares a project for the engines. What it has to do
-depends on what the project already contains, which gives three workflows:
+The one step those engines can't do is RASMapper's "Compute Property Tables".
+`hecras_linux.property_tables` is a port of it that reproduces RASMapper's
+tables byte for byte, so a mesh built in RASMapper, or by any tool that writes
+one, can run on Linux.
+
+`ras_preprocess.py` (`hecras-preprocess` when installed) prepares a project
+for the engines. What it has to do depends on what the project already
+contains, which gives two workflows:
 
 | | Input | What the preprocessor does | Status |
 |---|---|---|---|
 | **A** | GUI-computed project (`g01.hdf` with hydraulic tables, and `p01.hdf`) | Copies the geometry and strips the old results | **Validated.** Matches the Windows GUI to within 0.0002 ft on every example, with all three engines |
-| **B** | RASMapper mesh in `g01.hdf`, geometry not yet computed | Computes the property tables as RASMapper does (`property_tables.py`) | **Tables match RASMapper's** value for value on the examples (see [accuracy](#workflow-b-and-c-accuracy)) |
-| **C** | Only the `.g01` text file (seed points, perimeter, BC lines) | Builds the mesh, then does B | **Experimental.** Mesh close to RASMapper's but not identical, so results differ |
+| **B** | A mesh in `g01.hdf`, geometry not yet computed | Computes the property tables as RASMapper does (`property_tables.py`) | **Tables match RASMapper's** byte for byte on the examples (see [accuracy](#workflow-b-accuracy)) |
 
-The workflow is picked automatically from the files present.
+The workflow is picked automatically from the files present. Building the mesh
+itself (from a perimeter, cell size and breaklines) is out of scope: use
+RASMapper, or a mesh generator that writes the geometry HDF.
 
 ## Quick start
 
 ```bash
-git clone https://github.com/neeraip/hecras-v66-linux.git
-cd hecras-v66-linux                 # engines arrive via git LFS (~900 MB)
+git clone https://github.com/neeraip/hecras-linux.git
+cd hecras-linux                     # engines arrive via git LFS (~900 MB)
 pip install -r requirements.txt     # GDAL: see requirements.txt
 make test-a                         # Workflow A on every example
 ```
@@ -39,6 +46,26 @@ cp Examples/BEC/BEC.b01 Examples/BEC/BEC.x01 /tmp/bec/
 python3 hecras_run.py /tmp/bec BEC --version 6.6        # writes /tmp/bec/BEC.p01.hdf
 python3 tools/compare_results.py /tmp/bec/BEC.p01.hdf Examples/BEC/BEC.p01.hdf
 ```
+
+### Using the property tables from another tool
+
+```bash
+pip install "hecras-linux @ git+https://github.com/neeraip/hecras-linux@<tag>"
+```
+
+```python
+from hecras_linux import property_tables, preprocess
+
+terrain = property_tables.TerrainLayer("Terrain/Terrain.hdf")    # or a .tif
+s, z = property_tables.face_profile(terrain, face_polyline, tol)
+rows = property_tables.face_table(s, z, mannings_n, area_tol, conveyance_ratio, laminar_depth)
+table = property_tables.cell_table(terrain, cell_polygon, area, lowest_face, vol_tol, min_area_fraction)
+```
+
+`preprocess` does the whole of Workflow B on a project folder, as the
+command line does. Installing the package doesn't bring the engines; set
+`HECRAS_HOME` to a clone (with `bin/` and `libs/`) to run them through
+`hecras_linux.run`.
 
 ### Running the engines: native or Docker
 
@@ -75,11 +102,11 @@ Linux results against the Windows GUI's own results for the same plan:
 | Muncie | 3,146 | 0.049 % | 0.0001 ft | 0.0002 ft | 0.0002 ft |
 
 These show that the Linux engines reproduce Windows HEC-RAS on geometry that
-RASMapper computed. They do not test the Python code in Workflows B and C.
+RASMapper computed. They do not test the Python code in Workflow B.
 
-## Workflow B and C accuracy
+## Workflow B accuracy
 
-`property_tables.py` is a port of RASMapper's "Compute Property Tables" code
+`hecras_linux/property_tables.py` is a port of RASMapper's "Compute Property Tables" code
 (RasMapperLib, HEC-RAS 7.0.2; HEC-RAS is public-domain USACE software). It
 follows RASMapper step by step, down to where RASMapper rounds to 32-bit
 floats:
@@ -121,27 +148,23 @@ Engine results under Workflow B, 6.6 engine, GUI results as reference:
 AFTER_RUN, VA and Muncie have not been re-run through the engine since the port.
 
 Not ported yet (RASMapper's code for each is in RasMapperLib or its companion
-libraries; none appears in the examples): *Multiple Face Mann n* (refused with
-an error), cell-averaged land cover (*Composite LC*), calibration and override
-regions, several terrain rasters with priorities, terrain modifications, and
-2D structures and connections. One 2D flow area and US customary units only.
+libraries): *Multiple Face Mann n* and cell-averaged land cover (*Composite
+LC*), both refused with an error; calibration and override regions; terrain
+modifications; 2D structures and connections. One 2D flow area and US
+customary units only. Terrains with several rasters are read in RASMapper's
+priority order, with its stitch TIN across their seams; HEC's
+BaldEagleCrkMulti2D example, which has two, is the check still to run.
 
-Workflow C builds its own mesh, which is close to RASMapper's but not
-identical: from the same seed points and perimeter it produces the same
-interior cells and within 0–4 faces of RASMapper's count (the difference is in
-how a few perimeter corners are split). Its tables are computed exactly as in
-B, but on that mesh, so its results differ from the GUI's where the meshes do.
+Beyond the shipped examples, every table of HEC's Weise_2D example (HEC-RAS
+7.0.2 examples, 2D Sediment Transport) also comes out bit-exact.
 
-### Limitations of Workflows B and C
+### Limitations of Workflow B
 
 - **Boundary data.** The engines take hydrographs from the DSS file named in
   the plan. Without it, pass `--event-conditions <HDF>` to copy boundary and
   initial conditions from an existing plan HDF (for example the GUI's
   `.p01.hdf`); their face lists are rebuilt for the new mesh, with whole faces
   only (RASMapper can use a fraction of the last face of a BC line).
-- **Mesh (C).** Uniform seed points from the `.g01` only: no breaklines,
-  refinement regions or structures. Cells with more than 8 faces are reported
-  but not repaired.
 - **One 2D flow area**, US Customary units, unsteady flow only.
 
 ## How the workflows work
@@ -162,23 +185,19 @@ Manning's *n*, percent impervious and infiltration from the land cover and
 soils layers, assigns perimeter faces to BC lines, and assembles
 `p01.tmp.hdf` from the `.p01` text. *Multiple Face Mann n* is not supported.
 
-### Workflow C — no g01.hdf
-
-**When:** there is no `g01.hdf`. The preprocessor reads the seed points,
-perimeter and BC lines from the `.g01` text, clips each seed's Voronoi cell to
-the perimeter, and stitches the cells into a mesh that follows RASMapper's
-conventions (perimeter faces between face points, one ghost cell per perimeter
-face, counter-clockwise cells). It then continues as Workflow B.
-
 ## Repository layout
 
 ```
-ras_preprocess.py          preprocessor (Workflows A / B / C)
-property_tables.py         RASMapper's 2D property-table computation, ported
-hecras_run.py              runs the engines natively or in Docker, checks the result
+hecras_linux/
+  property_tables.py       RASMapper's 2D property-table computation, ported
+  preprocess.py            preprocessor (Workflows A and B)
+  run.py                   runs the engines natively or in Docker, checks the result
+ras_preprocess.py          command line for hecras_linux.preprocess
+hecras_run.py              command line for hecras_linux.run
+pyproject.toml             the hecras-linux package
 run_simulation.sh          zip in → preprocess → simulate → zip out
 tools/
-  make_workflow_input.py   derive a Workflow B or C input from a GUI project
+  make_workflow_input.py   derive a Workflow B input from a GUI project
   compare_results.py       compare max WSE between two plan HDFs
 tests/test_pipeline.py     pytest: all workflows, all examples, all engines
 Examples/                  six HEC-RAS 6.6 projects (see Examples/README.md)
@@ -199,9 +218,9 @@ pytest --runner docker                 # through the Docker images
 ```
 
 Workflow A tests must pass. Workflow B's tables must equal RASMapper's on
-every example (`make test-fast` checks this, about 4 minutes). Workflow B and C
-tests check that the plan runs; their accuracy tests are marked as expected
-failures until they are measured on every example. The run ends with a
+every example (`make test-fast` checks this, about 4 minutes). Workflow B's
+engine tests check that the plan runs; its accuracy tests are marked as
+expected failures until they are measured on every example. The run ends with a
 table of volume error and WSE difference for every run.
 
 ## Adding another engine version
