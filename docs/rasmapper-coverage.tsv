@@ -300,7 +300,6 @@ RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	.ctor	34	not ported		face
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__1	51	not ported		face variable averages (Composite LC)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__2	165	not ported		face variable averages (Composite LC)
 RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__3	27	not ported		face variable averages (Composite LC)
-RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	2D bridge profiles not ported
 RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	faces crossing terrain modifications (ObstructProfiles) refused
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	25	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	24	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -898,6 +897,7 @@ RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAssign
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAverage	204	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueInternal	197	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueResample	111	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	ported	preprocess.compute_face_properties, compute_cell_properties	5 examples, Weise_2D, BaldEagle g09, Chippewa_2D, production model (calibration region, terrain modification)
 RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveCellAverageLC	98	ported	preprocess.table_settings	Chippewa_2D
 RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveMultipleFaceMannN	65	ported	preprocess.table_settings	Chippewa_2D
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetCellAverageLC	18	ported	preprocess.table_settings	Chippewa_2D

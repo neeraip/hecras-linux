@@ -157,8 +157,13 @@ libraries): calibration regions together with *Composite LC*, and regions
 with several parts (both refused with an error); other override regions;
 per-face variable averages under *Composite LC*; terrain modifications other
 than polygons with one elevation, and faces crossing any modification (both
-refused with an error); 2D structures and connections. One 2D flow area and US
-customary units only. Terrains with several rasters are read in RASMapper's
+refused with an error). One 2D flow area and US customary units only.
+
+2D structures and connections (2D bridges included) don't change the area's
+tables: the engine's RasGeomPreprocess computes the structures' own tables.
+It does need the cell and face lists RASMapper writes when it completes a
+geometry (2D bridge cells and faces, calibration region cells and faces), so
+Workflow B expects a geometry saved by RASMapper. Terrains with several rasters are read in RASMapper's
 priority order, with its stitch TIN across their seams, and a terrain
 modification polygon with one elevation (set, add, take higher or take lower)
 is applied to the cells under it.

@@ -29,8 +29,8 @@ PORTED, PARTIAL, MISSING, SUBST, PRIM, NA = (
 # (class regex, method regex, status, hecras_linux counterpart, verified by / note)
 RULES = [
     # -- the driver -------------------------------------------------------------
-    (r"RASD2FlowArea$", r"^CreatePropertyTables$", PARTIAL, "preprocess.compute_face_properties, compute_cell_properties",
-     "2D bridge profiles not ported"),
+    (r"RASD2FlowArea$", r"^CreatePropertyTables$", PORTED, "preprocess.compute_face_properties, compute_cell_properties",
+     EXAMPLES + ", Chippewa_2D, " + PRODUCTION),
     (r"RASD2FlowArea/.*", r"^_Lambda\$__1[34]$", PORTED, "preprocess._composite_cells", "Chippewa_2D (Manning's n)"),
     (r"RASD2FlowArea$", r"^ComputeAssociationCellAverage", PORTED, "preprocess._composite_cells", "Chippewa_2D (Manning's n)"),
     (r"RASD2FlowArea$", r"^ProcessLandCoverPropertyTables$", PORTED, "preprocess.sample_land_cover", EXAMPLES + ", Chippewa_2D"),
@@ -242,16 +242,21 @@ def main(reach, stopped, md_out, tsv_out):
     labels = {"terrainmod": "Terrain modifications (polygons with one elevation are applied to cell "
                             "rasters, in property_tables._apply_modifications; other types, and faces "
                             "crossing any modification, are refused)",
+              "hash": "Change detection (a hash of the 2D bridges the area holds, written as the "
+                      "Connection Profile Hash attribute; no table depends on it)",
               "feature": "Other features (not ported)", "model": "Project and layer loading (read from the HDF instead)",
               "io": "File I/O (h5py and GDAL instead)", "ui": "User interface", "progress": "Progress reporting"}
     # A call graph from before terrain modifications had their own category files them as features.
     obstruct = [n for n in st.get("feature", []) if "Obstruct" in n]
     st["feature"] = [n for n in st.get("feature", []) if "Obstruct" not in n]
     st["terrainmod"] = st.get("terrainmod", []) + obstruct
-    for cat in ["terrainmod", "feature", "model", "io", "ui", "progress"]:
+    hashes = [n for n in st.get("feature", []) if n.endswith("::Intersecting2DBridgeProfileHash")]
+    st["feature"] = [n for n in st.get("feature", []) if n not in hashes]
+    st["hash"] = st.get("hash", []) + hashes
+    for cat in ["terrainmod", "hash", "feature", "model", "io", "ui", "progress"]:
         names = sorted(set(st.get(cat, [])))
         L.append(f"- **{labels[cat]}:** {len(names)} entry points" +
-                 (": " + ", ".join(f"`{n}`" for n in names) if cat in ("feature", "terrainmod") else ""))
+                 (": " + ", ".join(f"`{n}`" for n in names) if cat in ("feature", "terrainmod", "hash") else ""))
     L.append("")
     L.append(f"Every method, with its status and counterpart: [`rasmapper-coverage.tsv`]({tsv_out.split('/')[-1]}).\n")
     open(md_out, "w").write("\n".join(L))
