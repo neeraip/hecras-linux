@@ -8,28 +8,26 @@ How much of RASMapper's own code for *Compute Property Tables* (HEC-RAS 7.0.2, `
 
 | Status | Methods | IL bytes | Meaning |
 |---|---|---|---|
-| ported | 663 | 63,515 | reproduced; tables match RASMapper's bit for bit on the models named |
+| ported | 684 | 71,666 | reproduced; tables match RASMapper's bit for bit on the models named |
 | partly ported | 2 | 10,694 | the paths the models use are reproduced; named branches are not |
-| not ported | 208 | 26,350 | not reproduced; the feature it serves is refused or absent |
-| primitive, used by ported code | 251 | 13,800 | geometry and math building blocks the ported code uses; reproduced inline |
-| primitive, only for unported features | 379 | 18,625 | building blocks reached only from unported features |
-| not applicable | 270 | 19,678 | can't change table values (caches, names, debug text, setup) |
+| not ported | 184 | 18,055 | not reproduced; the feature it serves is refused or absent |
+| primitive, used by ported code | 279 | 15,614 | geometry and math building blocks the ported code uses; reproduced inline |
+| primitive, only for unported features | 351 | 16,811 | building blocks reached only from unported features |
+| not applicable | 273 | 19,822 | can't change table values (caches, names, debug text, setup) |
 
-Of the computational code (ported, partly ported, not ported and substituted: 100,559 IL bytes), **63 %** is fully ported, 11 % partly, 0 % substituted and 26 % not ported.
+Of the computational code (ported, partly ported, not ported and substituted: 100,415 IL bytes), **71 %** is fully ported, 11 % partly, 0 % substituted and 18 % not ported.
 
 ## What is missing, by feature
 
 | Feature | Methods | IL bytes |
 |---|---|---|
 | override regions (polygon containment TINs) | 129 | 10,430 |
-| Multiple Face Mann n branch refused | 1 | 9,889 |
-| Multiple Face Mann n: n profiles along faces | 39 | 9,858 |
-| Multiple Face Mann n constructor (subsections) | 1 | 2,517 |
+| 2D bridge profiles not ported | 1 | 9,889 |
+| calibration regions (Manning's n polygons) | 22 | 4,157 |
 | override regions (rasterized onto a cell's raster) | 18 | 1,789 |
+| face variable averages (Composite LC) | 7 | 1,041 |
 | terrain modifications (ObstructProfiles) not ported | 1 | 805 |
 | override regions | 8 | 638 |
-| calibration regions (Manning's n polygons) | 10 | 573 |
-| Multiple Face Mann n subsections | 3 | 545 |
 
 ## Cut off from the call graph
 

@@ -99,7 +99,7 @@ def _cell_polygon(mesh: MeshData, ci: int, face_of_pair: dict) -> np.ndarray:
 def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
     """The 2D area's property-table settings from the Attributes table of its
     g01.hdf, which RASMapper writes with the mesh; defaults otherwise."""
-    settings = dict(property_tables.DEFAULTS, composite_lc=False)
+    settings = dict(property_tables.DEFAULTS, composite_lc=False, multi_face_n=False)
     if g01_hdf_path is None:
         return settings
     fields = {"cell_volume_tolerance": "Cell Vol Tol",
@@ -110,6 +110,11 @@ def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
               "laminar_depth": "Laminar Depth"}
     with h5py.File(str(g01_hdf_path), "r") as hf:
         rows = hf["Geometry/2D Flow Areas/Attributes"][()]
+        regions = hf.get("Geometry/Land Cover (Manning's n)/Polygon Info")
+        if regions is not None and len(regions):
+            raise SystemExit("ras_preprocess.py: the geometry has Manning's n calibration "
+                             "regions; property tables for them aren't supported yet. "
+                             "Use Workflow A.")
     for row in rows:
         if row["Name"].decode("utf-8", errors="replace").strip("\x00").strip() != area_name:
             continue
@@ -117,40 +122,48 @@ def table_settings(g01_hdf_path: Path = None, area_name: str = "") -> dict:
             if field in rows.dtype.names and np.isfinite(row[field]):
                 settings[key] = float(row[field])
         settings["composite_lc"] = bool("Composite LC" in rows.dtype.names and row["Composite LC"])
-        for flag in ("Multiple Face Mann n",):
-            if flag in rows.dtype.names and row[flag]:
-                raise SystemExit(f"ras_preprocess.py: '{flag}' is on for '{area_name}'; "
-                                 "property tables for it aren't supported. "
-                                 "Turn it off in RASMapper, or use Workflow A.")
+        settings["multi_face_n"] = bool("Multiple Face Mann n" in rows.dtype.names
+                                        and row["Multiple Face Mann n"])
     return settings
 
 
 def compute_face_properties(mesh: MeshData, terrain: "property_tables.Terrain",
-                            mannings_per_face: np.ndarray, settings: dict) -> dict:
+                            mannings_per_face: np.ndarray, settings: dict,
+                            n_profiles: list = None, mesh_n: float = None) -> dict:
     """Per-face minimum elevation, low-elevation centroid and (elevation, area,
-    wetted perimeter, Manning's n) table, as RASMapper computes them."""
+    wetted perimeter, Manning's n) table, as RASMapper computes them. With
+    n_profiles (Multiple Face Mann n), each face's n varies along it."""
     logger.info("Computing face properties from terrain...")
     n_faces = mesh.n_faces
     min_elevs = np.full(n_faces, property_tables.NAN, dtype=np.float32)
     low_elev_centroid = np.zeros(n_faces, dtype=np.float32)
     face_ae_info = np.zeros((n_faces, 2), dtype=np.int32)
     face_ae_values = []
+    profile_info = np.zeros((n_faces, 2), dtype=np.int32)
+    profile_values = []
+    tables = (settings["face_area_elevation_tolerance"], settings["face_conveyance_ratio"],
+              settings["laminar_depth"])
 
     for fi in range(n_faces):
         stations, elevs = property_tables.face_profile(
             terrain, _face_polyline(mesh, fi), settings["face_profile_tolerance"])
+        profile_info[fi] = [len(profile_values), len(stations)]
+        profile_values.extend(zip(stations, elevs))
         if len(stations) == 0:
             face_ae_info[fi] = [len(face_ae_values), 0]
             continue
         n = np.float32(mannings_per_face[fi])
-        rows = property_tables.face_table(stations, elevs, n,
-                                          settings["face_area_elevation_tolerance"],
-                                          settings["face_conveyance_ratio"],
-                                          settings["laminar_depth"])
+        if n_profiles is not None and len(n_profiles[fi][0]) > 1:
+            rows = property_tables.face_table_n_profile(stations, elevs, *n_profiles[fi],
+                                                        mesh_n, *tables)
+        else:
+            rows = property_tables.face_table(stations, elevs, n, *tables)
         min_elevs[fi] = rows[0].elev
         low_elev_centroid[fi] = property_tables.centroid_at_area(rows)
         face_ae_info[fi] = [len(face_ae_values), len(rows)]
-        face_ae_values.extend([r.elev, r.area, r.wp, n] for r in rows)
+        multi = n_profiles is not None
+        face_ae_values.extend([r.elev, r.area, r.wp, r.n if multi and r.n != 0 else n]
+                              for r in rows)
 
     missing = int((face_ae_info[:, 1] == 0).sum())
     if missing:
@@ -163,6 +176,8 @@ def compute_face_properties(mesh: MeshData, terrain: "property_tables.Terrain",
         "face_ae_info": face_ae_info,
         "face_ae_values": np.array(face_ae_values, dtype=np.float32).reshape(-1, 4)
                           if face_ae_values else np.empty((0, 4), dtype=np.float32),
+        "profile_info": profile_info,
+        "profile_values": np.array(profile_values, dtype=np.float32).reshape(-1, 2),
     }
 
 
@@ -239,7 +254,8 @@ def _default_land_cover(mesh: MeshData, default_mannings: float) -> dict:
 
 
 def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
-                      default_mannings: float = 0.06, composite: bool = False) -> dict:
+                      default_mannings: float = 0.06, composite: bool = False,
+                      calibrated: dict = None) -> dict:
     """Sample Manning's n and land cover properties per cell.
 
     LandCover.hdf structure (File Type = 'HEC Land Cover'):
@@ -281,7 +297,7 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         name_to_imperv = {}
         for i in range(len(var_names)):
             n_str = var_names[i].decode('utf-8', errors='replace').strip() if isinstance(var_names[i], bytes) else str(var_names[i]).strip()
-            name_to_mann[n_str] = float(mann_vals[i])
+            name_to_mann[n_str] = float((calibrated or {}).get(n_str.lower(), mann_vals[i]))
             name_to_imperv[n_str] = float(imperv_vals[i])
 
         # Build ID -> Manning's n + calibration table from /Raster Map
@@ -371,6 +387,46 @@ def sample_land_cover(mesh: MeshData, lc_hdf_path: str, lc_tif_path: str,
         "name_to_imperv": name_to_imperv if 'name_to_imperv' in dir() else {},
         "id_to_mann": id_to_mann,
     }
+
+
+def face_n_profiles(mesh: MeshData, lc_hdf: Path, lc_tif: Path, lc_data: dict,
+                    default_mannings: float) -> list:
+    """Each face's Manning's n profile from the land cover raster
+    (RASGeometry.ExtractManningsNPolylines): (stations, n) where n changes."""
+    layer = _ClassRaster(lc_hdf)
+    if lc_tif != layer.tif:
+        layer.tif = lc_tif
+        ds = gdal.Open(str(lc_tif))
+        layer.raster, layer.gt = ds.GetRasterBand(1).ReadAsArray(), ds.GetGeoTransform()
+        ds = None
+    n_of_class = np.array([lc_data["id_to_mann"].get(int(i), property_tables.N_NODATA)
+                           for i in layer.ids], dtype=np.float32)
+
+    def classes(min_x, max_y, cs):
+        centres = (np.arange(256) + 0.5) * cs
+        x, y = np.meshgrid(min_x + centres, max_y - centres)
+        return layer.classes_at(np.column_stack([x.ravel(), y.ravel()]), cs).reshape(256, 256)
+
+    tiles = property_tables.ClassTiles.from_tif(lc_tif, classes)
+    polylines = [_face_polyline(mesh, fi) for fi in range(mesh.n_faces)]
+    return property_tables.face_n_profiles(polylines, tiles, n_of_class, default_mannings)
+
+
+def _calibrated_n(g01_hdf: Path) -> dict:
+    """The geometry's base Manning's n overrides by land cover name (lower
+    case): the Calibration Table's values that are set (positive)."""
+    with h5py.File(str(g01_hdf), "r") as hf:
+        table = hf.get("Geometry/Land Cover (Manning's n)/Calibration Table")
+        if table is None or len(table.dtype.names or ()) < 2:
+            return {}
+        rows = table[()]
+    name, base = rows.dtype.names[:2]
+    out = {}
+    for r in rows:
+        v = float(r[base])
+        if v > 0 and v != float(np.finfo(np.float32).max) and not np.isnan(v):
+            out[r[name].decode("utf-8", "replace").strip().lower()] = v
+    return out
 
 
 class _ClassRaster:
@@ -864,7 +920,7 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
                                      mesh: MeshData, cell_props: dict,
                                      face_props: dict, lc_data: dict,
                                      inf_data: dict, bc_ext_faces: np.ndarray,
-                                     projection_wkt: str = ""):
+                                     projection_wkt: str = "", settings: dict = None):
     """Copy the RASMapper-created g01.hdf to output_path, then add the
     hydraulic tables (volume-elevation curves, face area-elevation profiles,
     Manning's n per cell, infiltration, percent-impervious, BC external faces)
@@ -908,13 +964,13 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
         # --- Perimeter 1 group attrs (added during Compute Geometry) ---
         ag.attrs['Cell Volume Tolerance'] = np.float32(0.01)
         ag.attrs['Cell Minimum Area Fraction'] = np.float32(0.01)
-        ag.attrs['Composite LC'] = np.uint8(0)
+        ag.attrs['Composite LC'] = np.uint8((settings or {}).get('composite_lc', False))
         ag.attrs['Connection Profile Hash'] = np.bytes_('')
         ag.attrs['Face Area Conveyance Ratio'] = np.float32(0.02)
         ag.attrs['Face Area Elevation Tolerance'] = np.float32(0.01)
         ag.attrs['Face Profile Tolerance'] = np.float32(0.01)
         ag.attrs["Manning's n"] = np.float32(default_mannings)
-        ag.attrs['Multiple Face Mann n'] = np.uint8(0)
+        ag.attrs['Multiple Face Mann n'] = np.uint8((settings or {}).get('multi_face_n', False))
         ag.attrs['Laminar Depth'] = np.float32(0.2)
         ag.attrs['Min Face Length Ratio'] = np.float32(np.nan)
         ag.attrs['Property Tables Last Computed'] = np.bytes_(now_time)
@@ -955,6 +1011,8 @@ def update_geometry_hdf_with_tables(source_hdf: Path, output_path: Path,
                 face_props['face_ae_info'], gz)
         _add_ds(ag, 'Faces Area Elevation Values',
                 face_props['face_ae_values'], gz)
+        _add_ds(ag, 'Faces Profile Info', face_props['profile_info'], gz)
+        _add_ds(ag, 'Faces Profile Values', face_props['profile_values'], gz)
 
         # --- Infiltration subgroup ---
         # Only write when: the source HDF already has an Infiltration group
@@ -1478,13 +1536,20 @@ def main():
     lc_data = _default_land_cover(mesh, default_mannings)
     if lc_hdf.exists() and lc_tif and lc_tif.exists():
         lc_data = sample_land_cover(mesh, str(lc_hdf), str(lc_tif), default_mannings,
-                                    composite=settings["composite_lc"])
+                                    composite=settings["composite_lc"],
+                                    calibrated=_calibrated_n(src_g01_hdf))
+    n_profiles = None
+    if settings["multi_face_n"]:
+        n_profiles = [(np.zeros(1, np.float32), np.zeros(1, np.float32))] * mesh.n_faces
+        if lc_hdf.exists() and lc_tif and lc_tif.exists():
+            n_profiles = face_n_profiles(mesh, lc_hdf, lc_tif, lc_data, default_mannings)
 
     # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
     terrain_path = _find_terrain_layer(project_dir, src_g01_hdf) or terrain_tif
     logger.info("Terrain: %s", terrain_path)
     terrain = property_tables.TerrainLayer(str(terrain_path))
-    face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings)
+    face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings,
+                                         n_profiles, default_mannings)
     cell_props = compute_cell_properties(mesh, terrain, face_props["min_elevations"], settings)
 
     # Step A5: Infiltration
@@ -1497,7 +1562,7 @@ def main():
     # Step A7: Copy source HDF to output_dir and add tables
     update_geometry_hdf_with_tables(src_g01_hdf, out_g01_hdf, mesh,
                                      cell_props, face_props, lc_data,
-                                     inf_data, bc_ext_faces, projection_wkt)
+                                     inf_data, bc_ext_faces, projection_wkt, settings)
 
     # Step 7: Assemble p01.tmp.hdf
     assemble_p01_tmp_hdf(out_g01_hdf, p01_path, p01_tmp_path, projection_wkt,

@@ -15,6 +15,7 @@ is the mean of the four corners.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -863,6 +864,138 @@ def face_table(s, z, mann_n, elev_tol, k_tol, laminar) -> list:
         hp.n = n
     if k_tol <= 0:
         return geom
+    return _refine(geom, width, laminar, elev_tol, k_tol)
+
+
+def face_table_n_profile(s, z, n_stations, n_values, mesh_n, elev_tol, k_tol, laminar) -> list:
+    """ProfileHydraulicPropertiesTable with a Manning's n profile along the
+    face (Multiple Face Mann n): the face is split where n changes and each
+    row's n is the wetted-perimeter composite of the parts. A row with n 0
+    (the face didn't split) takes the face's own n when written."""
+    zmin, zmax = z.min(), z.max()
+    width = F32(s[-1] - s[0])
+    subs, n_lo, n_hi = _n_subsections(s, z, n_stations, n_values, mesh_n, width)
+    if F32(zmax - zmin) <= 0:
+        n = F32(0)
+        if subs:
+            total_len, total = F32(0), 0.0
+            for ps, _, sn in subs:
+                length = F32(ps[-1] - ps[0])
+                total += float(length) * float(sn) ** 1.5
+                total_len = F32(total_len + length)
+            n = F32((total / float(total_len)) ** (2.0 / 3.0))
+        rows = [_HP(zmin, 0, width, width, F32(float(width) * 0.5), n)]
+        if F32(laminar) > 0:
+            rows.append(_HP(F32(zmin + F32(laminar)), F32(width * F32(laminar)), width, width,
+                            F32(width * F32(0.5)), n))
+        return rows
+    elevs = _sample_elevations(z, laminar, elev_tol)
+    if subs:
+        parts = [(_profile_properties(ps, pz, elevs), sn) for ps, pz, sn in subs]
+        geom = [None] * len(elevs)
+        cx, n = F32(0), F32(0)
+        for r in range(len(elevs) - 1, -1, -1):
+            hp = _HP(elevs[r])
+            moment, k = 0.0, 0.0
+            for g, sn in parts:
+                e = g[r]
+                hp.area = F32(hp.area + e.area)
+                hp.tw = F32(hp.tw + e.tw)
+                hp.wp = F32(hp.wp + e.wp)
+                moment += float(F32(e.area * e.cx))
+                k += float(e.wp) * float(sn) ** 1.5
+            if float(hp.area) > 0:
+                cx = F32(moment / float(hp.area))
+                n = F32((k / float(hp.wp)) ** 0.6666666865348816)
+                n = n_lo if n < n_lo else (n_hi if n > n_hi else n)
+            hp.cx, hp.n = cx, n
+            geom[r] = hp
+    else:
+        geom = _profile_properties(s, z, elevs)
+    if k_tol <= 0 or np.isnan(k_tol):
+        return geom
+    return _refine(geom, width, laminar, elev_tol, k_tol, top=zmax)
+
+
+def _n_subsections(s, z, n_stations, n_values, mesh_n, width):
+    """The face profile's parts, one per Manning's n reach, as (stations,
+    elevations, n); None unless there are at least two. Also the lowest and
+    highest n, which bound the composite."""
+    xs = [F32(x) for x in n_stations]
+    ns = [F32(mesh_n) if (np.isnan(v) or v <= 0) else F32(v) for v in n_values]
+    if len(xs) <= 1:
+        return None, None, None
+    last = F32(s[-1])
+    short = F32(width / F32(1000))
+    for j in range(len(xs) - 1, -1, -1):
+        nxt = last if j >= len(xs) - 1 else xs[j + 1]
+        if F32(nxt - xs[j]) < short:
+            del xs[j], ns[j]
+    if len(xs) <= 1:
+        return None, None, None
+    xs[0] = F32(0)
+    subs = []
+    for k in range(len(xs)):
+        nxt = last if k >= len(xs) - 1 else xs[k + 1]
+        ps, pz = _sub_section(s, z, xs[k], nxt)
+        if len(ps) <= 1 or not (ps[-1] > ps[0]):
+            continue
+        subs.append((np.array(ps, F32), np.array(pz, F32), ns[k]))
+    if len(subs) <= 1:
+        return None, None, None
+    return subs, min(ns), max(ns)
+
+
+def _sub_section(s, z, left, right):
+    """Profile.GetSubSection: the profile between two stations, with points
+    interpolated where it is cut."""
+    ps, pz = [], []
+
+    def add(x, y):
+        if not ps or not (ps[-1] == x and pz[-1] == y):
+            ps.append(x)
+            pz.append(y)
+
+    for i in range(len(s) - 1):
+        xl, yl, xr, yr = s[i], z[i], s[i + 1], z[i + 1]
+        if xl > right or xr < left:
+            continue
+        if xl == xr:
+            if xl == left:
+                ps.clear()
+                pz.clear()
+                if yl > yr:
+                    add(xl, yl)
+                    add(xr, yr)
+            elif xl == right:
+                if yl < yr:
+                    add(xl, yl)
+                    add(xr, yr)
+                break
+            else:
+                add(xl, yl)
+                add(xr, yr)
+        elif xl >= left and xr <= right:
+            add(xl, yl)
+            add(xr, yr)
+        else:
+            m = F32(F32(yr - yl) / F32(xr - xl))
+            if xl < left:
+                add(F32(left), F32(yl + F32(m * F32(left - xl))))
+            else:
+                add(xl, yl)
+            if xr > right:
+                add(F32(right), F32(yl + F32(m * F32(right - xl))))
+            else:
+                add(xr, yr)
+    return ps, pz
+
+
+def _refine(geom, width, laminar, elev_tol, k_tol, top=None) -> list:
+    """The rows kept from the sampled geometry: interpolation tolerance on
+    conveyance, conveyance that must rise, then thinning; extended upward
+    when the last row falls short of the full width (or, with an n profile,
+    of the profile's top)."""
     lst = [geom[0]]
     start = 1
     if F32(laminar) > 0:
@@ -880,7 +1013,7 @@ def face_table(s, z, mann_n, elev_tol, k_tol, laminar) -> list:
             out.append(_bisect_conveyance(lst[i - 1], lst[i], prev, elev_tol))
         out.append(item)
     out = _filter_on_conveyance(k_tol, out)
-    if out[-1].tw < lst[-1].tw:
+    if out[-1].tw < lst[-1].tw or (top is not None and out[-1].elev < top):
         hi = lst[-1].copy()
         while True:
             lo = hi.copy()
@@ -910,6 +1043,177 @@ def centroid_at_area(rows, fraction=0.05):
     i = lo
     f = F32(F32(target - areas[i - 1]) / F32(areas[i] - areas[i - 1]))
     return F32(rows[i].cx * f + rows[i - 1].cx * F32(F32(1) - f))
+
+
+# ----------------------------------------------------------------------------
+# Manning's n along faces (Multiple Face Mann n)
+# ----------------------------------------------------------------------------
+
+N_NODATA = F32(-9999)
+
+
+def _seg_length(ax, ay, bx, by):
+    """PointM.DistanceTo."""
+    return math.pow(math.pow(ax - bx, 2.0) + math.pow(ay - by, 2.0), 0.5)
+
+
+@dataclass
+class ClassTiles:
+    """A classification raster's tile grid as RASMapper reads it
+    (LandCoverLayer.TileRaster): tiles from the GeoTIFF's origin, one more
+    row and column than the file has, each read as 256 x 256 cells."""
+    min_x: float
+    max_y: float
+    tile: float
+    rows: int
+    cols: int
+    classes: object     # classes(min_x, max_y, cell_size) -> 256 x 256 class indexes
+
+    @classmethod
+    def from_tif(cls, tif: Path, classes) -> "ClassTiles":
+        ds = gdal.Open(str(tif))
+        gt = ds.GetGeoTransform()
+        bw, bh = ds.GetRasterBand(1).GetBlockSize()
+        w, h = ds.RasterXSize, ds.RasterYSize
+        ds = None
+        pixel = max(w * gt[1] / w, h * -gt[5] / h)
+        span = bw * pixel
+        ntw, ntt = -(-w // bw), -(-h // bh)
+        tile = max(((gt[0] + ntw * span) - gt[0]) / ntw, (gt[3] - (gt[3] - ntt * span)) / ntt)
+        return cls(gt[0], gt[3], tile, ntt + 1, ntw + 1, classes)
+
+
+def face_n_profiles(polylines: list, tiles: ClassTiles, n_of_class, replace_nodata: float,
+                    decimal_places: int = 1) -> list:
+    """RASGeometry.ExtractManningsNPolylines, from the land cover raster (no
+    regions): for each face polyline, (stations, n) where n changes, float32.
+    n_of_class[c] is class c's n, -9999 where it has none; -9999 in the result
+    becomes replace_nodata."""
+    lengths = [[_seg_length(*p[j], *p[j + 1]) for j in range(len(p) - 1)] for p in polylines]
+    raster = _n_from_raster(polylines, lengths, tiles, n_of_class)
+    out = []
+    for i, p in enumerate(polylines):
+        total = 0.0
+        for length in lengths[i]:
+            total += length
+        values = raster.get(i) or [(0.0, total, -1, -1, N_NODATA)]
+        values = _fill_n_gaps(values, total, 1.0 / math.pow(10.0, decimal_places))
+        out.append(_n_breaks(values, F32(replace_nodata)))
+    return out
+
+
+def _n_from_raster(polylines, lengths, tiles, n_of_class) -> dict:
+    """ExtractLCVariablePolylinesRegionsRasterExtraction: per face, runs of
+    one class as (start, end, class, -1, n)."""
+    t = tiles
+    max_x = t.min_x + t.tile * t.cols
+    min_y = t.max_y - t.tile * t.rows
+    work = {}     # tile -> [(face, segment, start station)], in the order first reached
+    for i, p in enumerate(polylines):
+        start = 0.0
+        for j in range(len(p) - 1):
+            (ax, ay), (bx, by) = p[j], p[j + 1]
+            clipped = _clip(ax, ay, bx, by, t.min_x, max_x, min_y, t.max_y)
+            if clipped is not None:
+                for rc in _walk_cells(*clipped, t.min_x, max_x, min_y, t.max_y,
+                                      t.tile, t.rows, t.cols):
+                    work.setdefault(rc, []).append((i, j, start))
+            start += lengths[i][j]
+    hits = {}
+    for (tr, tc), segs in work.items():
+        x0, x1 = t.min_x + t.tile * tc, t.min_x + t.tile * (tc + 1)
+        y1, y0 = t.max_y - t.tile * tr, t.max_y - t.tile * (tr + 1)
+        cs = max((x1 - x0) / 256, (y1 - y0) / 256)
+        classes = t.classes(x0, y1, cs)
+        for i, j, start in segs:
+            (ax, ay), (bx, by) = polylines[i][j], polylines[i][j + 1]
+            length = lengths[i][j]
+            for r, c in _walk_cells(ax, ay, bx, by, x0, x1, y0, y1, cs, 256, 256):
+                if not (0 <= r < 256 and 0 <= c < 256):
+                    continue
+                lc = int(classes[r, c])
+                px0, px1 = x0 + cs * c, x0 + cs * (c + 1)
+                py1, py0 = y1 - cs * r, y1 - cs * (r + 1)
+                corners = ((px0, py0), (px0, py1), (px1, py1), (px1, py0))
+                found = []
+                for k in range(4):
+                    hit, _, _, t1, _ = tin._seg_intersect((ax, ay), (bx, by), corners[k],
+                                                          corners[(k + 1) % 4])
+                    if hit:
+                        found.append(start + length * t1)
+                inside = lambda x, y: px0 <= x <= px1 and py0 <= y <= py1
+                if found:
+                    a = found[0]
+                    b = found[1] if len(found) > 1 else (start if inside(ax, ay) else start + length)
+                    entry = (min(a, b), max(a, b))
+                elif inside(ax, ay) and inside(bx, by):
+                    entry = (start, start + length)
+                else:
+                    continue
+                hits.setdefault(i, []).append((*entry, lc, -1, F32(n_of_class[lc])))
+    runs = {}
+    for i in range(len(polylines)):
+        if i not in hits:
+            continue
+        lst = sorted(hits[i], key=lambda v: v[0])
+        merged = [[0.0, lst[0][1], lst[0][2], -1, lst[0][4]]]
+        for k, item in enumerate(lst):
+            value = list(merged[-1])
+            idx = len(merged) - 1
+            if item[2] != value[2]:
+                merged.append(list(item))
+                value[1] = item[0]
+                merged[idx] = value
+                value = list(item)
+                idx = len(merged) - 1
+            if k == len(lst) - 1:
+                value[1] = item[1]
+                merged[idx] = value
+        runs[i] = [tuple(v) for v in merged]
+    return runs
+
+
+def _fill_n_gaps(values, total, tol) -> list:
+    """ExtractLCVariablePolylineFillNoData: no-data runs where the face has none."""
+    out = list(values)
+    end = 0.0
+    lst = sorted(values, key=lambda v: v[0])
+    for v in lst:
+        if v[0] > end and v[0] - end > tol:
+            out.append((end, v[0], -1, -1, N_NODATA))
+        end = v[1]
+    if not lst or end < total:
+        out.append((end, total, -1, -1, N_NODATA))
+    return out
+
+
+def _n_breaks(values, replace_nodata) -> tuple:
+    """ExtractLCVariablePolyineSort: the stations where n changes."""
+    lst = sorted(values, key=lambda v: v[0])
+    first = lst[0]
+    xs, ns = [first[0]], [first[4]]
+    prev_n, end, end_n = first[4], first[1], first[4]
+    override, override_end = first[3] != -1, first[1] if first[3] != -1 else 0.0
+    for v in lst:
+        if v == first:
+            continue
+        if override and v[0] > override_end:
+            xs.append(override_end)
+            ns.append(end_n)
+        if v[3] != -1:
+            xs.append(v[0])
+            ns.append(v[4])
+            override_end, override = v[1], True
+        elif v[4] != prev_n:
+            xs.append(v[0])
+            ns.append(v[4])
+            override = False
+        prev_n = v[4]
+        if v[1] > end:
+            end, end_n = v[1], v[4]
+    s = np.array(xs, dtype=F32)
+    n = np.array([replace_nodata if v == N_NODATA else v for v in ns], dtype=F32)
+    return s, n
 
 
 # ----------------------------------------------------------------------------

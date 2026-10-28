@@ -130,7 +130,10 @@ floats:
 - **Land cover and infiltration:** Manning's *n* and classes at each cell
   centre and face midpoint, off-raster points taking the NoData class.
   Infiltration classes combine the land cover and soils classes, and select a
-  row of the infiltration layer's variables.
+  row of the infiltration layer's variables. With *Composite LC*, a cell's
+  *n* is the average over its raster instead. With *Multiple Face Mann n*,
+  each face's *n* follows the land cover along it: the face is split where
+  *n* changes, and each table row's *n* combines the wetted parts.
 
 Workflow B is tested by stripping the GUI's tables from each example
 (`tools/make_workflow_input.py`) and rebuilding them.
@@ -148,15 +151,16 @@ Engine results under Workflow B, 6.6 engine, GUI results as reference:
 AFTER_RUN, VA and Muncie have not been re-run through the engine since the port.
 
 Not ported yet (RASMapper's code for each is in RasMapperLib or its companion
-libraries): *Multiple Face Mann n* and cell-averaged land cover (*Composite
-LC*), both refused with an error; calibration and override regions; terrain
-modifications; 2D structures and connections. One 2D flow area and US
+libraries): Manning's *n* calibration regions (refused with an error) and
+other override regions; per-face variable averages under *Composite LC*;
+terrain modifications; 2D structures and connections. One 2D flow area and US
 customary units only. Terrains with several rasters are read in RASMapper's
 priority order, with its stitch TIN across their seams.
 
 Beyond the shipped examples, every table of HEC's Weise_2D example and of
 BaldEagleCrkMulti2D g09 (two rasters; tables recomputed in RASMapper 7.0.2)
-comes out bit-exact, and Chippewa_2D's cells do.
+comes out bit-exact, and so does every table of Chippewa_2D (*Composite LC*
+and *Multiple Face Mann n*, tables recomputed in RASMapper 7.0.2).
 
 [`docs/rasmapper-coverage.md`](docs/rasmapper-coverage.md) measures coverage
 against RASMapper itself: every method its table computation can reach, read
@@ -187,7 +191,8 @@ the mesh, computes the property tables with RASMapper's algorithm
 (`property_tables.py`, settings from the 2D area's attributes), assigns
 Manning's *n*, percent impervious and infiltration from the land cover and
 soils layers, assigns perimeter faces to BC lines, and assembles
-`p01.tmp.hdf` from the `.p01` text. *Multiple Face Mann n* is not supported.
+`p01.tmp.hdf` from the `.p01` text. Geometries with Manning's *n* calibration
+regions are refused.
 
 ## Repository layout
 

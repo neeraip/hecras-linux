@@ -156,6 +156,9 @@ RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-6	.ctor	22	not applicable	
 RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-7	.ctor	46	not applicable		names and object setup
 RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__95-0	.ctor	22	not applicable		names and object setup
 RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__95-0	_Lambda$__0	16	not applicable		delegate glue (progress, writers)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableSubsampleTile	126	not applicable		only with sub-sampling, which no table caller turns on
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	.cctor	11	not applicable		object setup
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	.ctor	7	not applicable		object setup
 RasMapperLib	RasMapperLib.RASMapper	.cctor	97	not applicable		infrastructure (caches, threading, paths, HDF writing)
 RasMapperLib	RasMapperLib.RASMapper	get_MapLayersGroup	7	not applicable		infrastructure (caches, threading, paths, HDF writing)
 RasMapperLib	RasMapperLib.RasLandCoverRegions	MD5HashAppend	232	not applicable		change detection
@@ -424,49 +427,25 @@ Geospatial.Core	Geospatial.Vectors.TriangulationParameters	set_Tolerance	8	not p
 RasMapperLib	RasMapperLib.LandCoverLayer	GetPolysAsMappedTuples	220	not ported		override regions
 RasMapperLib	RasMapperLib.LandCoverLayer	OverridePolygonFiltered	148	not ported		override regions
 RasMapperLib	RasMapperLib.LandCoverLayer	get_OverridePolygonLayer	7	not ported		override regions
-RasMapperLib	RasMapperLib.Profile	Average	184	not ported		Multiple Face Mann n subsections
-RasMapperLib	RasMapperLib.Profile	GetSubSection	93	not ported		Multiple Face Mann n subsections
-RasMapperLib	RasMapperLib.Profile	GetSubsectionInternal	268	not ported		Multiple Face Mann n subsections
-RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	.ctor	2517	not ported		Multiple Face Mann n constructor (subsections)
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolyineSort	713	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineFillNoData	648	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineRegionsCombine	1427	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylines	549	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsRasterExtraction	817	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsVectorExtraction	1304	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableSampleTile	519	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableSubsampleTile	126	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableTilesToProcessFromTileRaster	458	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry	ExtractManningsNPolylines	479	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	.cctor	11	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	.ctor	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__665-0	31	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__666-0	31	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__667-0	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-2	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-3	27	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-4	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-0	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-1	45	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-2	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__670-0	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__671-0	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__672-0	9	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	.ctor	34	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__1	51	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__2	165	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__3	27	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	.ctor	181	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__0	143	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__1	422	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__R1	7	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-0	.ctor	145	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-1	.ctor	46	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-1	_Lambda$__1	1154	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-0	.ctor	34	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-1	.ctor	34	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	.ctor	22	not ported		Multiple Face Mann n: n profiles along faces
-RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	_Lambda$__0	143	not ported		Multiple Face Mann n: n profiles along faces
+RasMapperLib	RasMapperLib.Profile	Average	184	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineRegionsCombine	1427	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylines	549	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsVectorExtraction	1304	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__665-0	31	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-2	7	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-3	27	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__668-4	7	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-0	7	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-1	45	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__669-2	7	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	.ctor	34	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__1	51	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__2	165	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__665-0	_Lambda$__3	27	not ported		face variable averages (Composite LC)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	.ctor	181	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__0	143	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__1	422	not ported		calibration regions (Manning's n polygons)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__668-0	_Lambda$__R1	7	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions	EnsureBaseNamesAndValues	46	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLCNames	76	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions	GetLandCoverMapping	52	not ported		calibration regions (Manning's n polygons)
@@ -477,7 +456,7 @@ RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.cctor	11	not ported		
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.ctor	7	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__45-0	8	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__57-0	57	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	Multiple Face Mann n branch refused
+RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	2D bridge profiles not ported
 RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	terrain modifications (ObstructProfiles) not ported
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	25	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	24	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -909,10 +888,13 @@ RasMapperLib	RasMapperLib.Profile	.ctor	7	ported	property_tables.face_profile	5 
 RasMapperLib	RasMapperLib.Profile	.ctor	24	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Profile	Filter	93	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Profile	FirstStation	13	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
+RasMapperLib	RasMapperLib.Profile	GetSubSection	93	ported	property_tables._sub_section	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.Profile	GetSubsectionInternal	268	ported	property_tables._sub_section	Chippewa_2D (Multiple Face Mann n)
 RasMapperLib	RasMapperLib.Profile	LastStation	20	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Profile	MaxElevation	7	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Profile	MinElevation	7	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.Profile	SortByStation	7	ported	property_tables.face_profile	5 examples, Weise_2D, BaldEagle g09
+RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	.ctor	2517	ported	property_tables.face_table_n_profile	Chippewa_2D (Multiple Face Mann n)
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	.ctor	1214	ported	property_tables.face_table	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	ComputeCentroidAtArea	281	ported	property_tables.face_table, _HP, centroid_at_area	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	ComputeProfileHydraulicProperties	267	ported	property_tables.face_table, _HP, centroid_at_area	5 examples, Weise_2D, BaldEagle g09
@@ -938,9 +920,9 @@ RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAssign
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAverage	204	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueInternal	197	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueResample	111	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
-RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveCellAverageLC	98	ported	preprocess.table_settings	refused with an error
-RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveMultipleFaceMannN	65	ported	preprocess.table_settings	refused with an error
-RasMapperLib	RasMapperLib.RASD2FlowArea	GetCellAverageLC	18	ported	preprocess.table_settings	refused with an error
+RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveCellAverageLC	98	ported	preprocess.table_settings	Chippewa_2D
+RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveMultipleFaceMannN	65	ported	preprocess.table_settings	Chippewa_2D
+RasMapperLib	RasMapperLib.RASD2FlowArea	GetCellAverageLC	18	ported	preprocess.table_settings	Chippewa_2D
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFaceAreaConveyanceRatioTol	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFaceLaminarDepth	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterCellMinAreaFrac	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
@@ -948,11 +930,29 @@ RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterTolCellVol	23	ported	preprocess
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterTolFaceElevArea	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterTolFaceProfile	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetManningsN	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
-RasMapperLib	RasMapperLib.RASD2FlowArea	GetMultipleFaceMannN	18	ported	preprocess.table_settings	refused with an error
+RasMapperLib	RasMapperLib.RASD2FlowArea	GetMultipleFaceMannN	18	ported	preprocess.table_settings	Chippewa_2D
 RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessClassificationPropertyTables	1282	ported	preprocess.sample_infiltration	BEC, Muncie, AFTER_RUN (cell averages unverified)
 RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessLandCoverPropertyTables	891	ported	preprocess.sample_land_cover	5 examples, Weise_2D, BaldEagle g09, Chippewa_2D
 RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__13	177	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__14	1154	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolyineSort	713	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineFillNoData	648	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylinesRegionsRasterExtraction	817	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableSampleTile	519	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariableTilesToProcessFromTileRaster	458	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry	ExtractManningsNPolylines	479	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__666-0	31	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__667-0	7	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__670-0	7	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__671-0	7	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__	_Lambda$__672-0	9	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-0	.ctor	145	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-1	.ctor	46	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__672-1	_Lambda$__1	1154	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-0	.ctor	34	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-1	.ctor	34	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	.ctor	22	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
+RasMapperLib	RasMapperLib.RASGeometry/_Closure$__673-2	_Lambda$__0	143	ported	property_tables.face_n_profiles	Chippewa_2D (Multiple Face Mann n)
 RasMapperLib	RasMapperLib.RasterM	.ctor	22	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	51	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	107	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
@@ -1200,13 +1200,8 @@ Geospatial.Core	Geospatial.Vectors.Point4D	AsPoint2D	18	primitive, only for unpo
 Geospatial.Core	Geospatial.Vectors.Point4D	DebuggerDisplay	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	ToString	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point4D	Translate	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	55	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_1	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_2	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_3	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point3D>b__48_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	<get_Point4D>b__52_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	Add	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1216,7 +1211,6 @@ Geospatial.Core	Geospatial.Vectors.PointCollection	Add	75	primitive, only for un
 Geospatial.Core	Geospatial.Vectors.PointCollection	AddInternal	63	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	Contains	6	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	GetEnumerator	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	Initialize	239	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	PointDataModified	40	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAt	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	RemoveAtInternal	53	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1228,21 +1222,16 @@ Geospatial.Core	Geospatial.Vectors.PointCollection	Translate	64	primitive, only 
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasM	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_HasZ	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_M	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_MFillValue	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point3D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Point4D	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_PointCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Z	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	get_ZFillValue	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasM	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasZ	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointCollection	set_Item	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.cctor	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Compare	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	Equals	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.PointOnPolyline	ToString	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	Contains	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	Contains	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1255,12 +1244,7 @@ Geospatial.Core	Geospatial.Vectors.Polygon	IsVertexVerticallyBetweenNeighbors	17
 Geospatial.Core	Geospatial.Vectors.Polygon	NextPointIndex	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	PointDataModified	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	PreviousPointIndex	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polygon	Rasterize	113	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polygon	get_SegmentCount	12	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__0	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__1	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	34	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segment4D>b__13_0	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1429,7 +1413,6 @@ RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	MoveNext	1
 RasMapperLib	RasMapperLib.MultiPoint/VB$StateMachine_36_GetEnumerator	get_Current	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Point2D	ConvertToCSV	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Point2D	ToString	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.PointIntersect	.ctor	51	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointIntersect	get_ASegmentIndex	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointIntersect	get_BFraction	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.PointIntersect	get_BPointOnPolyline	24	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1462,14 +1445,9 @@ RasMapperLib	RasMapperLib.PointOnPolyline	get_SegmentIndex	7	primitive, only for
 RasMapperLib	RasMapperLib.Polygon	.cctor	16	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	ClipPolyline	526	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	Contains	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	Contains	8	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	Contains	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	Contains	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	Contains	500	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	ContainsAll	44	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	FilterXY	133	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polygon	IsValid	74	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	MergePointMs	182	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	PartPoints	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polygon	PointDataChanged	36	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1487,10 +1465,8 @@ RasMapperLib	RasMapperLib.Polyline	CumulativeSegmentLengths	69	primitive, only f
 RasMapperLib	RasMapperLib.Polyline	DistanceAlongFast	82	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	FirstPointOnPolyline	41	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	GenerateSegmentSpatialIndex	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	GetLineIntersection	119	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMulti	61	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	GetLineIntersectionMultiInternal	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.Polyline	Intersects	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	LastPointOnPolyline	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolyline	10	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.Polyline	NearestPointOnPolylineInternal	137	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1502,13 +1478,9 @@ RasMapperLib	RasMapperLib.Polyline	get_UsingQuadTree	2	primitive, only for unpor
 RasMapperLib	RasMapperLib.SegmentM	NearestPoint	181	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SegmentM	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex	ReasonableSegmentBinCount	9	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	Add	312	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1	Add	45	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1	GetBinRange	147	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	92	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	100	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__25-0	_Lambda$__0	25	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1561,17 +1533,33 @@ Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	<Union>b__65_0	28	primitive,
 Geospatial.Core	Geospatial.Vectors.Point	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	.ctor	55	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_1	12	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_2	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	<Initialize>b__64_3	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	ComputeExtent	153	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	Initialize	239	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Count	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Item	13	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_MFillValue	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Points	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	get_ZFillValue	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasM	8	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.PointCollection	set_HasZ	8	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	.ctor	23	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	ComputeArea	116	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	ComputeTin	29	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	IsValid	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	IsValidPolygon	23	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon	Rasterize	113	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	get_Area	50	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polygon	get_AreaTolerance	27	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	.ctor	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__0	17	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polygon/<>c__DisplayClass61_0	<Rasterize>b__1	17	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Polyline	.ctor	34	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	<get_Segments>b__7_0	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	get_SegmentCount	14	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Polyline	get_Segments	25	primitive, used by ported code	numpy / inline arithmetic	
@@ -1655,6 +1643,7 @@ RasMapperLib	RasMapperLib.Point2D	DistanceTo	64	primitive, used by ported code	n
 RasMapperLib	RasMapperLib.Point2D	Equal	26	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Point2D	Equal	36	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Point2D	IsUndefined	34	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.PointIntersect	.ctor	51	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	52	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	19	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.PointM	.ctor	37	primitive, used by ported code	numpy / inline arithmetic	
@@ -1689,10 +1678,15 @@ RasMapperLib	RasMapperLib.PointMs	RemoveRange	16	primitive, used by ported code	
 RasMapperLib	RasMapperLib.PointMs	Reverse	74	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	.ctor	9	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	.ctor	78	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	Contains	19	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	Contains	30	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	Contains	500	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	ContainsAll	44	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	EnsureFirstPointEqualsLast	67	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	GetNextPointOnPart	22	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	GetPreviousPointOnPart	30	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Initialize	56	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polygon	IsValid	74	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	IsVertexVerticallyBetweenNeighbors	188	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	Rasterize	60	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polygon	get_Area	247	primitive, used by ported code	numpy / inline arithmetic	
@@ -1700,8 +1694,10 @@ RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	.ctor	7	primitive, used by por
 RasMapperLib	RasMapperLib.Polygon/_Closure$__68-0	_Lambda$__0	17	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	.ctor	72	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	.ctor	79	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	GetLineIntersection	119	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	InitializePartStarts	66	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	InitializeSegmentFirstIndexes	235	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.Polyline	Intersects	11	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	IsValid	17	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	IsValidPolyline	16	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.Polyline	PartEndIndex	65	primitive, used by ported code	numpy / inline arithmetic	
@@ -1750,8 +1746,12 @@ RasMapperLib	RasMapperLib.SegmentM	get_MinY	28	primitive, used by ported code	nu
 RasMapperLib	RasMapperLib.SegmentM	get_MinZ	28	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex	ReasonableBinCount	35	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	75	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	.ctor	14	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	Add	312	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	Add	157	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	DefaultSpatialIndex	48	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	19	primitive, used by ported code	numpy / inline arithmetic	
+RasMapperLib	RasMapperLib.SpatialIndex`1	GetElements	48	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	Initialize	131	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	get_Bins	7	primitive, used by ported code	numpy / inline arithmetic	
 RasMapperLib	RasMapperLib.SpatialIndex`1	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	

@@ -20,6 +20,7 @@ from collections import defaultdict
 # bit for bit; see README "Workflow B accuracy".
 EXAMPLES = "5 examples, Weise_2D, BaldEagle g09"
 CELLS_ALSO = EXAMPLES + ", Chippewa_2D (cells)"
+MULTI_N = "Chippewa_2D (Multiple Face Mann n)"
 
 PORTED, PARTIAL, MISSING, SUBST, PRIM, NA = (
     "ported", "partly ported", "not ported", "substituted", "primitive", "not applicable")
@@ -28,13 +29,13 @@ PORTED, PARTIAL, MISSING, SUBST, PRIM, NA = (
 RULES = [
     # -- the driver -------------------------------------------------------------
     (r"RASD2FlowArea$", r"^CreatePropertyTables$", PARTIAL, "preprocess.compute_face_properties, compute_cell_properties",
-     "Multiple Face Mann n branch refused"),
+     "2D bridge profiles not ported"),
     (r"RASD2FlowArea/.*", r"^_Lambda\$__1[34]$", PORTED, "preprocess._composite_cells", "Chippewa_2D (Manning's n)"),
     (r"RASD2FlowArea$", r"^ComputeAssociationCellAverage", PORTED, "preprocess._composite_cells", "Chippewa_2D (Manning's n)"),
     (r"RASD2FlowArea$", r"^ProcessLandCoverPropertyTables$", PORTED, "preprocess.sample_land_cover", EXAMPLES + ", Chippewa_2D"),
     (r"RASD2FlowArea$", r"^ProcessClassificationPropertyTables$", PORTED, "preprocess.sample_infiltration",
      "BEC, Muncie, AFTER_RUN (cell averages unverified)"),
-    (r"RASD2FlowArea$", r"^(Effective|Get)(CellAverageLC|MultipleFaceMannN)$", PORTED, "preprocess.table_settings", "refused with an error"),
+    (r"RASD2FlowArea$", r"^(Effective|Get)(CellAverageLC|MultipleFaceMannN)$", PORTED, "preprocess.table_settings", "Chippewa_2D"),
     (r"RASD2FlowArea$", r"^Get(FilterTol|FilterCell|FaceLaminar|FaceAreaConveyance|ManningsN)", PORTED, "preprocess.table_settings", EXAMPLES),
     (r"RASD2FlowArea", r"(Dataset|get_Geometry|\.c?ctor)$", NA, "", "names and object setup"),
     (r"RASD2FlowArea/", r"^_Lambda", NA, "", "delegate glue (progress, writers)"),
@@ -69,7 +70,8 @@ RULES = [
     (r"ProfileHydraulicPropertiesTable(/.*)?$", r"^\.ctor$", None, "", ""),  # decided by size below
     (r"ProfileHydraulicPropertiesTable(/.*)?$", r"^ToString$", NA, "", "debug text"),
     (r"ProfileHydraulicPropertiesTable(/.*)?$", r".", PORTED, "property_tables.face_table, _HP, centroid_at_area", EXAMPLES),
-    (r"RasMapperLib\.Profile$", r"^(GetSubSection|GetSubsectionInternal|Average)$", MISSING, "", "Multiple Face Mann n subsections"),
+    (r"RasMapperLib\.Profile$", r"^(GetSubSection|GetSubsectionInternal)$", PORTED, "property_tables._sub_section", MULTI_N),
+    (r"RasMapperLib\.Profile$", r"^Average$", MISSING, "", "face variable averages (Composite LC)"),
     (r"RasMapperLib\.Profile$", r".", PORTED, "property_tables.face_profile", EXAMPLES),
     (r"RasMapperLib\.Point2DCollection$", r"^ToString$", NA, "", "debug text"),
     (r"RasMapperLib\.Point2DCollection$", r".", PORTED, "property_tables._dp_keep, _dotnet_sort", EXAMPLES),
@@ -79,7 +81,18 @@ RULES = [
     (r"RasMapperLib\.MeshFV2D(/.*)?$", r".", NA, "", "mesh bookkeeping (extents, messages, names)"),
     (r"RasMapperLib\.RasterM$", r".", PORTED, "property_tables._cell_raster, Terrain.locate", EXAMPLES),
     # -- land cover, Manning's n, infiltration ------------------------------------------
-    (r"RASGeometry(/.*)?$", r"^(Extract|_Lambda|\.c?ctor)", MISSING, "", "Multiple Face Mann n: n profiles along faces"),
+    # Closure numbers are RASGeometry's methods: 665 ExtractLCVariablePolylines, 666 ExtractManningsNPolylines,
+    # 667 raster extraction, 668 vector extraction, 669 combine, 670 fill, 671 sort, 672-673 tiles.
+    (r"RASGeometry/_Closure\$__$", r"^\.c?ctor$", NA, "", "object setup"),
+    (r"RASGeometry/_Closure\$__(665-\d)?$", r"^(_Lambda\$__665-|_Lambda|\.ctor)", None, "", ""),
+    (r"RASGeometry/_Closure\$__(66[89]-\d)?$", r"^(_Lambda\$__66[89]-|_Lambda|\.ctor)", None, "", ""),
+    (r"RASGeometry/_Closure\$__(67[0-3]-\d)?$", r".", PORTED, "property_tables.face_n_profiles", MULTI_N),
+    (r"RASGeometry$", r"^(ExtractManningsNPolylines|ExtractLCVariablePolylinesRegionsRasterExtraction|ExtractLCVariablePolylineFillNoData|ExtractLCVariablePolyineSort|ExtractLCVariableSampleTile|ExtractLCVariableTilesToProcessFromTileRaster)$",
+     PORTED, "property_tables.face_n_profiles", MULTI_N),
+    (r"RASGeometry$", r"^ExtractLCVariableSubsampleTile$", NA, "", "only with sub-sampling, which no table caller turns on"),
+    (r"RASGeometry$", r"^(ExtractLCVariablePolylinesRegionsVectorExtraction|ExtractLCVariablePolylineRegionsCombine)$",
+     MISSING, "", "calibration regions (Manning's n polygons)"),
+    (r"RASGeometry$", r"^ExtractLCVariablePolylines$", MISSING, "", "face variable averages (Composite LC)"),
     (r"RasMapperLib\.FinalNValueLayer$", r".", PORTED, "preprocess.sample_land_cover", EXAMPLES),
     (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r"^MD5", NA, "", "change detection"),
     (r"RasMapperLib\.RasLandCoverRegions(/.*)?$", r".", MISSING, "", "calibration regions (Manning's n polygons)"),
@@ -112,9 +125,16 @@ RULES = [
 def classify(cls: str, method: str, il: int):
     for crx, mrx, status, port, note in RULES:
         if re.search(crx, cls) and re.search(mrx, method):
-            if status is None:   # ProfileHydraulicPropertiesTable constructors
-                if il > 2000:
-                    return MISSING, "", "Multiple Face Mann n constructor (subsections)"
+            if status is None:
+                if crx.startswith("RASGeometry"):   # closures, by the method they belong to
+                    num = re.search(r"(665|668|669)-", cls + method)
+                    if num and num.group(1) == "665":
+                        return MISSING, "", "face variable averages (Composite LC)"
+                    if num:
+                        return MISSING, "", "calibration regions (Manning's n polygons)"
+                    continue
+                if il > 2000:   # ProfileHydraulicPropertiesTable constructors
+                    return PORTED, "property_tables.face_table_n_profile", MULTI_N
                 return PORTED, "property_tables.face_table", EXAMPLES
             return status, port, note
     return "unclassified", "", ""
