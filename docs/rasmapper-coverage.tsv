@@ -269,243 +269,11 @@ Utility.Core	Utility.Parallel	GetReasonableParallelOptions	14	not applicable		in
 Utility.Core	Utility.Parallel	SmartFor	87	not applicable		infrastructure (caches, threading, paths, HDF writing)
 Utility.Core	Utility.Parallel/<>c__DisplayClass1_0	.ctor	7	not applicable		infrastructure (caches, threading, paths, HDF writing)
 Utility.Core	Utility.Parallel/<>c__DisplayClass1_0	<SmartFor>b__0	52	not applicable		infrastructure (caches, threading, paths, HDF writing)
-Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	Resample	147	not ported		Composite LC
-Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c__DisplayClass27_1	<Resample>b__0	25	not ported		Composite LC
-Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	Resample	72	not ported		Composite LC
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	GetPolygonVariableMap	69	not ported		override regions
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	MakePolygonVariableMap	151	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	Resample	366	not ported		Composite LC: resampling onto a cell's raster
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsHighestToLowest	7	not ported		override regions
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	get_PolygonsLowestToHighest	12	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_1	<Resample>b__0	67	not ported		Composite LC: resampling onto a cell's raster
-Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_2	<Resample>b__1	70	not ported		Composite LC: resampling onto a cell's raster
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass41_0	<MakePolygonVariableMap>b__0	24	not ported		override regions
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	.ctor	21	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	None	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	Resample	24	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	SamplePoints	23	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_NoDataValue	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_ValidExtent	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_Value	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.EqualDefinitionRasterSelector	.ctor	25	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.IResampleExtensionMethods	Resample	13	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	GetTileRasterDefinition	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	GetTileRasterDefinition	30	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	ReadTile	13	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	ReadTile	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ITileProviderExtensions	AsRasterizer	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	.ctor	60	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	Resample	34	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	SamplePoints	105	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_NoDataValue	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_RasterDefinition	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_ValidExtent	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	.cctor	51	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	.ctor	15	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	Bottom	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	Equals	28	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	GetHashCode	48	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	Left	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	LowerLeft	22	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	LowerRight	22	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	Right	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	To1D	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	ToString	70	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	Top	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	UpperLeft	22	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	UpperRight	22	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	get_X	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	get_Y	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.Pixel	op_Equality	35	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	.cctor	31	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	.ctor	30	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	ClipTo	94	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	EnumerateInternal	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	Equals	76	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	GetEnumerator	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	GetHashCode	90	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	InRange	62	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	Intersection	95	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	IsNull	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	IsNull	55	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	Overlaps	85	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	System.Collections.IEnumerable.GetEnumerator	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_Bottom	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_ColCount	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_Left	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_Right	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_RowCount	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange	get_Top	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	.ctor	14	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	MoveNext	172	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.Collections.Generic.IEnumerator<Geospatial.Rasters.Pixel>.get_Current	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.Collections.IEnumerator.get_Current	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.IDisposable.Dispose	9	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.PyramidTileProviderExtensions	AsRasterizer	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterData`1	.ctor	21	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterData`1	get_Data	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterData`1	get_Raster	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterData`1	set_Data	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterData`1	set_Raster	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	73	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	178	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	41	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenter	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenter	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterExtent	39	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterX	27	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterY	27	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellExtent	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellExtent	34	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	31	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	11	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	30	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	29	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndexBounded	33	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMaxX	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMaxY	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMinX	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMinY	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Col	65	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	ColsInRange	240	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Compute1DIndex	6	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Compute2DIndex	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	ComputeBoundingRaster	508	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Contains	27	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	FractionalCol	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	FractionalRow	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	FullRange	24	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetPixelRange	72	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetPixelRange	14	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetSubRaster	28	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetSubRaster	111	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	InBounds	49	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsCorrectSize	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsRegistered	206	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsValidRange	62	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Overlaps	31	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Overlaps	47	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	RangeExtent	69	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Round_HalfGoesLower	40	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	Row	65	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	RowsInRange	240	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	TiledRaster	67	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	ToString	93	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	TransformIndexingToSubSpace	34	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellCount	21	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellCountLong	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellSize	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Cols	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Extent	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Height	15	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MaxX	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MaxY	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MinX	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MinY	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_RoughlyEpsilon	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Rows	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Width	15	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	.cctor	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	CopyToInternal	389	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	342	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	197	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	197	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	27	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	27	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	173	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	165	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_Nearest	329	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_Nearest	21	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	15	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	327	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	311	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	14	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	130	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	84	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	80	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	.ctor	147	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	AfterResample	1	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	GetBestPyramidLevel	63	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	Resample	78	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	SamplePoints	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_NoDataValue	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_PyramidCount	14	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_RasterDefinition	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_ValidExtent	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	set_NoDataValue	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	.cctor	11	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	<.ctor>b__16_0	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	20	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	19	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	GetRenderBlockRasterDefinition	145	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	Interpolate	236	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	SetPixel	790	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlock	SetTile	64	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlockD	.ctor	16	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlockD	GetRenderBlockRasterDefinition	95	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlockD	Interpolate	246	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlockD	SetPixel	478	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.RenderBlockD	SetTile	64	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	.ctor	39	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	.ctor	32	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	Clone	42	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	EnsureBuffer	45	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	EnsureTimeSeriesBuffer	35	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_InitializeBufferToNoData	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_InterpolationModeRequiresNeighboringCells	39	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_Mode	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_Raster	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_ResampleCellSizeRatio	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_InitializeBufferToNoData	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_Mode	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_Raster	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_ResampleCellSizeRatio	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessTiles	285	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessWindowed	63	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessWindowed	252	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>b__0	13	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>b__2	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>g__ProcessTile|1	122	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_1`1	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_1`1	<ProcessTiles>b__3	50	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__0	86	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__1	241	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__2	267	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__3	267	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Bottom	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Center	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_LowerRight	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Right	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Bottom	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Center	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Left	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_LowerLeft	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_LowerRight	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Right	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Top	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_UpperLeft	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_UpperRight	8	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	.ctor	29	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	GetTileRasterDefinition	29	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	ReadTile	14	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	Resample	189	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	SamplePoints	346	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_NoDataValue	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_RasterDefinition	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_TiledRasterDefinition	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_ValidExtent	17	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_WorldRasterDefinition	12	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	.ctor	7	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__0	40	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__1	38	not ported		Composite LC (raster resampling of classification layers)
-Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__2	39	not ported		Composite LC (raster resampling of classification layers)
 Geospatial.Core	Geospatial.Vectors.Circle	.ctor	15	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.Circle	ComputeCenter	167	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.Circle	Contains	25	not ported		override regions (polygon containment TINs)
@@ -560,24 +328,24 @@ Geospatial.Core	Geospatial.Vectors.EdgeDefinition	.ctor	46	not ported		override 
 Geospatial.Core	Geospatial.Vectors.EdgeDefinition	Equals	30	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.EdgeDefinition	GetHashCode	17	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.EdgeDefinition	op_Equality	118	not ported		override regions (polygon containment TINs)
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	.ctor	41	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	BuildSegmentIntersectionList	728	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Initialize	168	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Rasterize	40	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Rasterize	35	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	RasterizeCompletePixel	129	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	RasterizePartialPixel	129	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Replay	245	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	SetupArrays	38	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	SortIntersections	74	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass6_0	.ctor	7	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass6_0	<Rasterize>b__0	46	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	.ctor	7	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	<RasterizePartialPixel>b__0	26	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	<RasterizePartialPixel>b__1	27	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	.ctor	7	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__0	14	not ported		Composite LC / override regions
-Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__1	28	not ported		Composite LC / override regions
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	.ctor	41	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	BuildSegmentIntersectionList	728	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Initialize	168	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Rasterize	40	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Rasterize	35	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	RasterizeCompletePixel	129	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	RasterizePartialPixel	129	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	Replay	245	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	SetupArrays	38	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer	SortIntersections	74	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass6_0	.ctor	7	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass6_0	<Rasterize>b__0	46	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	.ctor	7	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	<RasterizePartialPixel>b__0	26	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass8_0	<RasterizePartialPixel>b__1	27	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	.ctor	7	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__0	14	not ported		override regions (rasterized onto a cell's raster)
+Geospatial.Core	Geospatial.Vectors.Rasterizers.PolygonRasterizer/<>c__DisplayClass9_0	<RasterizeCompletePixel>b__1	28	not ported		override regions (rasterized onto a cell's raster)
 Geospatial.Core	Geospatial.Vectors.Tin	.cctor	7	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.Tin	.ctor	63	not ported		override regions (polygon containment TINs)
 Geospatial.Core	Geospatial.Vectors.Tin	ClosestPoint	83	not ported		override regions (polygon containment TINs)
@@ -660,13 +428,6 @@ RasMapperLib	RasMapperLib.Profile	Average	184	not ported		Multiple Face Mann n s
 RasMapperLib	RasMapperLib.Profile	GetSubSection	93	not ported		Multiple Face Mann n subsections
 RasMapperLib	RasMapperLib.Profile	GetSubsectionInternal	268	not ported		Multiple Face Mann n subsections
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable	.ctor	2517	not ported		Multiple Face Mann n constructor (subsections)
-RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValue	100	not ported		Composite LC
-RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAssignClassMap	117	not ported		Composite LC
-RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAverage	204	not ported		Composite LC
-RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueInternal	197	not ported		Composite LC
-RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueResample	111	not ported		Composite LC
-RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__13	177	not ported		Composite LC: per-cell association averages (parallel loop)
-RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__14	1154	not ported		Composite LC: per-cell association averages (parallel loop)
 RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolyineSort	713	not ported		Multiple Face Mann n: n profiles along faces
 RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineFillNoData	648	not ported		Multiple Face Mann n: n profiles along faces
 RasMapperLib	RasMapperLib.RASGeometry	ExtractLCVariablePolylineRegionsCombine	1427	not ported		Multiple Face Mann n: n profiles along faces
@@ -716,9 +477,7 @@ RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.cctor	11	not ported		
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	.ctor	7	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__45-0	8	not ported		calibration regions (Manning's n polygons)
 RasMapperLib	RasMapperLib.RasLandCoverRegions/_Closure$__	_Lambda$__57-0	57	not ported		calibration regions (Manning's n polygons)
-RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	Composite LC and Multiple Face Mann n branches refused
-RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessClassificationPropertyTables	1282	partly ported	preprocess.sample_infiltration, _classify_points	point sampling ported; override regions and cell averaging not
-RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessLandCoverPropertyTables	891	partly ported	preprocess.sample_land_cover	point sampling ported; cell averaging (Composite LC) not
+RasMapperLib	RasMapperLib.RASD2FlowArea	CreatePropertyTables	9889	partly ported	preprocess.compute_face_properties, compute_cell_properties	Multiple Face Mann n branch refused
 RasMapperLib	RasMapperLib.TerrainLayer	ComputeProfiles	805	partly ported	property_tables.face_profile	terrain modifications (ObstructProfiles) not ported
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	25	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Classification	.ctor	24	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -736,6 +495,7 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	.ctor
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	.ctor	255	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	<.ctor>b__21_1	53	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	<.ctor>b__22_2	53	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	Resample	147	ported	preprocess._ClassRaster.classes_at	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	SamplePoints	139	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	Sanitize	23	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler	get_Classifier	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -752,6 +512,7 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c	<
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c	<.ctor>b__22_3	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c__DisplayClass27_0	.ctor	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c__DisplayClass27_1	.ctor	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/<>c__DisplayClass27_1	<Resample>b__0	25	ported	preprocess._ClassRaster.classes_at	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/PriorityPolygon	.ctor	74	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/PriorityPolygon/<>c__DisplayClass4_0	.ctor	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ClassificationResampler/PriorityPolygon/<>c__DisplayClass4_0	<.ctor>b__0	12	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -791,6 +552,7 @@ Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassification/NameColl
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassification/NameCollection/<GetEnumerator>d__4	System.IDisposable.Dispose	9	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	.ctor	44	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	ConvertValues	65	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	Resample	72	ported	preprocess._ClassRaster.classes_at	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	SamplePoints	49	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	get_Classifier	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler	get_NoDataValue	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
@@ -799,6 +561,7 @@ Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler
 Geospatial.Core	Geospatial.Rasters.Classifications.MergedClassificationResampler/<>c__DisplayClass21_0	<ConvertValues>b__0	53	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Parameter	get_Values	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.Parameter	get_VariableName	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	Resample	366	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoints	46	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoints	10	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler	SamplePoints	313	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
@@ -813,12 +576,240 @@ Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c	.ctor	
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c	<get_ProfileNames>b__9_0	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_0	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_1	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_1	<Resample>b__0	67	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_2	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass37_2	<Resample>b__1	70	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterResampler/<>c__DisplayClass41_0	.ctor	7	ported	preprocess.sample_land_cover, sample_infiltration	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Count	12	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Item	13	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterSet	get_Parameters	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
 Geospatial.Core	Geospatial.Rasters.Classifications.ParameterizedPolygon	get_ParameterSet	7	ported	preprocess._classify_points (virtual layers)	BEC, Muncie, AFTER_RUN
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	.ctor	21	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	None	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	Resample	24	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	SamplePoints	23	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_NoDataValue	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_ValidExtent	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ConstantValueResampler`1	get_Value	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.EqualDefinitionRasterSelector	.ctor	25	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.IResampleExtensionMethods	Resample	13	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	GetTileRasterDefinition	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	GetTileRasterDefinition	30	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	ReadTile	13	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ITileProviderExtensionMethods	ReadTile	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ITileProviderExtensions	AsRasterizer	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	.ctor	60	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	Resample	34	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	SamplePoints	105	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_NoDataValue	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_RasterDefinition	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.MemoryRaster`1	get_ValidExtent	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	.cctor	51	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	.ctor	15	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	Bottom	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	Equals	28	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	GetHashCode	48	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	Left	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	LowerLeft	22	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	LowerRight	22	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	Right	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	To1D	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	ToString	70	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	Top	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	UpperLeft	22	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	UpperRight	22	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	get_X	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	get_Y	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.Pixel	op_Equality	35	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	.cctor	31	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	.ctor	30	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	ClipTo	94	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	EnumerateInternal	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	Equals	76	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	GetEnumerator	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	GetHashCode	90	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	InRange	62	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	Intersection	95	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	IsNull	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	IsNull	55	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	Overlaps	85	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	System.Collections.IEnumerable.GetEnumerator	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_Bottom	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_ColCount	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_Left	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_Right	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_RowCount	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange	get_Top	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	.ctor	14	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	MoveNext	172	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.Collections.Generic.IEnumerator<Geospatial.Rasters.Pixel>.get_Current	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.Collections.IEnumerator.get_Current	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PixelRange/<EnumerateInternal>d__52	System.IDisposable.Dispose	9	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.PyramidTileProviderExtensions	AsRasterizer	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterData`1	.ctor	21	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterData`1	get_Data	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterData`1	get_Raster	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterData`1	set_Data	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterData`1	set_Raster	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	73	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	178	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	.ctor	41	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenter	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenter	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterExtent	39	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterX	27	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellCenterY	27	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellExtent	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellExtent	34	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	31	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex	11	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	30	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndex2D	29	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellIndexBounded	33	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMaxX	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMaxY	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMinX	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	CellMinY	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Col	65	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	ColsInRange	240	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Compute1DIndex	6	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Compute2DIndex	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	ComputeBoundingRaster	508	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Contains	27	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	FractionalCol	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	FractionalRow	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	FullRange	24	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetPixelRange	72	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetPixelRange	14	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetSubRaster	28	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	GetSubRaster	111	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	InBounds	49	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsCorrectSize	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsRegistered	206	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	IsValidRange	62	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Overlaps	31	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Overlaps	47	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	RangeExtent	69	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Round_HalfGoesLower	40	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	Row	65	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	RowsInRange	240	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	TiledRaster	67	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	ToString	93	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	TransformIndexingToSubSpace	34	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellCount	21	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellCountLong	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_CellSize	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Cols	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Extent	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Height	15	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MaxX	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MaxY	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MinX	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_MinY	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_RoughlyEpsilon	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Rows	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterDefinition	get_Width	15	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	.cctor	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	CopyToInternal	389	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	342	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	197	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	197	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	27	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	27	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	173	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample	165	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_Nearest	329	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_Nearest	21	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	15	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	327	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	311	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	Resample_RenderBlocks	14	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	130	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	84	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterOperations	SamplePoints	80	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	.ctor	147	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	AfterResample	1	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	GetBestPyramidLevel	63	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	Resample	78	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	SamplePoints	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_NoDataValue	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_PyramidCount	14	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_RasterDefinition	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	get_ValidExtent	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1	set_NoDataValue	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	.cctor	11	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RasterPyramid`1/<>c	<.ctor>b__16_0	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	20	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	.ctor	19	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	GetRenderBlockRasterDefinition	145	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	Interpolate	236	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	SetPixel	790	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlock	SetTile	64	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlockD	.ctor	16	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlockD	GetRenderBlockRasterDefinition	95	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlockD	Interpolate	246	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlockD	SetPixel	478	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.RenderBlockD	SetTile	64	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	.ctor	39	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	.ctor	32	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	Clone	42	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	EnsureBuffer	45	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	EnsureTimeSeriesBuffer	35	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_InitializeBufferToNoData	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_InterpolationModeRequiresNeighboringCells	39	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_Mode	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_Raster	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	get_ResampleCellSizeRatio	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_InitializeBufferToNoData	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_Mode	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_Raster	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.ResampleArgs	set_ResampleCellSizeRatio	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessTiles	285	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessWindowed	63	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations	ProcessWindowed	252	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>b__0	13	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>b__2	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_0`1	<ProcessTiles>g__ProcessTile|1	122	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_1`1	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass1_1`1	<ProcessTiles>b__3	50	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__0	86	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__1	241	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__2	267	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileOperations/<>c__DisplayClass2_0`1	<ProcessWindowed>b__3	267	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Bottom	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Center	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_LowerRight	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	get_Right	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Bottom	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Center	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Left	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_LowerLeft	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_LowerRight	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Right	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_Top	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_UpperLeft	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TileWithNeighbors`1	set_UpperRight	8	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	.ctor	29	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	GetTileRasterDefinition	29	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	ReadTile	14	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	Resample	189	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	SamplePoints	346	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_NoDataValue	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_RasterDefinition	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_TiledRasterDefinition	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_ValidExtent	17	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1	get_WorldRasterDefinition	12	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	.ctor	7	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__0	40	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__1	38	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
+Geospatial.Core	Geospatial.Rasters.TiledRaster`1/<>c__DisplayClass16_0	<Resample>b__2	39	ported	preprocess._ClassRaster (nearest pixel, pyramid level)	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.CircleM	Compute	46	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.CircleM	ComputeCenter	163	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
 RasMapperLib	RasMapperLib.CircleM	ContainsPoint	26	ported	tin.StitchTin	BaldEagle g09, VA, Chippewa_2D
@@ -942,6 +933,11 @@ RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable/InterpolateProperties	
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable/InterpolateProperties	InterpolateValue	18	ported	property_tables.face_table, _HP, centroid_at_area	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable/_Closure$__8-0	.ctor	34	ported	property_tables.face_table	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.ProfileHydraulicPropertiesTable/_Closure$__8-0	_Lambda$__0	973	ported	property_tables.face_table, _HP, centroid_at_area	5 examples, Weise_2D, BaldEagle g09
+RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValue	100	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAssignClassMap	117	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueAverage	204	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueInternal	197	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea	ComputeAssociationCellAverageValueResample	111	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveCellAverageLC	98	ported	preprocess.table_settings	refused with an error
 RasMapperLib	RasMapperLib.RASD2FlowArea	EffectiveMultipleFaceMannN	65	ported	preprocess.table_settings	refused with an error
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetCellAverageLC	18	ported	preprocess.table_settings	refused with an error
@@ -953,6 +949,10 @@ RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterTolFaceElevArea	23	ported	prepr
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetFilterTolFaceProfile	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetManningsN	23	ported	preprocess.table_settings	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RASD2FlowArea	GetMultipleFaceMannN	18	ported	preprocess.table_settings	refused with an error
+RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessClassificationPropertyTables	1282	ported	preprocess.sample_infiltration	BEC, Muncie, AFTER_RUN (cell averages unverified)
+RasMapperLib	RasMapperLib.RASD2FlowArea	ProcessLandCoverPropertyTables	891	ported	preprocess.sample_land_cover	5 examples, Weise_2D, BaldEagle g09, Chippewa_2D
+RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__13	177	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
+RasMapperLib	RasMapperLib.RASD2FlowArea/_Closure$__86-5	_Lambda$__14	1154	ported	preprocess._composite_cells	Chippewa_2D (Manning's n)
 RasMapperLib	RasMapperLib.RasterM	.ctor	22	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	51	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
 RasMapperLib	RasMapperLib.RasterM	.ctor	107	ported	property_tables._cell_raster, Terrain.locate	5 examples, Weise_2D, BaldEagle g09
@@ -1145,20 +1145,14 @@ RasMapperLib	RasMapperLib.TriangleShape	InterpolationWeights	184	ported	property
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	.ctor	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.cctor	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	14	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	26	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	AddInBounds	23	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Bin	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Geospatial.Rasters.IRasterDefinition.get_RasterDefinition	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	.cctor	139	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Clone	30	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	Contains	66	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDXDYRatio	73	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinDimensions	172	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinHeight	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	EnforceMinWidth	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Equals	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	Extend	38	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Geospatial.Vectors.IExtent.get_Extent	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	GetHashCode	17	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	Overlaps_EdgePedantic	47	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1169,14 +1163,11 @@ Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported 
 Geospatial.Core	Geospatial.Vectors.Extent	Union	48	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_Bot	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_Center	52	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaY	50	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_Height	7	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_LeftMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_LowerLeft	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_LowerMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_LowerRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_RightMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Extent	get_UpperLeft	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_UpperMidside	35	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent	get_UpperRight	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Extent/<>c	.cctor	11	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1195,9 +1186,7 @@ Geospatial.Core	Geospatial.Vectors.Point	Equals	31	primitive, only for unported 
 Geospatial.Core	Geospatial.Vectors.Point	GetHashCode	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	To	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	ToString	33	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point	Translate	19	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	32	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point3D	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 Geospatial.Core	Geospatial.Vectors.Point3D	AsPoint2D	18	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
@@ -1527,8 +1516,6 @@ RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	.ctor	7	primitive, only
 RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__42-0	_Lambda$__0	54	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	.ctor	22	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
 RasMapperLib	RasMapperLib.SpatialIndex`1/_Closure$__55-0	_Lambda$__0	13	primitive, only for unported features	numpy / inline arithmetic	only reached from unported features
-Utility.Core	Utility.Math	ArraySetAll	46	primitive, only for unported features	numpy	only reached from unported features
-Utility.Core	Utility.Math	EnsureArraySize	36	primitive, only for unported features	numpy	only reached from unported features
 Utility.Core	Utility.Math	GetInRange	14	primitive, only for unported features	numpy	only reached from unported features
 Utility.Core	Utility.Math	Min3Index	44	primitive, only for unported features	numpy	only reached from unported features
 Utility.Core	Utility.Math	OverlappingRange	45	primitive, only for unported features	numpy	only reached from unported features
@@ -1538,8 +1525,12 @@ Geospatial.Core	Geospatial.DataStructures.SpatialIndex	.ctor	7	primitive, used b
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex	FromPolygons	104	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex	ReasonableBinCount	30	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex/<>c	<FromPolygons>b__7_0	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	14	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	.ctor	20	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	26	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Add	95	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	AddInBounds	23	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Bin	31	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	Initialize	128	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	get_Raster	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.DataStructures.SpatialIndex`1	set_MaxResizedBinCount	8	primitive, used by ported code	numpy / inline arithmetic	
@@ -1548,6 +1539,8 @@ Geospatial.Core	Geospatial.Vectors.Extent	.ctor	30	primitive, used by ported cod
 Geospatial.Core	Geospatial.Vectors.Extent	.ctor	35	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Contains	19	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	Contains	42	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Contains	66	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	Extend	38	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsFinite	79	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsNull	53	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	IsValid	39	primitive, used by ported code	numpy / inline arithmetic	
@@ -1556,13 +1549,18 @@ Geospatial.Core	Geospatial.Vectors.Extent	Union	74	primitive, used by ported cod
 Geospatial.Core	Geospatial.Vectors.Extent	Union	171	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Bottom	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaX	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_DeltaY	50	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_Height	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Left	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Right	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Top	7	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Extent	get_UpperLeft	18	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent	get_Width	7	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent/<>c	<Union>b__67_0	25	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Extent/<>c__65`1	<Union>b__65_0	28	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.Point	.ctor	15	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	Translate	22	primitive, used by ported code	numpy / inline arithmetic	
+Geospatial.Core	Geospatial.Vectors.Point	op_Equality	31	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	ComputeExtent	153	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Count	12	primitive, used by ported code	numpy / inline arithmetic	
 Geospatial.Core	Geospatial.Vectors.PointCollection	get_Extent	7	primitive, used by ported code	numpy / inline arithmetic	
@@ -1770,5 +1768,7 @@ RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	247	primitive, used by 
 RasMapperLib	RasMapperLib.Utilities.Vector	MaximumExtent	227	primitive, used by ported code	numpy / inline arithmetic	
 Utility.Core	Utility.Math	ArraySetAll	8	primitive, used by ported code	numpy	
 Utility.Core	Utility.Math	ArraySetAll	16	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	ArraySetAll	46	primitive, used by ported code	numpy	
 Utility.Core	Utility.Math	ArraySetAllInternal_P4	206	primitive, used by ported code	numpy	
 Utility.Core	Utility.Math	EnsureArraySize	20	primitive, used by ported code	numpy	
+Utility.Core	Utility.Math	EnsureArraySize	36	primitive, used by ported code	numpy	

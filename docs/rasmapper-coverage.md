@@ -8,34 +8,28 @@ How much of RASMapper's own code for *Compute Property Tables* (HEC-RAS 7.0.2, `
 
 | Status | Methods | IL bytes | Meaning |
 |---|---|---|---|
-| ported | 422 | 45,301 | reproduced; tables match RASMapper's bit for bit on the models named |
-| partly ported | 4 | 12,867 | the paths the models use are reproduced; named branches are not |
-| not ported | 447 | 42,391 | not reproduced; the feature it serves is refused or absent |
-| primitive, used by ported code | 238 | 13,392 | geometry and math building blocks the ported code uses; reproduced inline |
-| primitive, only for unported features | 392 | 19,033 | building blocks reached only from unported features |
+| ported | 663 | 63,515 | reproduced; tables match RASMapper's bit for bit on the models named |
+| partly ported | 2 | 10,694 | the paths the models use are reproduced; named branches are not |
+| not ported | 208 | 26,350 | not reproduced; the feature it serves is refused or absent |
+| primitive, used by ported code | 251 | 13,800 | geometry and math building blocks the ported code uses; reproduced inline |
+| primitive, only for unported features | 379 | 18,625 | building blocks reached only from unported features |
 | not applicable | 270 | 19,678 | can't change table values (caches, names, debug text, setup) |
 
-Of the computational code (ported, partly ported, not ported and substituted: 100,559 IL bytes), **45 %** is fully ported, 13 % partly, 0 % substituted and 42 % not ported.
+Of the computational code (ported, partly ported, not ported and substituted: 100,559 IL bytes), **63 %** is fully ported, 11 % partly, 0 % substituted and 26 % not ported.
 
 ## What is missing, by feature
 
 | Feature | Methods | IL bytes |
 |---|---|---|
-| Composite LC (raster resampling of classification layers) | 226 | 13,234 |
 | override regions (polygon containment TINs) | 129 | 10,430 |
-| Composite LC and Multiple Face Mann n branches refused | 1 | 9,889 |
+| Multiple Face Mann n branch refused | 1 | 9,889 |
 | Multiple Face Mann n: n profiles along faces | 39 | 9,858 |
 | Multiple Face Mann n constructor (subsections) | 1 | 2,517 |
-| Composite LC / override regions | 18 | 1,789 |
-| Composite LC: per-cell association averages (parallel loop) | 2 | 1,331 |
-| point sampling ported; override regions and cell averaging not | 1 | 1,282 |
-| Composite LC | 8 | 973 |
-| point sampling ported; cell averaging (Composite LC) not | 1 | 891 |
+| override regions (rasterized onto a cell's raster) | 18 | 1,789 |
 | terrain modifications (ObstructProfiles) not ported | 1 | 805 |
 | override regions | 8 | 638 |
 | calibration regions (Manning's n polygons) | 10 | 573 |
 | Multiple Face Mann n subsections | 3 | 545 |
-| Composite LC: resampling onto a cell's raster | 3 | 503 |
 
 ## Cut off from the call graph
 
