@@ -1516,20 +1516,22 @@ def main():
     p01_path = project_dir / f"{name}.p{plan}"
     geom = _plan_geometry(p01_path) or f"g{plan}"
     g01_path = project_dir / f"{name}.{geom}"
-    terrain_tif = _find_terrain_tif(project_dir)
     geom_hdf = project_dir / f"{name}.{geom}.hdf"
+    terrain_tif = _find_terrain_tif(project_dir)
+    terrain_path = _find_terrain_layer(project_dir, geom_hdf)
     lc_hdf = _find_layer(project_dir, geom_hdf, "Land Cover Filename", "LandCover.hdf")
     lc_tif = lc_hdf.with_suffix(".tif")
     inf_hdf = _find_layer(project_dir, geom_hdf, "Infiltration Filename", "Infiltration.hdf")
 
     # Check required files
-    for f, desc in [(g01_path, f".{geom}"), (p01_path, f".p{plan}"), (terrain_tif, "Terrain TIF")]:
+    for f, desc in [(g01_path, f".{geom}"), (p01_path, f".p{plan}"), (terrain_path, "terrain")]:
         if not f or not f.exists():
             logger.error("Required file not found: %s (%s)", f, desc)
             sys.exit(1)
 
     # Read projection from terrain
-    ds = gdal.Open(str(terrain_tif))
+    # A terrain GeoTIFF's projection when there is one, else the geometry's own (below)
+    ds = gdal.Open(str(terrain_tif)) if terrain_tif else None
     projection_wkt = ds.GetProjection() if ds else ""
     ds = None
 
@@ -1622,7 +1624,6 @@ def main():
                                          calibration)
 
     # Step A3: Face tables, then cell tables (a cell's minimum depends on its faces)
-    terrain_path = _find_terrain_layer(project_dir, src_g01_hdf) or terrain_tif
     logger.info("Terrain: %s", terrain_path)
     terrain = property_tables.TerrainLayer(str(terrain_path))
     face_props = compute_face_properties(mesh, terrain, lc_data["face_mannings_n"], settings,
