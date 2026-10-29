@@ -5,4 +5,4 @@ engines run without Windows.
     from hecras_linux import preprocess        # Workflows A and B
     from hecras_linux import run               # run the engines
 """
-__version__ = "0.3.0"
+__version__ = "0.3.1"
